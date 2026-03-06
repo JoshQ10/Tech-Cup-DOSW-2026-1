@@ -1,10 +1,10 @@
-# ⚽ TechCup Fútbol
+# TechCup Fútbol
 
 Plataforma digital para la gestión del torneo semestral de fútbol del Programa de Ingeniería de Sistemas, Ingeniería de Inteligencia Artificial, Ingeniería de Ciberseguridad e Ingeniería Estadística de la **Escuela Colombiana de Ingeniería Julio Garavito**.
 
 ---
 
-## 📋 Descripción
+## Descripción
 
 TechCup Fútbol es una aplicación web que centraliza toda la gestión del torneo interno de fútbol, reemplazando los procesos manuales actuales (WhatsApp, formularios aislados, hojas de cálculo) por un sistema organizado y transparente.
 
@@ -21,7 +21,7 @@ La plataforma permite:
 
 ---
 
-## 👥 Integrantes del Equipo
+## Integrantes del Equipo
 
 | Nombre |
 |--------|
@@ -37,11 +37,11 @@ La plataforma permite:
 
 ---
 
-## 🏗️ Arquitectura Tecnológica
+## Arquitectura Tecnológica
 
 | Capa | Tecnología |
 |------|------------|
 | **Frontend** | React con TypeScript |
 | **Backend** | Spring Boot (Java) — API REST |
 | **Build Tool** | Maven |
-
+| **Link Jira** | https://n9.cl/m2as4l |
