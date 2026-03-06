@@ -23,8 +23,8 @@ La plataforma permite:
 
 ## 👥 Integrantes del Equipo
 
-| Nombre | Correo Institucional | GitHub |
-|--------|----------------------|--------|
+| Nombre |
+|--------|
 | Joshua David Quiroga landazabal | 
 | Juan David Valero Abril | 
 | Juan Carlos Bohorquez Monroy | 
