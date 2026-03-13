@@ -1,10 +1,10 @@
-# ⚽ TechCup Fútbol
+# TechCup Fútbol
 
 Plataforma digital para la gestión del torneo semestral de fútbol del Programa de **Ingeniería de Sistemas, Ingeniería de Inteligencia Artificial, Ingeniería de Ciberseguridad e Ingeniería Estadística** de la **Escuela Colombiana de Ingeniería Julio Garavito**.
 
 ---
 
-# 📖 Descripción
+# Descripción
 
 **TechCup Fútbol** es una aplicación web que centraliza toda la gestión del torneo interno de fútbol, reemplazando los procesos manuales actuales (WhatsApp, formularios aislados y hojas de cálculo) por un sistema organizado y transparente.
 
@@ -24,7 +24,7 @@ La plataforma permitirá administrar todas las etapas del torneo desde un solo l
 
 ---
 
-# 👥 Integrantes del Equipo
+# Integrantes del Equipo
 
 | Nombre |
 |------|
@@ -40,7 +40,7 @@ La plataforma permitirá administrar todas las etapas del torneo desde un solo l
 
 ---
 
-# 🏗️ Arquitectura Tecnológica
+# Arquitectura Tecnológica
 
 | Capa | Tecnología |
 |------|------------|
@@ -54,7 +54,7 @@ https://n9.cl/m2as4l
 
 ---
 
-# 📂 Estructura del Proyecto
+# Estructura del Proyecto
 
 El proyecto se organiza en tres grandes épicas:
 
@@ -66,7 +66,7 @@ Cada épica contiene **features** que agrupan **historias de usuario**.
 
 ---
 
-# 🖥️ E1 — Backend
+# E1 — Backend
 
 ## F1.1 — Autenticación y registro de usuarios
 
@@ -121,7 +121,7 @@ Cada épica contiene **features** que agrupan **historias de usuario**.
 
 ---
 
-# 💻 E2 — Frontend
+# E2 — Frontend
 
 ## F2.1 — Identidad visual y mockups
 
@@ -177,7 +177,7 @@ Cada épica contiene **features** que agrupan **historias de usuario**.
 
 ---
 
-# 📚 E3 — Documentación y Artefactos
+# E3 — Documentación y Artefactos
 
 ## F3.1 — Arquitectura y diagramas
 
@@ -199,7 +199,7 @@ Cada épica contiene **features** que agrupan **historias de usuario**.
 
 ---
 
-# 📊 Conteo del Proyecto
+# Conteo del Proyecto
 
 | Épica | Features | Historias de Usuario | Tareas |
 |------|------|------|------|
@@ -215,7 +215,7 @@ Cada épica contiene **features** que agrupan **historias de usuario**.
 
 ---
 
-# 🎯 Objetivo del Proyecto
+# Objetivo del Proyecto
 
 El objetivo de **TechCup Fútbol** es modernizar la organización del torneo universitario mediante una plataforma que permita:
 
