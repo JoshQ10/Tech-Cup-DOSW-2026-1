@@ -65,6 +65,17 @@ public class Pago {
         this.estado = estado;
     }
 
+    public EstadoPago getEstadoPago() {
+        if (estado == null) {
+            return null;
+        }
+        return EstadoPago.valueOf(estado);
+    }
+
+    public void setEstadoPago(EstadoPago estadoPago) {
+        this.estado = estadoPago == null ? null : estadoPago.name();
+    }
+
     public LocalDateTime getFecha() {
         return fecha;
     }
