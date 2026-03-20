@@ -59,6 +59,19 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.44</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>2.1.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>2.12.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
