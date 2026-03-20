@@ -36,11 +36,20 @@ class RegistroServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private VerificationService verificationService;
+
     private RegistroService registroService;
 
     @BeforeEach
     void setUp() {
-        registroService = new RegistroService(usuarioRepository, rolRepository, tokenVerificacionRepository, emailService);
+        registroService = new RegistroService(
+                usuarioRepository,
+                rolRepository,
+                tokenVerificacionRepository,
+                emailService,
+                verificationService
+        );
     }
 
     @Test

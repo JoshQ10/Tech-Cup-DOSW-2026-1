@@ -1,0 +1,38 @@
+### 1. Registro de usuario
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Andres Tester",
+  "email": "andres@escuelaing.edu.co",
+  "password": "Password123",
+  "passwordConfirmacion": "Password123",
+  "tipoParticipante": "ESTUDIANTE"
+}
+
+###
+
+### 2. Verificar email (pega el token que te salga en consola)
+GET http://localhost:8080/api/auth/verify-email?token=PEGAR_TOKEN_AQUI
+
+###
+
+### 3. Reenviar token de verificación
+POST http://localhost:8080/api/auth/resend-verification?usuarioId=1
+
+###
+
+### 4. Login
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "andres@escuelaing.edu.co",
+  "password": "Password123"
+}
+
+###
+
+### 5. Probar ruta protegida (solo funciona con token válido)
+GET http://localhost:8080/protegido
+Authorization: Bearer PEGAR_TOKEN_AQUI

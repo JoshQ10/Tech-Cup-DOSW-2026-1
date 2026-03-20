@@ -24,17 +24,20 @@ public class RegistroService {
     private final RolRepository rolRepository;
     private final TokenVerificacionRepository tokenVerificacionRepository;
     private final EmailService emailService;
+    private final VerificationService verificationService;
 
     public RegistroService(
             UsuarioRepository usuarioRepository,
             RolRepository rolRepository,
             TokenVerificacionRepository tokenVerificacionRepository,
-            EmailService emailService
+            EmailService emailService,
+            VerificationService verificationService
     ) {
         this.usuarioRepository = usuarioRepository;
         this.rolRepository = rolRepository;
         this.tokenVerificacionRepository = tokenVerificacionRepository;
         this.emailService = emailService;
+        this.verificationService = verificationService;
     }
 
     @Transactional
@@ -88,18 +91,14 @@ public class RegistroService {
 
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
 
-        String token = UUID.randomUUID().toString();
-        tokenVerificacionRepository.save(new TokenVerificacion(
-                token,
-                usuarioGuardado.getId(),
-                LocalDateTime.now(),
-                LocalDateTime.now().plusHours(24)
-        ));
+        TokenVerificacion token = verificationService.generarTokenParaUsuario(usuarioGuardado.getId());
 
         String asunto = "Verifica tu correo - Tech Cup Football 2026";
         String cuerpo = "Haz clic en el siguiente enlace para verificar tu correo: " +
-                "http://localhost:8080/api/auth/verificar?token=" + token;
+                "http://localhost:8080/api/auth/verify-email?token=" + token.getToken();
+
         emailService.enviarEmail(usuarioGuardado.getEmail(), asunto, cuerpo);
+
 
         return new RegistroResponse(
                 usuarioGuardado.getId(),

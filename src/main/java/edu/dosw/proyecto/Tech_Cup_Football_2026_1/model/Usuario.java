@@ -47,7 +47,6 @@ public class Usuario {
         this.activo = activo;
     }
 
-    // ...existing code...
 
     public Long getId() {
         return id;

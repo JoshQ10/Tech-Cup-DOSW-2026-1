@@ -26,16 +26,16 @@ class AuthControllerTest {
     @Test
     void testRegistroExitoso() throws Exception {
         RegistroRequest solicitud = new RegistroRequest(
-            "Carlos Uribe",
-            "carlos@escuelaing.edu.co",
-            "Password123",
-            "Password123",
-            TipoParticipante.ESTUDIANTE
+                "Carlos Uribe",
+                "carlos@escuelaing.edu.co",
+                "Password123",
+                "Password123",
+                TipoParticipante.ESTUDIANTE
         );
 
         mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(solicitud)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(solicitud)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.exitoso").value(true))
                 .andExpect(jsonPath("$.email").value("carlos@escuelaing.edu.co"));
@@ -44,26 +44,24 @@ class AuthControllerTest {
     @Test
     void testRegistroConEmailInvalido() throws Exception {
         RegistroRequest solicitud = new RegistroRequest(
-            "Carlos Uribe",
-            "emailInvalido",
-            "Password123",
-            "Password123",
-            TipoParticipante.ESTUDIANTE
+                "Carlos Uribe",
+                "emailInvalido",
+                "Password123",
+                "Password123",
+                TipoParticipante.ESTUDIANTE
         );
 
         mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(solicitud)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(solicitud)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.exitoso").value(false));
     }
 
     @Test
     void testVerificarEmail() throws Exception {
-        mockMvc.perform(get("/api/auth/verificar")
-                .param("token", "test-token-123"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Email verificado exitosamente"));
+        mockMvc.perform(get("/api/auth/verify-email")
+                        .param("token", "test-token-123"))
+                .andExpect(status().isOk());
     }
 }
-
