@@ -35,11 +35,10 @@ public class EmailValidator {
             return false;
         }
 
-        if (tipoParticipante == TipoParticipante.FAMILIAR) {
+        if (tipoParticipante == TipoParticipante.EXTERNO) {
             return esCorreoGmail(email);
         }
 
         return esCorreoInstitucional(email);
     }
 }
-

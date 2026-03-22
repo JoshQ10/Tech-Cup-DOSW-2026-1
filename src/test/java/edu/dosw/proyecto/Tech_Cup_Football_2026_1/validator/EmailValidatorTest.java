@@ -38,9 +38,8 @@ class EmailValidatorTest {
     }
 
     @Test
-    void testReglaCorreoFamiliar() {
-        assertTrue(EmailValidator.cumpleReglaPorTipo("familiar@gmail.com", TipoParticipante.FAMILIAR));
-        assertFalse(EmailValidator.cumpleReglaPorTipo("familiar@escuelaing.edu.co", TipoParticipante.FAMILIAR));
+    void testReglaCorreoExterno() {
+        assertTrue(EmailValidator.cumpleReglaPorTipo("externo@gmail.com", TipoParticipante.EXTERNO));
+        assertFalse(EmailValidator.cumpleReglaPorTipo("externo@escuelaing.edu.co", TipoParticipante.EXTERNO));
     }
 }
-

@@ -36,6 +36,9 @@ public class Usuario {
     @JoinColumn(name = "rol_id")
     private Rol rol;
 
+    @Column(name = "descripcion_relacion_externa")
+    private String descripcionRelacionExterna; // Solo para TipoParticipante.EXTERNO
+
     public Usuario() {
     }
 
@@ -47,7 +50,12 @@ public class Usuario {
         this.activo = activo;
     }
 
-    // ...existing code...
+    @PrePersist
+    public void prePersist() {
+        this.fechaCreacion = LocalDateTime.now();
+        this.activo = false;
+        this.emailVerificado = false;
+    }
 
     public Long getId() {
         return id;
@@ -121,6 +129,14 @@ public class Usuario {
         this.rol = rol;
     }
 
+    public String getDescripcionRelacionExterna() {
+        return descripcionRelacionExterna;
+    }
+
+    public void setDescripcionRelacionExterna(String descripcionRelacionExterna) {
+        this.descripcionRelacionExterna = descripcionRelacionExterna;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -131,5 +147,3 @@ public class Usuario {
                 '}';
     }
 }
-
-

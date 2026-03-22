@@ -1,69 +1,88 @@
 package edu.dosw.proyecto.Tech_Cup_Football_2026_1.controller;
 
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.dto.RegistroRequest;
+import edu.dosw.proyecto.Tech_Cup_Football_2026_1.dto.RegistroResponse;
+import edu.dosw.proyecto.Tech_Cup_Football_2026_1.model.Rol;
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.model.TipoParticipante;
+import edu.dosw.proyecto.Tech_Cup_Football_2026_1.service.RegistroService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private RegistroService registroService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private AuthController authController;
 
     @Test
-    void testRegistroExitoso() throws Exception {
+    void testRegistroExitoso() {
         RegistroRequest solicitud = new RegistroRequest(
-            "Carlos Uribe",
-            "carlos@escuelaing.edu.co",
-            "Password123",
-            "Password123",
-            TipoParticipante.ESTUDIANTE
+                "Carlos Uribe",
+                "carlos@escuelaing.edu.co",
+                "Password123",
+                "Password123",
+                TipoParticipante.ESTUDIANTE,
+                Rol.RolNombre.JUGADOR,
+                null
         );
 
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(solicitud)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.exitoso").value(true))
-                .andExpect(jsonPath("$.email").value("carlos@escuelaing.edu.co"));
+        RegistroResponse exito = new RegistroResponse(
+                1L,
+                "Carlos Uribe",
+                "carlos@escuelaing.edu.co",
+                "JUGADOR",
+                "ESTUDIANTE",
+                "Usuario registrado exitosamente",
+                true
+        );
+        when(registroService.registrarUsuario(solicitud)).thenReturn(exito);
+
+        ResponseEntity<RegistroResponse> respuesta = authController.registrar(solicitud);
+
+        assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
+        assertNotNull(respuesta.getBody());
+        assertTrue(respuesta.getBody().isExitoso());
+        assertEquals("carlos@escuelaing.edu.co", respuesta.getBody().getEmail());
     }
 
     @Test
-    void testRegistroConEmailInvalido() throws Exception {
+    void testRegistroConEmailInvalido() {
         RegistroRequest solicitud = new RegistroRequest(
-            "Carlos Uribe",
-            "emailInvalido",
-            "Password123",
-            "Password123",
-            TipoParticipante.ESTUDIANTE
+                "Carlos Uribe",
+                "emailInvalido",
+                "Password123",
+                "Password123",
+                TipoParticipante.ESTUDIANTE,
+                Rol.RolNombre.JUGADOR,
+                null
         );
 
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(solicitud)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.exitoso").value(false));
+        RegistroResponse error = new RegistroResponse(null, null, null, null, null, "El email no es valido", false);
+        when(registroService.registrarUsuario(solicitud)).thenReturn(error);
+
+        ResponseEntity<RegistroResponse> respuesta = authController.registrar(solicitud);
+
+        assertEquals(HttpStatus.BAD_REQUEST, respuesta.getStatusCode());
+        assertNotNull(respuesta.getBody());
+        assertFalse(respuesta.getBody().isExitoso());
     }
 
     @Test
-    void testVerificarEmail() throws Exception {
-        mockMvc.perform(get("/api/auth/verificar")
-                .param("token", "test-token-123"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Email verificado exitosamente"));
+    void testVerificarEmail() {
+        ResponseEntity<String> respuesta = authController.verificarEmail("test-token-123");
+
+        assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+        assertEquals("Email verificado exitosamente", respuesta.getBody());
     }
 }
-

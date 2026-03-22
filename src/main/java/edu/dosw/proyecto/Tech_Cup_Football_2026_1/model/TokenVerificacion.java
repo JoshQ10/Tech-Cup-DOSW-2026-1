@@ -12,10 +12,11 @@ public class TokenVerificacion {
     
     @Column(nullable = false, unique = true)
     private String token;
-    
-    @Column(nullable = false, name = "usuario_id")
-    private Long usuarioId;
-    
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
     @Column(nullable = false)
     private LocalDateTime fechaCreacion;
     
@@ -28,9 +29,9 @@ public class TokenVerificacion {
     public TokenVerificacion() {
     }
 
-    public TokenVerificacion(String token, Long usuarioId, LocalDateTime fechaCreacion, LocalDateTime fechaExpiracion) {
+    public TokenVerificacion(String token, Usuario usuario, LocalDateTime fechaCreacion, LocalDateTime fechaExpiracion) {
         this.token = token;
-        this.usuarioId = usuarioId;
+        this.usuario = usuario;
         this.fechaCreacion = fechaCreacion;
         this.fechaExpiracion = fechaExpiracion;
         this.utilizado = false;
@@ -52,12 +53,12 @@ public class TokenVerificacion {
         this.token = token;
     }
 
-    public Long getUsuarioId() {
-        return usuarioId;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarioId(Long usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public LocalDateTime getFechaCreacion() {
@@ -84,4 +85,3 @@ public class TokenVerificacion {
         this.utilizado = utilizado;
     }
 }
-

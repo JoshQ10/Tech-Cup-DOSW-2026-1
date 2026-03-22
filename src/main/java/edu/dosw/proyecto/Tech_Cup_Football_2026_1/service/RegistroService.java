@@ -4,6 +4,7 @@ import edu.dosw.proyecto.Tech_Cup_Football_2026_1.dto.RegistroRequest;
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.dto.RegistroResponse;
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.model.Rol;
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.model.TokenVerificacion;
+import edu.dosw.proyecto.Tech_Cup_Football_2026_1.model.TipoParticipante;
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.model.Usuario;
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.repository.RolRepository;
 import edu.dosw.proyecto.Tech_Cup_Football_2026_1.repository.TokenVerificacionRepository;
@@ -71,19 +72,27 @@ public class RegistroService {
             return error("Las contraseñas no coinciden");
         }
 
-        Optional<Rol> rolJugador = rolRepository.findByNombre(Rol.RolNombre.JUGADOR);
+        Rol.RolNombre rolSolicitado = solicitud.getRol() != null ? solicitud.getRol() : Rol.RolNombre.JUGADOR;
+        Optional<Rol> rolJugador = rolRepository.findByNombre(rolSolicitado);
         if (rolJugador.isEmpty()) {
-            return error("No existe el rol base JUGADOR. Verifique la inicialización de roles.");
+            return error("No existe el rol solicitado: " + rolSolicitado + ". Verifique la inicializacion de roles.");
         }
 
         Usuario usuario = new Usuario();
         usuario.setNombre(solicitud.getNombre().trim());
         usuario.setEmail(solicitud.getEmail().trim().toLowerCase());
         usuario.setPassword(PasswordEncoderUtil.encode(solicitud.getPassword()));
-        usuario.setActivo(true);
         usuario.setFechaCreacion(LocalDateTime.now());
         usuario.setEmailVerificado(false);
         usuario.setTipoParticipante(solicitud.getTipoParticipante());
+
+        if (solicitud.getTipoParticipante() == TipoParticipante.EXTERNO) {
+            if (solicitud.getDescripcionRelacionExterna() == null || solicitud.getDescripcionRelacionExterna().trim().isEmpty()) {
+                return error("Los usuarios externos deben especificar su relacion con la Escuela");
+            }
+            usuario.setDescripcionRelacionExterna(solicitud.getDescripcionRelacionExterna().trim());
+        }
+
         usuario.setRol(rolJugador.get());
 
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
@@ -91,7 +100,7 @@ public class RegistroService {
         String token = UUID.randomUUID().toString();
         tokenVerificacionRepository.save(new TokenVerificacion(
                 token,
-                usuarioGuardado.getId(),
+                usuarioGuardado,
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(24)
         ));
