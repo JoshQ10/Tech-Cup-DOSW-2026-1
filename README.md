@@ -60,8 +60,7 @@ Modernizar la organizacion del torneo universitario mediante una plataforma que 
 
 | Capa | Tecnologia |
 |------|------------|
-| Frontend | React con TypeScript |
-| Backend | Spring Boot (Java) — API REST |
+| Backend | Spring Boot (Java) — API REST con MongoDB |
 | Base de Datos | MongoDB Atlas |
 | Build Tool | Maven |
 | Gestion del proyecto | Jira |
@@ -100,7 +99,7 @@ El proyecto se organiza en tres grandes epicas:
 
 ```
 E1 — Backend       (9 features, 24 HUs, 114 tareas)
-E2 — Frontend      (7 features, 31 HUs,  96 tareas)
+E2 — Mobile/Frontend (7 features, 31 HUs,  96 tareas) [TBD]
 E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 ```
 
@@ -168,7 +167,7 @@ E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 
 ---
 
-### E2 — Frontend
+### E2 — Mobile/Frontend (TBD)
 
 #### F2.1 — Identidad visual y mockups
 | ID | Historia de Usuario |
@@ -261,7 +260,7 @@ E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 | Epica | Features | Historias de Usuario | Tareas |
 |-------|----------|---------------------|--------|
 | Backend | 9 | 24 | 114 |
-| Frontend | 7 | 31 | 96 |
+| Mobile/Frontend (TBD) | 7 | 31 | 96 |
 | Documentacion | 3 | 9 | 20 |
 | **Total** | **19** | **64** | **230** |
 
@@ -270,7 +269,7 @@ E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 ## Estructura de Paquetes (Backend)
 
 ```
-src/main/java/eci/edu/co/Tech_Cup_DOSW_FrontEnd_2026_1/
+src/main/java/eci/edu/co/Tech_Cup_DOSW_BackEnd_2026_1/
 |
 |-- config/                     # Configuracion (MongoDB)
 |   +-- MongoConfig.java
@@ -382,7 +381,7 @@ src/main/java/eci/edu/co/Tech_Cup_DOSW_FrontEnd_2026_1/
 ```bash
 # 1. Clonar el repositorio
 git clone <url-del-repositorio>
-cd Tech-Cup-DOSW-FrontEnd-2026-1
+cd Tech-Cup-DOSW-BackEnd-2026-1
 
 # 2. Compilar el proyecto
 mvn clean install
