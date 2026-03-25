@@ -5,13 +5,18 @@ import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.dto.response.TeamResponse;
 import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.model.Team;
+import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.model.Tournament;
+import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.model.User;
 import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.repository.TeamRepository;
+import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.repository.TournamentRepository;
+import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.service.interface_.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,17 +24,25 @@ import java.util.ArrayList;
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
+    private final TournamentRepository tournamentRepository;
+    private final UserRepository userRepository;
 
     @Override
     public TeamResponse create(TeamRequest request) {
         log.info("Creating new team: {}", request.getName());
 
+        Tournament tournament = tournamentRepository.findById(request.getTournamentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tournament not found"));
+
+        User captain = userRepository.findById(request.getCaptainId())
+                .orElseThrow(() -> new ResourceNotFoundException("Captain not found"));
+
         Team team = Team.builder()
                 .name(request.getName())
                 .shieldUrl(request.getShieldUrl())
                 .uniformColors(request.getUniformColors())
-                .tournamentId(request.getTournamentId())
-                .captainId(request.getCaptainId())
+                .tournament(tournament)
+                .captain(captain)
                 .players(new ArrayList<>())
                 .build();
 
@@ -40,7 +53,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponse getById(String id) {
+    public TeamResponse getById(Long id) {
         log.info("Fetching team: {}", id);
 
         Team team = teamRepository.findById(id)
@@ -53,7 +66,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponse removePlayer(String teamId, String playerId) {
+    public TeamResponse removePlayer(Long teamId, Long playerId) {
         log.info("Removing player: {} from team: {}", playerId, teamId);
 
         Team team = teamRepository.findById(teamId)
@@ -62,12 +75,11 @@ public class TeamServiceImpl implements TeamService {
                     return new ResourceNotFoundException("Team not found");
                 });
 
-        if (team.getPlayers() == null || !team.getPlayers().contains(playerId)) {
+        boolean removed = team.getPlayers().removeIf(player -> player.getId().equals(playerId));
+        if (!removed) {
             log.warn("Player {} not found in team {}", playerId, teamId);
             throw new BusinessRuleException("Player not found in this team");
         }
-
-        team.getPlayers().remove(playerId);
 
         Team updatedTeam = teamRepository.save(team);
         log.info("Player removed successfully from team: {}", teamId);
@@ -81,9 +93,11 @@ public class TeamServiceImpl implements TeamService {
                 .name(team.getName())
                 .shieldUrl(team.getShieldUrl())
                 .uniformColors(team.getUniformColors())
-                .tournamentId(team.getTournamentId())
-                .captainId(team.getCaptainId())
-                .players(team.getPlayers())
+                .tournamentId(team.getTournament() != null ? team.getTournament().getId() : null)
+                .captainId(team.getCaptain() != null ? team.getCaptain().getId() : null)
+                .players(team.getPlayers() != null
+                        ? team.getPlayers().stream().map(User::getId).collect(Collectors.toList())
+                        : new ArrayList<>())
                 .build();
     }
 }

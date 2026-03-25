@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TournamentResponse {
-    private String id;
+    private Long id;
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;

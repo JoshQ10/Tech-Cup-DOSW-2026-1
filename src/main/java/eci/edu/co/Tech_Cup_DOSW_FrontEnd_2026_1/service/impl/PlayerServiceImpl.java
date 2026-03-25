@@ -19,7 +19,7 @@ public class PlayerServiceImpl implements PlayerService {
     private final SportProfileRepository sportProfileRepository;
 
     @Override
-    public ProfileResponse updateProfile(String id, ProfileRequest request) {
+    public ProfileResponse updateProfile(Long id, ProfileRequest request) {
         log.info("Updating profile for player: {}", id);
 
         SportProfile profile = sportProfileRepository.findById(id)
@@ -43,7 +43,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public ProfileResponse changeAvailability(String id, AvailabilityRequest request) {
+    public ProfileResponse changeAvailability(Long id, AvailabilityRequest request) {
         log.info("Changing availability for player: {}", id);
 
         SportProfile profile = sportProfileRepository.findById(id)
@@ -63,7 +63,7 @@ public class PlayerServiceImpl implements PlayerService {
     private ProfileResponse mapToProfileResponse(SportProfile profile) {
         return ProfileResponse.builder()
                 .id(profile.getId())
-                .userId(profile.getUserId())
+                .userId(profile.getUser() != null ? profile.getUser().getId() : null)
                 .position(profile.getPosition())
                 .jerseyNumber(profile.getJerseyNumber())
                 .photoUrl(profile.getPhotoUrl())

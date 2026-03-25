@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProfileResponse {
-    private String id;
-    private String userId;
+    private Long id;
+    private Long userId;
     private Position position;
     private int jerseyNumber;
     private String photoUrl;

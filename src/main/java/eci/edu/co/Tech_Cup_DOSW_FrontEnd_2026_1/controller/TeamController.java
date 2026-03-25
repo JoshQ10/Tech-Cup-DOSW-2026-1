@@ -30,14 +30,14 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TeamResponse> getById(@PathVariable String id) {
+    public ResponseEntity<TeamResponse> getById(@PathVariable Long id) {
         TeamResponse response = teamService.getById(id);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{teamId}/players/{playerId}")
-    public ResponseEntity<TeamResponse> removePlayer(@PathVariable String teamId,
-                                                     @PathVariable String playerId) {
+    public ResponseEntity<TeamResponse> removePlayer(@PathVariable Long teamId,
+                                                     @PathVariable Long playerId) {
         TeamResponse response = teamService.removePlayer(teamId, playerId);
         return ResponseEntity.ok(response);
     }

@@ -23,14 +23,14 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @PutMapping("/{id}/profile")
-    public ResponseEntity<ProfileResponse> updateProfile(@PathVariable String id, 
+    public ResponseEntity<ProfileResponse> updateProfile(@PathVariable Long id, 
                                                          @Valid @RequestBody ProfileRequest request) {
         ProfileResponse response = playerService.updateProfile(id, request);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/availability")
-    public ResponseEntity<ProfileResponse> changeAvailability(@PathVariable String id,
+    public ResponseEntity<ProfileResponse> changeAvailability(@PathVariable Long id,
                                                               @Valid @RequestBody AvailabilityRequest request) {
         ProfileResponse response = playerService.changeAvailability(id, request);
         return ResponseEntity.ok(response);

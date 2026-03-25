@@ -6,6 +6,6 @@ import eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.dto.response.TournamentResponse;
 
 public interface TournamentService {
     TournamentResponse create(TournamentRequest request);
-    TournamentResponse getById(String id);
-    TournamentResponse changeStatus(String id, ChangeStatusRequest request);
+    TournamentResponse getById(Long id);
+    TournamentResponse changeStatus(Long id, ChangeStatusRequest request);
 }

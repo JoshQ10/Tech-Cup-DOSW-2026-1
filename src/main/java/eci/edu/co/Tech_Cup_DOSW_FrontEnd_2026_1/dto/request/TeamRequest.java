@@ -15,6 +15,6 @@ public class TeamRequest {
     private String name;
     private String shieldUrl;
     private String uniformColors;
-    private String tournamentId;
-    private String captainId;
+    private Long tournamentId;
+    private Long captainId;
 }

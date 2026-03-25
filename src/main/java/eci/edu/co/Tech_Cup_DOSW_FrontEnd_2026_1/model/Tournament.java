@@ -1,11 +1,10 @@
 package eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
@@ -13,15 +12,19 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "tournaments")
+@Entity
+@Table(name = "tournaments")
 public class Tournament {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
     private int teamCount;
     private double costPerTeam;
+
+    @Enumerated(EnumType.STRING)
     private TournamentStatus status;
 }

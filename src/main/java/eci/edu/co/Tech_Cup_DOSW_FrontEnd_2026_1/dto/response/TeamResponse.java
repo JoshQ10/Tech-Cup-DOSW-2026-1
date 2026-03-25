@@ -12,11 +12,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamResponse {
-    private String id;
+    private Long id;
     private String name;
     private String shieldUrl;
     private String uniformColors;
-    private String tournamentId;
-    private String captainId;
-    private List<String> players;
+    private Long tournamentId;
+    private Long captainId;
+    private List<Long> players;
 }

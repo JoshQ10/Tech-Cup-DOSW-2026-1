@@ -1,11 +1,10 @@
 package eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
@@ -13,14 +12,20 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
+
+    @Column(unique = true)
     private String email;
     private String password;
+
+    @Enumerated(EnumType.STRING)
     private Role role;
     private boolean active;
     private LocalDateTime createdAt;

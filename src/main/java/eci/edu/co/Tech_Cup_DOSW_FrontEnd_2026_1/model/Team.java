@@ -1,11 +1,10 @@
 package eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
@@ -13,15 +12,30 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "teams")
+@Entity
+@Table(name = "teams")
 public class Team {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String shieldUrl;
     private String uniformColors;
-    private String tournamentId;
-    private String captainId;
-    private List<String> players;
+
+    @ManyToOne
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
+
+    @ManyToOne
+    @JoinColumn(name = "captain_id")
+    private User captain;
+
+    @ManyToMany
+    @JoinTable(
+        name = "team_players",
+        joinColumns = @JoinColumn(name = "team_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> players;
 }

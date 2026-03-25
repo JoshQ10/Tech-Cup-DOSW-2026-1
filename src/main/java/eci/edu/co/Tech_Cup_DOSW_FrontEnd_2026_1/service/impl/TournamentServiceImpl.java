@@ -39,7 +39,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentResponse getById(String id) {
+    public TournamentResponse getById(Long id) {
         log.info("Fetching tournament: {}", id);
 
         Tournament tournament = tournamentRepository.findById(id)
@@ -52,7 +52,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentResponse changeStatus(String id, ChangeStatusRequest request) {
+    public TournamentResponse changeStatus(Long id, ChangeStatusRequest request) {
         log.info("Changing status for tournament: {} to {}", id, request.getStatus());
 
         Tournament tournament = tournamentRepository.findById(id)

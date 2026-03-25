@@ -31,13 +31,13 @@ public class TournamentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TournamentResponse> getById(@PathVariable String id) {
+    public ResponseEntity<TournamentResponse> getById(@PathVariable Long id) {
         TournamentResponse response = tournamentService.getById(id);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<TournamentResponse> changeStatus(@PathVariable String id,
+    public ResponseEntity<TournamentResponse> changeStatus(@PathVariable Long id,
                                                            @Valid @RequestBody ChangeStatusRequest request) {
         TournamentResponse response = tournamentService.changeStatus(id, request);
         return ResponseEntity.ok(response);

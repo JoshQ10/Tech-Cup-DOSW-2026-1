@@ -1,22 +1,28 @@
 package eci.edu.co.Tech_Cup_DOSW_FrontEnd_2026_1.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "sport_profiles")
+@Entity
+@Table(name = "sport_profiles")
 public class SportProfile {
 
     @Id
-    private String id;
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Enumerated(EnumType.STRING)
     private Position position;
     private int jerseyNumber;
     private String photoUrl;
