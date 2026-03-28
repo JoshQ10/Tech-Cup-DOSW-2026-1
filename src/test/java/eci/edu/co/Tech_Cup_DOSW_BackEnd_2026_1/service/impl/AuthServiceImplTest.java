@@ -10,6 +10,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundEx
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.UserRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,9 @@ class AuthServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private JwtService jwtService;
 
     @InjectMocks
     private AuthServiceImpl authService;
@@ -113,6 +117,8 @@ class AuthServiceImplTest {
     void testLoginSuccess() {
         // Arrange
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(testUser));
+        when(jwtService.generateAccessToken(testUser)).thenReturn("access-token");
+        when(jwtService.generateRefreshToken(testUser)).thenReturn("refresh-token");
 
         // Act
         LoginResponse response = authService.login(loginRequest);
@@ -122,6 +128,8 @@ class AuthServiceImplTest {
         assertNotNull(response.getToken());
         assertNotNull(response.getUser());
         assertEquals("test@example.com", response.getUser().getEmail());
+        assertEquals("access-token", response.getAccessToken());
+        assertEquals("refresh-token", response.getRefreshToken());
         verify(userRepository, times(1)).findByEmail(loginRequest.getEmail());
     }
 

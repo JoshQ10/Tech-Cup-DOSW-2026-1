@@ -7,7 +7,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileRe
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.SportProfileRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,12 +33,16 @@ class PlayerServiceImplTest {
     @Mock
     private SportProfileRepository sportProfileRepository;
 
+    @Mock
+    private UserRepository userRepository;
+
     @InjectMocks
     private PlayerServiceImpl playerService;
 
     private ProfileRequest profileRequest;
     private AvailabilityRequest availabilityRequest;
     private SportProfile testProfile;
+    private User testUser;
 
     @BeforeEach
     void setUp() {
@@ -62,6 +68,11 @@ class PlayerServiceImplTest {
                 .photoUrl("http://example.com/photo.jpg")
                 .available(true)
                 .build();
+
+            testUser = User.builder()
+                .id("user123")
+                .name("Player One")
+                .build();
     }
 
     @Test
@@ -70,6 +81,7 @@ class PlayerServiceImplTest {
         // Arrange
         when(sportProfileRepository.findById("profile123")).thenReturn(Optional.of(testProfile));
         when(sportProfileRepository.save(any(SportProfile.class))).thenReturn(testProfile);
+        when(userRepository.findById("user123")).thenReturn(Optional.of(testUser));
 
         // Act
         ProfileResponse response = playerService.updateProfile("profile123", profileRequest);
@@ -99,6 +111,7 @@ class PlayerServiceImplTest {
         // Arrange
         when(sportProfileRepository.findById("profile123")).thenReturn(Optional.of(testProfile));
         when(sportProfileRepository.save(any(SportProfile.class))).thenReturn(testProfile);
+        when(userRepository.findById("user123")).thenReturn(Optional.of(testUser));
 
         // Act
         ProfileResponse response = playerService.changeAvailability("profile123", availabilityRequest);
