@@ -60,8 +60,7 @@ Modernizar la organizacion del torneo universitario mediante una plataforma que 
 
 | Capa | Tecnologia |
 |------|------------|
-| Frontend | React con TypeScript |
-| Backend | Spring Boot (Java) — API REST |
+| Backend | Spring Boot (Java) — API REST con MongoDB |
 | Base de Datos | MongoDB Atlas |
 | Build Tool | Maven |
 | Gestion del proyecto | Jira |
@@ -100,7 +99,7 @@ El proyecto se organiza en tres grandes epicas:
 
 ```
 E1 — Backend       (9 features, 24 HUs, 114 tareas)
-E2 — Frontend      (7 features, 31 HUs,  96 tareas)
+E2 — Mobile/Frontend (7 features, 31 HUs,  96 tareas) [TBD]
 E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 ```
 
@@ -168,7 +167,7 @@ E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 
 ---
 
-### E2 — Frontend
+### E2 — Mobile/Frontend (TBD)
 
 #### F2.1 — Identidad visual y mockups
 | ID | Historia de Usuario |
@@ -261,7 +260,7 @@ E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 | Epica | Features | Historias de Usuario | Tareas |
 |-------|----------|---------------------|--------|
 | Backend | 9 | 24 | 114 |
-| Frontend | 7 | 31 | 96 |
+| Mobile/Frontend (TBD) | 7 | 31 | 96 |
 | Documentacion | 3 | 9 | 20 |
 | **Total** | **19** | **64** | **230** |
 
@@ -270,7 +269,7 @@ E3 — Documentacion (3 features,  9 HUs,  20 tareas)
 ## Estructura de Paquetes (Backend)
 
 ```
-src/main/java/eci/edu/co/Tech_Cup_DOSW_FrontEnd_2026_1/
+src/main/java/eci/edu/co/Tech_Cup_DOSW_BackEnd_2026_1/
 |
 |-- config/                     # Configuracion (MongoDB)
 |   +-- MongoConfig.java
@@ -340,33 +339,158 @@ src/main/java/eci/edu/co/Tech_Cup_DOSW_FrontEnd_2026_1/
 |--------|----------|-------------|
 | `POST` | `/api/auth/register` | Registrar nuevo usuario |
 | `POST` | `/api/auth/login` | Iniciar sesion |
+| `GET` | `/api/auth/verify-email?token=xxx` | Verificar correo electronico |
+| `POST` | `/api/auth/resend-verification` | Reenviar correo de verificacion |
+| `POST` | `/api/auth/refresh-token` | Renovar token JWT |
 
 ### Players (`/api/players`)
 | Metodo | Endpoint | Descripcion |
 |--------|----------|-------------|
-| `PUT` | `/api/players/{id}/profile` | Actualizar perfil deportivo |
+| `PUT` | `/api/players/{id}/profile` | Completar/actualizar perfil deportivo |
+| `POST` | `/api/players/{id}/photo` | Subir foto de perfil |
 | `PATCH` | `/api/players/{id}/availability` | Cambiar disponibilidad |
+| `GET` | `/api/players/{id}/profile` | Consultar perfil de un jugador |
 
 ### Teams (`/api/teams`)
 | Metodo | Endpoint | Descripcion |
 |--------|----------|-------------|
 | `POST` | `/api/teams` | Crear equipo |
 | `GET` | `/api/teams/{id}` | Obtener equipo por ID |
-| `DELETE` | `/api/teams/{teamId}/players/{playerId}` | Quitar jugador del equipo |
+| `GET` | `/api/teams/{id}/roster` | Ver plantilla del equipo |
+| `DELETE` | `/api/teams/{id}/players/{playerId}` | Quitar jugador del equipo |
 
 ### Tournaments (`/api/tournaments`)
 | Metodo | Endpoint | Descripcion |
 |--------|----------|-------------|
 | `POST` | `/api/tournaments` | Crear torneo |
 | `GET` | `/api/tournaments/{id}` | Obtener torneo por ID |
+| `PUT` | `/api/tournaments/{id}/config` | Configurar torneo |
 | `PATCH` | `/api/tournaments/{id}/status` | Cambiar estado del torneo |
 
 ### Documentacion interactiva
-| Recurso | URL |
-|---------|-----|
-| Swagger UI | `http://localhost:8080/swagger-ui.html` |
-| OpenAPI JSON | `http://localhost:8080/api-docs` |
 
+#### Acceder a Swagger UI
+
+La documentación interactiva de los endpoints está disponible a través de **Swagger UI / OpenAPI**.
+
+**Pasos para acceder:**
+
+1. **Ejecutar la aplicación** (si no está corriendo):
+   ```bash
+   mvn spring-boot:run
+   ```
+
+    Si vienes de cambios de código y quieres reiniciar limpio:
+    ```bash
+    mvn clean
+    mvn clean compile
+    mvn spring-boot:run
+    ```
+
+2. **Abrir el navegador** y acceder a:
+   - **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+   - **OpenAPI JSON**: `http://localhost:8080/api-docs`
+
+3. **Ver los endpoints** organizados por categorías:
+- ✅ Autenticación (register, login, verify-email, resend-verification, refresh-token)
+- ✅ Jugadores (profile, photo, availability, consulta de perfil)
+- ✅ Equipos (crear, consultar, roster, quitar jugador)
+- ✅ Torneos (crear, consultar, configurar, cambiar estado)
+
+4. **Probar endpoints directamente** desde la UI:
+   - Hacer clic en un endpoint para expandirlo
+   - Hacer clic en "Try it out"
+   - Completar los parámetros requeridos
+   - Hacer clic en "Execute"
+
+#### Configuración de Swagger (Ya habilitado)
+
+La configuración de OpenAPI/Swagger está lista en los siguientes archivos:
+
+**Archivo: `src/main/resources/application.properties`**
+```properties
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+springdoc.swagger-ui.enabled=true
+```
+
+**Archivo: `src/main/java/eci/edu/co/Tech_Cup_DOSW_BackEnd_2026_1/config/OpenApiConfig.java`**
+```java
+@Configuration
+public class OpenApiConfig {
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                    .title("TechCup Futbol - Backend API")
+                    .version("1.0.0")
+                    .description("Plataforma digital para la gestión del torneo semestral de fútbol")
+                    ...);
+    }
+}
+```
+
+#### Dependencia en pom.xml
+
+La dependencia de SpringDoc OpenAPI ya está configurada:
+```xml
+<dependency>
+    <groupId>org.springdoc</groupId>
+    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    <version>2.5.0</version>
+</dependency>
+```
+
+#### Documentación de Endpoints
+
+Todos los controladores tienen anotaciones de OpenAPI:
+
+
+**Ejemplo en AuthController:**
+```java
+@PostMapping("/login")
+@Operation(summary = "Iniciar sesión", 
+           description = "Autentica un usuario y retorna un token JWT")
+@ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "Autenticación exitosa"),
+    @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
+})
+public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    ...
+}
+```
+
+#### Configuración de Seguridad
+
+**Archivo: `src/main/java/eci/edu/co/Tech_Cup_DOSW_BackEnd_2026_1/config/SecurityConfig.java`**
+
+La aplicación cuenta con una configuración de seguridad que permite acceso público a:
+- ✅ **Swagger UI**: `/swagger-ui.html` y `/swagger-ui/**`
+- ✅ **OpenAPI Spec**: `/v3/api-docs/**` y `/api-docs/**`
+- ✅ **Todos los endpoints API**: `/api/**`
+
+**No se requiere autenticación** para acceder a Swagger o probar los endpoints en desarrollo.
+
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", 
+                                 "/v3/api-docs/**", "/api/**")
+                .permitAll()
+                .anyRequest().authenticated()
+            )
+            .csrf(csrf -> csrf.disable())
+            .httpBasic(basic -> basic.disable());
+        return http.build();
+    }
+}
+```
+---
 ---
 
 ## Requisitos Previos
@@ -382,7 +506,7 @@ src/main/java/eci/edu/co/Tech_Cup_DOSW_FrontEnd_2026_1/
 ```bash
 # 1. Clonar el repositorio
 git clone <url-del-repositorio>
-cd Tech-Cup-DOSW-FrontEnd-2026-1
+cd Tech-Cup-DOSW-BackEnd-2026-1
 
 # 2. Compilar el proyecto
 mvn clean install

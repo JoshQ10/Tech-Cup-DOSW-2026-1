@@ -1,0 +1,162 @@
+package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl;
+
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.UserRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AuthServiceImpl implements AuthService {
+
+    private final UserRepository userRepository;
+    private final JwtService jwtService;
+
+    @Override
+    public UserResponse register(RegisterRequest request) {
+        log.info("Registering new user with email: {}", request.getEmail());
+
+        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
+        if (existingUser.isPresent()) {
+            log.warn("Registration failed: email {} already exists", request.getEmail());
+            throw new BusinessRuleException("Email already registered");
+        }
+
+        User user = mapToUser(request);
+
+        User savedUser = userRepository.save(user);
+        log.info("User registered successfully with id: {}", savedUser.getId());
+
+        return mapToUserResponse(savedUser);
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest request) {
+        log.info("Login attempt for email: {}", request.getEmail());
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> {
+                    log.warn("Login failed: user with email {} not found", request.getEmail());
+                    return new ResourceNotFoundException("User not found");
+                });
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            log.warn("Login failed: invalid password for email {}", request.getEmail());
+            throw new BusinessRuleException("Invalid password");
+        }
+
+        if (!user.isActive()) {
+            log.warn("Login failed: user {} is inactive", request.getEmail());
+            throw new BusinessRuleException("User account is inactive");
+        }
+
+        log.info("Login successful for user: {}", user.getId());
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        UserResponse userResponse = mapToUserResponse(user);
+        return LoginResponse.builder()
+                .token(accessToken)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .user(userResponse)
+                .build();
+    }
+
+    @Override
+    public UserResponse verifyEmail(String token) {
+        log.info("Verifying email using token: {}", token);
+
+        User user = userRepository.findById(token)
+                .orElseThrow(() -> {
+                    log.warn("Email verification failed: user with token {} not found", token);
+                    return new ResourceNotFoundException("User not found for verification token");
+                });
+
+        user.setActive(true);
+        User updatedUser = userRepository.save(user);
+        log.info("Email verified successfully for user id: {}", updatedUser.getId());
+
+        return mapToUserResponse(updatedUser);
+    }
+
+    @Override
+    public String resendVerification(String email) {
+        log.info("Resending verification email for: {}", email);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Resend verification failed: user with email {} not found", email);
+                    return new ResourceNotFoundException("User not found");
+                });
+
+        log.info("Verification email resent successfully for user id: {}", user.getId());
+        return "Verification email resent successfully";
+    }
+
+    @Override
+    public LoginResponse refreshToken(String refreshToken) {
+        log.info("Refreshing JWT token");
+
+        if (refreshToken == null || !jwtService.isTokenValid(refreshToken)
+                || !jwtService.isRefreshToken(refreshToken)) {
+            log.warn("Refresh token failed: invalid refresh token");
+            throw new BusinessRuleException("Invalid refresh token");
+        }
+
+        String email = jwtService.extractEmail(refreshToken);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Refresh token failed: user {} not found", email);
+                    return new ResourceNotFoundException("User not found");
+                });
+
+        String newAccessToken = jwtService.generateAccessToken(user);
+        String newRefreshToken = jwtService.generateRefreshToken(user);
+
+        log.info("Token refreshed successfully for user id: {}", user.getId());
+        return LoginResponse.builder()
+                .token(newAccessToken)
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .tokenType("Bearer")
+                .user(mapToUserResponse(user))
+                .build();
+    }
+
+    private User mapToUser(RegisterRequest request) {
+        return User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(request.getRole())
+                .active(true)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    private UserResponse mapToUserResponse(User user) {
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .active(user.isActive())
+                .build();
+    }
+}

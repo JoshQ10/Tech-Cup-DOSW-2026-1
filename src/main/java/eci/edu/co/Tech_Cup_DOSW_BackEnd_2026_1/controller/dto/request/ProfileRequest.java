@@ -1,0 +1,21 @@
+package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request;
+
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Position;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProfileRequest {
+    private Position position;
+    private int jerseyNumber;
+    private String photoUrl;
+    private boolean available;
+    private Integer semester;
+    private String gender;
+    private Integer age;
+}
