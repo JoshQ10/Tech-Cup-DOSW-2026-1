@@ -1,11 +1,12 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.TeamRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.response.TeamResponse;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.exception.BusinessRuleException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.model.Team;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.repository.TeamRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.TeamServiceImpl;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Team;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

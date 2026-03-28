@@ -1,13 +1,13 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.LoginRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.RegisterRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.response.LoginResponse;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.response.UserResponse;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.exception.BusinessRuleException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.model.Role;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.interface_.AuthService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Role;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

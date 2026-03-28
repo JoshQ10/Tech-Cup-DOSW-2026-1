@@ -1,9 +1,9 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.AvailabilityRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.ProfileRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.response.ProfileResponse;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.interface_.PlayerService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.PlayerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
