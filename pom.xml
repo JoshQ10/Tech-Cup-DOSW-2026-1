@@ -38,23 +38,38 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		
-		<!-- OpenAPI Swagger -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.5.0</version>
 		</dependency>
-		
-		<!-- Lombok -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.12.5</version>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.12.5</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.12.5</version>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.42</version>
 			<optional>true</optional>
 		</dependency>
-		
-		<!-- Testing: JUnit 5 + Mockito + Spring Boot Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -84,7 +99,6 @@
 
 	<build>
 		<plugins>
-			<!-- Maven Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -101,8 +115,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			
-			<!-- Spring Boot Maven Plugin -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -115,8 +127,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			
-			<!-- Maven Surefire Plugin for Tests -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -128,14 +138,11 @@
 					</includes>
 				</configuration>
 			</plugin>
-			
-			<!-- JaCoCo Maven Plugin for Code Coverage -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.maven.plugin.version}</version>
 				<executions>
-					<!-- Prepare JaCoCo agent -->
 					<execution>
 						<id>prepare-agent</id>
 						<phase>initialize</phase>
@@ -143,7 +150,6 @@
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
-					<!-- Report generation -->
 					<execution>
 						<id>report</id>
 						<phase>test</phase>
@@ -151,7 +157,6 @@
 							<goal>report</goal>
 						</goals>
 					</execution>
-					<!-- Coverage check: minimum 80% -->
 					<execution>
 						<id>jacoco-check</id>
 						<phase>test</phase>
@@ -160,7 +165,6 @@
 						</goals>
 						<configuration>
 							<rules>
-								<!-- Check service and controller packages only -->
 								<rule>
 									<element>PACKAGE</element>
 									<includes>

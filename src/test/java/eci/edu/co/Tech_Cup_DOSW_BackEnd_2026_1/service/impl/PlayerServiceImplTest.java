@@ -1,12 +1,13 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.AvailabilityRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.ProfileRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.response.ProfileResponse;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.model.Position;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.model.SportProfile;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.repository.SportProfileRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.PlayerServiceImpl;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Position;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.SportProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
