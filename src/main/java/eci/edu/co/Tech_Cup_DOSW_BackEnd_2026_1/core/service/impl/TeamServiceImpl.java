@@ -40,7 +40,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponse getById(String id) {
+    public TeamResponse getById(Long id) {
         log.info("Fetching team: {}", id);
 
         Team team = teamRepository.findById(id)
@@ -53,7 +53,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponse getRoster(String id) {
+    public TeamResponse getRoster(Long id) {
         log.info("Fetching roster for team: {}", id);
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> {
@@ -64,7 +64,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponse removePlayer(String teamId, String playerId) {
+    public TeamResponse removePlayer(Long teamId, Long playerId) {
         log.info("Removing player: {} from team: {}", playerId, teamId);
 
         Team team = teamRepository.findById(teamId)

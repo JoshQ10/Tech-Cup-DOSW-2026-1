@@ -1,23 +1,41 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Program;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "sport_profiles")
+@Entity
+@Table(name = "sport_profiles")
 public class SportProfile {
 
     @Id
-    private String id;
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Enumerated(EnumType.STRING)
     private Position position;
+
+    @Enumerated(EnumType.STRING)
+    private Program program;
+
     private int jerseyNumber;
     private String photoUrl;
     private boolean available;

@@ -6,11 +6,11 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileReq
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 
 public interface PlayerService {
-    ProfileResponse updateProfile(String id, ProfileRequest request);
+    ProfileResponse updateProfile(Long id, ProfileRequest request);
 
-    ProfileResponse uploadPhoto(String id, PhotoUploadRequest request);
+    ProfileResponse uploadPhoto(Long id, PhotoUploadRequest request);
 
-    ProfileResponse changeAvailability(String id, AvailabilityRequest request);
+    ProfileResponse changeAvailability(Long id, AvailabilityRequest request);
 
-    ProfileResponse getProfile(String id);
+    ProfileResponse getProfile(Long id);
 }

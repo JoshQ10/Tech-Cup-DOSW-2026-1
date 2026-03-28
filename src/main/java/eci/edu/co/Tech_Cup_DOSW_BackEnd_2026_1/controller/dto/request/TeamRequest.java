@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,6 +13,6 @@ public class TeamRequest {
     private String name;
     private String shieldUrl;
     private String uniformColors;
-    private String tournamentId;
-    private String captainId;
+    private Long tournamentId;
+    private Long captainId;
 }

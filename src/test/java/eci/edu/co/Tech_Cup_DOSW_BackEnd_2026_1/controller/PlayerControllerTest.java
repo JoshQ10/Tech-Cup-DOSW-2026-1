@@ -4,7 +4,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.Availabili
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Position;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.PlayerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -64,8 +64,8 @@ class PlayerControllerTest {
                                 .build();
 
                 profileResponse = ProfileResponse.builder()
-                                .id("profile123")
-                                .userId("user123")
+                                .id(1L)
+                                .userId(1L)
                                 .position(Position.FORWARD)
                                 .jerseyNumber(10)
                                 .photoUrl("http://example.com/photo.jpg")
@@ -77,16 +77,16 @@ class PlayerControllerTest {
         @DisplayName("Should update player profile successfully")
         void testUpdateProfileSuccess() throws Exception {
                 // Arrange
-                when(playerService.updateProfile(anyString(), any(ProfileRequest.class)))
+                when(playerService.updateProfile(anyLong(), any(ProfileRequest.class)))
                                 .thenReturn(profileResponse);
 
                 // Act & Assert
-                mockMvc.perform(put("/api/players/profile123/profile")
+                mockMvc.perform(put("/api/players/1/profile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(profileRequest)))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value("profile123"))
-                                .andExpect(jsonPath("$.userId").value("user123"))
+                                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.userId").value(1))
                                 .andExpect(jsonPath("$.jerseyNumber").value(10));
         }
 
@@ -94,11 +94,11 @@ class PlayerControllerTest {
         @DisplayName("Should return 404 when profile not found")
         void testUpdateProfileNotFound() throws Exception {
                 // Arrange
-                when(playerService.updateProfile(anyString(), any(ProfileRequest.class)))
+                when(playerService.updateProfile(anyLong(), any(ProfileRequest.class)))
                                 .thenThrow(new ResourceNotFoundException("Profile not found"));
 
                 // Act & Assert
-                mockMvc.perform(put("/api/players/profile999/profile")
+                mockMvc.perform(put("/api/players/999/profile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(profileRequest)))
                                 .andExpect(status().isNotFound());
@@ -109,26 +109,26 @@ class PlayerControllerTest {
         void testChangeAvailabilitySuccess() throws Exception {
                 // Arrange
                 profileResponse.setAvailable(false);
-                when(playerService.changeAvailability(anyString(), any(AvailabilityRequest.class)))
+                when(playerService.changeAvailability(anyLong(), any(AvailabilityRequest.class)))
                                 .thenReturn(profileResponse);
 
                 // Act & Assert
-                mockMvc.perform(patch("/api/players/profile123/availability")
+                mockMvc.perform(patch("/api/players/1/availability")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(availabilityRequest)))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value("profile123"));
+                                .andExpect(jsonPath("$.id").value(1));
         }
 
         @Test
         @DisplayName("Should return 404 when changing availability for non-existent profile")
         void testChangeAvailabilityNotFound() throws Exception {
                 // Arrange
-                when(playerService.changeAvailability(anyString(), any(AvailabilityRequest.class)))
+                when(playerService.changeAvailability(anyLong(), any(AvailabilityRequest.class)))
                                 .thenThrow(new ResourceNotFoundException("Profile not found"));
 
                 // Act & Assert
-                mockMvc.perform(patch("/api/players/profile999/availability")
+                mockMvc.perform(patch("/api/players/999/availability")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(availabilityRequest)))
                                 .andExpect(status().isNotFound());

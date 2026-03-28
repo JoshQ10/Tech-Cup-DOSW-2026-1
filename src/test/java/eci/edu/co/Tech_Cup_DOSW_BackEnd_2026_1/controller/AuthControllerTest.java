@@ -6,7 +6,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResp
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Role;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,7 +64,7 @@ class AuthControllerTest {
                                 .build();
 
                 userResponse = UserResponse.builder()
-                                .id("user123")
+                                .id(1L)
                                 .name("Test User")
                                 .email("test@example.com")
                                 .role(Role.PLAYER)
@@ -88,7 +88,7 @@ class AuthControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(registerRequest)))
                                 .andExpect(status().isCreated())
-                                .andExpect(jsonPath("$.id").value("user123"))
+                                .andExpect(jsonPath("$.id").value(1))
                                 .andExpect(jsonPath("$.email").value("test@example.com"))
                                 .andExpect(jsonPath("$.name").value("Test User"));
         }

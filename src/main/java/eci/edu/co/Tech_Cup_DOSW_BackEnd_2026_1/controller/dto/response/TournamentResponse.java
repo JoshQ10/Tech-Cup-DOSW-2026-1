@@ -1,6 +1,6 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.TournamentStatus;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TournamentResponse {
-    private String id;
+    private Long id;
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;

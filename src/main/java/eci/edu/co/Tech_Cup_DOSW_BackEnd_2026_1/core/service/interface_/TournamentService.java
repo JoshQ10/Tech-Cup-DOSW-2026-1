@@ -8,9 +8,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.Tournamen
 public interface TournamentService {
     TournamentResponse create(TournamentRequest request);
 
-    TournamentResponse getById(String id);
+    TournamentResponse getById(Long id);
 
-    TournamentResponse configure(String id, TournamentConfigRequest request);
+    TournamentResponse configure(Long id, TournamentConfigRequest request);
 
-    TournamentResponse changeStatus(String id, ChangeStatusRequest request);
+    TournamentResponse changeStatus(Long id, ChangeStatusRequest request);
 }

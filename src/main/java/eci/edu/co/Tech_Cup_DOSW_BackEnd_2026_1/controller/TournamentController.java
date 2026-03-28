@@ -29,63 +29,63 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/tournaments")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Torneos", description = "Endpoints para creación y administración de torneos")
+@Tag(name = "Torneos", description = "Endpoints para creacion y administracion de torneos")
 public class TournamentController {
 
-        private final TournamentService tournamentService;
+    private final TournamentService tournamentService;
 
-        @PostMapping
-        @Operation(summary = "Crear torneo", description = "Crea un nuevo torneo de fútbol")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "201", description = "Torneo creado exitosamente"),
-                        @ApiResponse(responseCode = "400", description = "Datos inválidos"),
-                        @ApiResponse(responseCode = "409", description = "Torneo ya existe")
-        })
-        public ResponseEntity<TournamentResponse> create(@Valid @RequestBody TournamentRequest request) {
-                log.info("REST create tournament endpoint called");
-                TournamentResponse response = tournamentService.create(request);
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }
+    @PostMapping
+    @Operation(summary = "Crear torneo", description = "Crea un nuevo torneo de futbol")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Torneo creado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+            @ApiResponse(responseCode = "409", description = "Torneo ya existe")
+    })
+    public ResponseEntity<TournamentResponse> create(@Valid @RequestBody TournamentRequest request) {
+        log.info("REST create tournament endpoint called");
+        TournamentResponse response = tournamentService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
 
-        @GetMapping("/{id}")
-        @Operation(summary = "Obtener torneo", description = "Obtiene los detalles de un torneo por su ID")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Torneo encontrado"),
-                        @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
-        })
-        public ResponseEntity<TournamentResponse> getById(
-                        @Parameter(description = "ID del torneo", required = true) @PathVariable String id) {
-                log.info("REST get tournament endpoint called for id: {}", id);
-                TournamentResponse response = tournamentService.getById(id);
-                return ResponseEntity.ok(response);
-        }
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtener torneo", description = "Obtiene los detalles de un torneo por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Torneo encontrado"),
+            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+    })
+    public ResponseEntity<TournamentResponse> getById(
+            @Parameter(description = "ID del torneo", required = true) @PathVariable Long id) {
+        log.info("REST get tournament endpoint called for id: {}", id);
+        TournamentResponse response = tournamentService.getById(id);
+        return ResponseEntity.ok(response);
+    }
 
-        @PutMapping("/{id}/config")
-        @Operation(summary = "Configurar torneo", description = "Actualiza la configuracion base del torneo")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Torneo configurado exitosamente"),
-                        @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
-        })
-        public ResponseEntity<TournamentResponse> configure(
-                        @Parameter(description = "ID del torneo", required = true) @PathVariable String id,
-                        @Valid @RequestBody TournamentConfigRequest request) {
-                log.info("REST configure tournament endpoint called for id: {}", id);
-                TournamentResponse response = tournamentService.configure(id, request);
-                return ResponseEntity.ok(response);
-        }
+    @PutMapping("/{id}/config")
+    @Operation(summary = "Configurar torneo", description = "Actualiza la configuracion base del torneo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Torneo configurado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+    })
+    public ResponseEntity<TournamentResponse> configure(
+            @Parameter(description = "ID del torneo", required = true) @PathVariable Long id,
+            @Valid @RequestBody TournamentConfigRequest request) {
+        log.info("REST configure tournament endpoint called for id: {}", id);
+        TournamentResponse response = tournamentService.configure(id, request);
+        return ResponseEntity.ok(response);
+    }
 
-        @PatchMapping("/{id}/status")
-        @Operation(summary = "Cambiar estado del torneo", description = "Modifica el estado actual del torneo")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
-                        @ApiResponse(responseCode = "400", description = "Transición de estado inválida"),
-                        @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
-        })
-        public ResponseEntity<TournamentResponse> changeStatus(
-                        @Parameter(description = "ID del torneo", required = true) @PathVariable String id,
-                        @Valid @RequestBody ChangeStatusRequest request) {
-                log.info("REST change tournament status endpoint called for id: {}", id);
-                TournamentResponse response = tournamentService.changeStatus(id, request);
-                return ResponseEntity.ok(response);
-        }
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Cambiar estado del torneo", description = "Modifica el estado actual del torneo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Transicion de estado invalida"),
+            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+    })
+    public ResponseEntity<TournamentResponse> changeStatus(
+            @Parameter(description = "ID del torneo", required = true) @PathVariable Long id,
+            @Valid @RequestBody ChangeStatusRequest request) {
+        log.info("REST change tournament status endpoint called for id: {}", id);
+        TournamentResponse response = tournamentService.changeStatus(id, request);
+        return ResponseEntity.ok(response);
+    }
 }

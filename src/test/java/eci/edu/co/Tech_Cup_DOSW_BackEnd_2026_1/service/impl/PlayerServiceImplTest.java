@@ -5,7 +5,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.Availabili
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Position;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.SportProfileRepository;
@@ -61,8 +61,8 @@ class PlayerServiceImplTest {
                 .build();
 
         testProfile = SportProfile.builder()
-                .id("profile123")
-                .userId("user123")
+                .id(1L)
+                .userId(1L)
                 .position(Position.FORWARD)
                 .jerseyNumber(10)
                 .photoUrl("http://example.com/photo.jpg")
@@ -70,7 +70,7 @@ class PlayerServiceImplTest {
                 .build();
 
         testUser = User.builder()
-                .id("user123")
+                .id(1L)
                 .name("Player One")
                 .build();
     }
@@ -79,18 +79,18 @@ class PlayerServiceImplTest {
     @DisplayName("Should update player profile successfully")
     void testUpdateProfileSuccess() {
         // Arrange
-        when(sportProfileRepository.findById("profile123")).thenReturn(Optional.of(testProfile));
+        when(sportProfileRepository.findById(1L)).thenReturn(Optional.of(testProfile));
         when(sportProfileRepository.save(any(SportProfile.class))).thenReturn(testProfile);
-        when(userRepository.findById("user123")).thenReturn(Optional.of(testUser));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
 
         // Act
-        ProfileResponse response = playerService.updateProfile("profile123", profileRequest);
+        ProfileResponse response = playerService.updateProfile(1L, profileRequest);
 
         // Assert
         assertNotNull(response);
-        assertEquals("profile123", response.getId());
-        assertEquals("user123", response.getUserId());
-        verify(sportProfileRepository, times(1)).findById("profile123");
+        assertEquals(1L, response.getId());
+        assertEquals(1L, response.getUserId());
+        verify(sportProfileRepository, times(1)).findById(1L);
         verify(sportProfileRepository, times(1)).save(any(SportProfile.class));
     }
 
@@ -98,28 +98,28 @@ class PlayerServiceImplTest {
     @DisplayName("Should fail when updating non-existent profile")
     void testUpdateProfileNotFound() {
         // Arrange
-        when(sportProfileRepository.findById("profile123")).thenReturn(Optional.empty());
+        when(sportProfileRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> playerService.updateProfile("profile123", profileRequest));
-        verify(sportProfileRepository, times(1)).findById("profile123");
+        assertThrows(ResourceNotFoundException.class, () -> playerService.updateProfile(1L, profileRequest));
+        verify(sportProfileRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Should change player availability successfully")
     void testChangeAvailabilitySuccess() {
         // Arrange
-        when(sportProfileRepository.findById("profile123")).thenReturn(Optional.of(testProfile));
+        when(sportProfileRepository.findById(1L)).thenReturn(Optional.of(testProfile));
         when(sportProfileRepository.save(any(SportProfile.class))).thenReturn(testProfile);
-        when(userRepository.findById("user123")).thenReturn(Optional.of(testUser));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
 
         // Act
-        ProfileResponse response = playerService.changeAvailability("profile123", availabilityRequest);
+        ProfileResponse response = playerService.changeAvailability(1L, availabilityRequest);
 
         // Assert
         assertNotNull(response);
-        assertEquals("profile123", response.getId());
-        verify(sportProfileRepository, times(1)).findById("profile123");
+        assertEquals(1L, response.getId());
+        verify(sportProfileRepository, times(1)).findById(1L);
         verify(sportProfileRepository, times(1)).save(any(SportProfile.class));
     }
 
@@ -127,11 +127,11 @@ class PlayerServiceImplTest {
     @DisplayName("Should fail when changing availability for non-existent profile")
     void testChangeAvailabilityNotFound() {
         // Arrange
-        when(sportProfileRepository.findById("profile123")).thenReturn(Optional.empty());
+        when(sportProfileRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(ResourceNotFoundException.class,
-                () -> playerService.changeAvailability("profile123", availabilityRequest));
-        verify(sportProfileRepository, times(1)).findById("profile123");
+                () -> playerService.changeAvailability(1L, availabilityRequest));
+        verify(sportProfileRepository, times(1)).findById(1L);
     }
 }

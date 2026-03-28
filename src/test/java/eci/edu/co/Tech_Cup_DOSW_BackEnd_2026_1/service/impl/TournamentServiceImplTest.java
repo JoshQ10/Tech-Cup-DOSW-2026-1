@@ -6,7 +6,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.Tournament
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Tournament;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.TournamentStatus;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +54,7 @@ class TournamentServiceImplTest {
                 .build();
 
         testTournament = Tournament.builder()
-                .id("tournament123")
+                .id(1L)
                 .name("Football Tournament 2026-1")
                 .startDate(LocalDate.of(2026, 3, 1))
                 .endDate(LocalDate.of(2026, 5, 31))
@@ -76,7 +76,7 @@ class TournamentServiceImplTest {
         // Assert
         assertNotNull(response);
         assertEquals("Football Tournament 2026-1", response.getName());
-        assertEquals("tournament123", response.getId());
+        assertEquals(1L, response.getId());
         assertEquals(16, response.getTeamCount());
         assertEquals(TournamentStatus.DRAFT, response.getStatus());
         verify(tournamentRepository, times(1)).save(any(Tournament.class));
@@ -86,27 +86,27 @@ class TournamentServiceImplTest {
     @DisplayName("Should get tournament by id successfully")
     void testGetTournamentByIdSuccess() {
         // Arrange
-        when(tournamentRepository.findById("tournament123")).thenReturn(Optional.of(testTournament));
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
 
         // Act
-        TournamentResponse response = tournamentService.getById("tournament123");
+        TournamentResponse response = tournamentService.getById(1L);
 
         // Assert
         assertNotNull(response);
         assertEquals("Football Tournament 2026-1", response.getName());
-        assertEquals("tournament123", response.getId());
-        verify(tournamentRepository, times(1)).findById("tournament123");
+        assertEquals(1L, response.getId());
+        verify(tournamentRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Should fail when getting non-existent tournament")
     void testGetTournamentByIdNotFound() {
         // Arrange
-        when(tournamentRepository.findById("tournament123")).thenReturn(Optional.empty());
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> tournamentService.getById("tournament123"));
-        verify(tournamentRepository, times(1)).findById("tournament123");
+        assertThrows(ResourceNotFoundException.class, () -> tournamentService.getById(1L));
+        verify(tournamentRepository, times(1)).findById(1L);
     }
 
     @Test
@@ -114,17 +114,17 @@ class TournamentServiceImplTest {
     void testChangeStatusSuccess() {
         // Arrange
         testTournament.setStatus(TournamentStatus.ACTIVE);
-        when(tournamentRepository.findById("tournament123")).thenReturn(Optional.of(testTournament));
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
         when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
 
         // Act
-        TournamentResponse response = tournamentService.changeStatus("tournament123", changeStatusRequest);
+        TournamentResponse response = tournamentService.changeStatus(1L, changeStatusRequest);
 
         // Assert
         assertNotNull(response);
-        assertEquals("tournament123", response.getId());
+        assertEquals(1L, response.getId());
         assertEquals(TournamentStatus.ACTIVE, response.getStatus());
-        verify(tournamentRepository, times(1)).findById("tournament123");
+        verify(tournamentRepository, times(1)).findById(1L);
         verify(tournamentRepository, times(1)).save(any(Tournament.class));
     }
 
@@ -132,11 +132,11 @@ class TournamentServiceImplTest {
     @DisplayName("Should fail when changing status of non-existent tournament")
     void testChangeStatusNotFound() {
         // Arrange
-        when(tournamentRepository.findById("tournament123")).thenReturn(Optional.empty());
+        when(tournamentRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> tournamentService.changeStatus("tournament123", changeStatusRequest));
-        verify(tournamentRepository, times(1)).findById("tournament123");
+        assertThrows(ResourceNotFoundException.class, () -> tournamentService.changeStatus(1L, changeStatusRequest));
+        verify(tournamentRepository, times(1)).findById(1L);
     }
 
 }

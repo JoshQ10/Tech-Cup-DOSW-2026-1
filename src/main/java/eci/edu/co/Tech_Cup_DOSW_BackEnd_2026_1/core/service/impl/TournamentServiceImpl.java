@@ -6,7 +6,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.Tournament
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Tournament;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.TournamentStatus;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.TournamentRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentResponse getById(String id) {
+    public TournamentResponse getById(Long id) {
         log.info("Fetching tournament: {}", id);
 
         Tournament tournament = tournamentRepository.findById(id)
@@ -53,7 +53,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentResponse configure(String id, TournamentConfigRequest request) {
+    public TournamentResponse configure(Long id, TournamentConfigRequest request) {
         log.info("Configuring tournament: {}", id);
 
         Tournament tournament = tournamentRepository.findById(id)
@@ -74,7 +74,7 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentResponse changeStatus(String id, ChangeStatusRequest request) {
+    public TournamentResponse changeStatus(Long id, ChangeStatusRequest request) {
         log.info("Changing status for tournament: {} to {}", id, request.getStatus());
 
         Tournament tournament = tournamentRepository.findById(id)

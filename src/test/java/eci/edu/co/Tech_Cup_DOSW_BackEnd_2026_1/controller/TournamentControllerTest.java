@@ -4,7 +4,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStat
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.TournamentStatus;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -65,7 +65,7 @@ class TournamentControllerTest {
                                 .build();
 
                 tournamentResponse = TournamentResponse.builder()
-                                .id("tournament123")
+                                .id(1L)
                                 .name("Football Tournament 2026-1")
                                 .startDate(LocalDate.of(2026, 3, 1))
                                 .endDate(LocalDate.of(2026, 5, 31))
@@ -86,7 +86,7 @@ class TournamentControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(tournamentRequest)))
                                 .andExpect(status().isCreated())
-                                .andExpect(jsonPath("$.id").value("tournament123"))
+                                .andExpect(jsonPath("$.id").value(1))
                                 .andExpect(jsonPath("$.name").value("Football Tournament 2026-1"));
         }
 
@@ -94,13 +94,13 @@ class TournamentControllerTest {
         @DisplayName("Should get tournament by id successfully")
         void testGetTournamentByIdSuccess() throws Exception {
                 // Arrange
-                when(tournamentService.getById(anyString())).thenReturn(tournamentResponse);
+                when(tournamentService.getById(anyLong())).thenReturn(tournamentResponse);
 
                 // Act & Assert
-                mockMvc.perform(get("/api/tournaments/tournament123")
+                mockMvc.perform(get("/api/tournaments/1")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value("tournament123"))
+                                .andExpect(jsonPath("$.id").value(1))
                                 .andExpect(jsonPath("$.teamCount").value(16));
         }
 
@@ -108,11 +108,11 @@ class TournamentControllerTest {
         @DisplayName("Should return 404 when tournament not found")
         void testGetTournamentByIdNotFound() throws Exception {
                 // Arrange
-                when(tournamentService.getById(anyString()))
+                when(tournamentService.getById(anyLong()))
                                 .thenThrow(new ResourceNotFoundException("Tournament not found"));
 
                 // Act & Assert
-                mockMvc.perform(get("/api/tournaments/tournament999")
+                mockMvc.perform(get("/api/tournaments/999")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isNotFound());
         }
@@ -122,15 +122,15 @@ class TournamentControllerTest {
         void testChangeStatusSuccess() throws Exception {
                 // Arrange
                 tournamentResponse.setStatus(TournamentStatus.ACTIVE);
-                when(tournamentService.changeStatus(anyString(), any(ChangeStatusRequest.class)))
+                when(tournamentService.changeStatus(anyLong(), any(ChangeStatusRequest.class)))
                                 .thenReturn(tournamentResponse);
 
                 // Act & Assert
-                mockMvc.perform(patch("/api/tournaments/tournament123/status")
+                mockMvc.perform(patch("/api/tournaments/1/status")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(changeStatusRequest)))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value("tournament123"))
+                                .andExpect(jsonPath("$.id").value(1))
                                 .andExpect(jsonPath("$.status").value("ACTIVE"));
         }
 
@@ -138,11 +138,11 @@ class TournamentControllerTest {
         @DisplayName("Should return 404 when changing status of non-existent tournament")
         void testChangeStatusNotFound() throws Exception {
                 // Arrange
-                when(tournamentService.changeStatus(anyString(), any(ChangeStatusRequest.class)))
+                when(tournamentService.changeStatus(anyLong(), any(ChangeStatusRequest.class)))
                                 .thenThrow(new ResourceNotFoundException("Tournament not found"));
 
                 // Act & Assert
-                mockMvc.perform(patch("/api/tournaments/tournament999/status")
+                mockMvc.perform(patch("/api/tournaments/999/status")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(changeStatusRequest)))
                                 .andExpect(status().isNotFound());

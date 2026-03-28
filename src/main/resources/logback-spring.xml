@@ -25,7 +25,8 @@
     </appender>
 
     <logger name="eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1" level="DEBUG"/>
-    <logger name="org.springframework.data.mongodb.core.MongoTemplate" level="DEBUG"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

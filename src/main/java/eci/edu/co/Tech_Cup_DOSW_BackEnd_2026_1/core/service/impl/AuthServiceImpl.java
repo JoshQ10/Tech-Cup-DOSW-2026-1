@@ -82,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
     public UserResponse verifyEmail(String token) {
         log.info("Verifying email using token: {}", token);
 
-        User user = userRepository.findById(token)
+        User user = userRepository.findByEmail(token)
                 .orElseThrow(() -> {
                     log.warn("Email verification failed: user with token {} not found", token);
                     return new ResourceNotFoundException("User not found for verification token");

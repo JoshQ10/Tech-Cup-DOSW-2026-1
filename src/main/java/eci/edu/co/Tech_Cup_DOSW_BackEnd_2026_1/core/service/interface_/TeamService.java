@@ -6,9 +6,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamRespo
 public interface TeamService {
     TeamResponse create(TeamRequest request);
 
-    TeamResponse getById(String id);
+    TeamResponse getById(Long id);
 
-    TeamResponse getRoster(String id);
+    TeamResponse getRoster(Long id);
 
-    TeamResponse removePlayer(String teamId, String playerId);
+    TeamResponse removePlayer(Long teamId, Long playerId);
 }

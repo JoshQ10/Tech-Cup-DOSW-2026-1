@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,18 +54,18 @@ class TeamControllerTest {
                                 .name("Test Team")
                                 .shieldUrl("http://example.com/shield.jpg")
                                 .uniformColors("Blue and White")
-                                .tournamentId("tournament123")
-                                .captainId("captain1")
+                                .tournamentId(1L)
+                                .captainId(1L)
                                 .build();
 
                 teamResponse = TeamResponse.builder()
-                                .id("team123")
+                                .id(1L)
                                 .name("Test Team")
                                 .shieldUrl("http://example.com/shield.jpg")
                                 .uniformColors("Blue and White")
-                                .tournamentId("tournament123")
-                                .captainId("captain1")
-                                .players(Arrays.asList("player1", "player2"))
+                                .tournamentId(1L)
+                                .captainId(1L)
+                                .players(Arrays.asList(1L, 2L))
                                 .build();
         }
 
@@ -80,7 +80,7 @@ class TeamControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(teamRequest)))
                                 .andExpect(status().isCreated())
-                                .andExpect(jsonPath("$.id").value("team123"))
+                                .andExpect(jsonPath("$.id").value(1))
                                 .andExpect(jsonPath("$.name").value("Test Team"));
         }
 
@@ -88,13 +88,13 @@ class TeamControllerTest {
         @DisplayName("Should get team by id successfully")
         void testGetTeamByIdSuccess() throws Exception {
                 // Arrange
-                when(teamService.getById(anyString())).thenReturn(teamResponse);
+                when(teamService.getById(anyLong())).thenReturn(teamResponse);
 
                 // Act & Assert
-                mockMvc.perform(get("/api/teams/team123")
+                mockMvc.perform(get("/api/teams/1")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value("team123"))
+                                .andExpect(jsonPath("$.id").value(1))
                                 .andExpect(jsonPath("$.name").value("Test Team"));
         }
 
@@ -102,11 +102,11 @@ class TeamControllerTest {
         @DisplayName("Should return 404 when team not found")
         void testGetTeamByIdNotFound() throws Exception {
                 // Arrange
-                when(teamService.getById(anyString()))
+                when(teamService.getById(anyLong()))
                                 .thenThrow(new ResourceNotFoundException("Team not found"));
 
                 // Act & Assert
-                mockMvc.perform(get("/api/teams/team999")
+                mockMvc.perform(get("/api/teams/999")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isNotFound());
         }
@@ -115,25 +115,25 @@ class TeamControllerTest {
         @DisplayName("Should remove player from team successfully")
         void testRemovePlayerSuccess() throws Exception {
                 // Arrange
-                teamResponse.setPlayers(Arrays.asList("player2"));
-                when(teamService.removePlayer(anyString(), anyString())).thenReturn(teamResponse);
+                teamResponse.setPlayers(Arrays.asList(2L));
+                when(teamService.removePlayer(anyLong(), anyLong())).thenReturn(teamResponse);
 
                 // Act & Assert
-                mockMvc.perform(delete("/api/teams/team123/players/player1")
+                mockMvc.perform(delete("/api/teams/1/players/1")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isOk())
-                                .andExpect(jsonPath("$.id").value("team123"));
+                                .andExpect(jsonPath("$.id").value(1));
         }
 
         @Test
         @DisplayName("Should return 404 when removing player from non-existent team")
         void testRemovePlayerTeamNotFound() throws Exception {
                 // Arrange
-                when(teamService.removePlayer(anyString(), anyString()))
+                when(teamService.removePlayer(anyLong(), anyLong()))
                                 .thenThrow(new ResourceNotFoundException("Team not found"));
 
                 // Act & Assert
-                mockMvc.perform(delete("/api/teams/team999/players/player1")
+                mockMvc.perform(delete("/api/teams/999/players/1")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isNotFound());
         }
@@ -142,11 +142,11 @@ class TeamControllerTest {
         @DisplayName("Should return 400 when removing non-existent player from team")
         void testRemovePlayerNotInTeam() throws Exception {
                 // Arrange
-                when(teamService.removePlayer(anyString(), anyString()))
+                when(teamService.removePlayer(anyLong(), anyLong()))
                                 .thenThrow(new BusinessRuleException("Player not found in this team"));
 
                 // Act & Assert
-                mockMvc.perform(delete("/api/teams/team123/players/player999")
+                mockMvc.perform(delete("/api/teams/1/players/999")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(status().isBadRequest());
         }

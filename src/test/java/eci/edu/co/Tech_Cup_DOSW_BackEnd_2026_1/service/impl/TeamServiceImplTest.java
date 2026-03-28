@@ -38,29 +38,29 @@ class TeamServiceImplTest {
 
     private TeamRequest teamRequest;
     private Team testTeam;
-    private List<String> players;
+    private List<Long> players;
 
     @BeforeEach
     void setUp() {
         players = new ArrayList<>();
-        players.add("player1");
-        players.add("player2");
+        players.add(1L);
+        players.add(2L);
 
         teamRequest = TeamRequest.builder()
                 .name("Test Team")
                 .shieldUrl("http://example.com/shield.jpg")
                 .uniformColors("Blue and White")
-                .tournamentId("tournament123")
-                .captainId("captain1")
+                .tournamentId(1L)
+                .captainId(1L)
                 .build();
 
         testTeam = Team.builder()
-                .id("team123")
+                .id(1L)
                 .name("Test Team")
                 .shieldUrl("http://example.com/shield.jpg")
                 .uniformColors("Blue and White")
-                .tournamentId("tournament123")
-                .captainId("captain1")
+                .tournamentId(1L)
+                .captainId(1L)
                 .players(players)
                 .build();
     }
@@ -77,8 +77,8 @@ class TeamServiceImplTest {
         // Assert
         assertNotNull(response);
         assertEquals("Test Team", response.getName());
-        assertEquals("team123", response.getId());
-        assertEquals("tournament123", response.getTournamentId());
+        assertEquals(1L, response.getId());
+        assertEquals(1L, response.getTournamentId());
         verify(teamRepository, times(1)).save(any(Team.class));
     }
 
@@ -86,43 +86,43 @@ class TeamServiceImplTest {
     @DisplayName("Should get team by id successfully")
     void testGetTeamByIdSuccess() {
         // Arrange
-        when(teamRepository.findById("team123")).thenReturn(Optional.of(testTeam));
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(testTeam));
 
         // Act
-        TeamResponse response = teamService.getById("team123");
+        TeamResponse response = teamService.getById(1L);
 
         // Assert
         assertNotNull(response);
         assertEquals("Test Team", response.getName());
-        assertEquals("team123", response.getId());
-        verify(teamRepository, times(1)).findById("team123");
+        assertEquals(1L, response.getId());
+        verify(teamRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Should fail when getting non-existent team")
     void testGetTeamByIdNotFound() {
         // Arrange
-        when(teamRepository.findById("team123")).thenReturn(Optional.empty());
+        when(teamRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> teamService.getById("team123"));
-        verify(teamRepository, times(1)).findById("team123");
+        assertThrows(ResourceNotFoundException.class, () -> teamService.getById(1L));
+        verify(teamRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Should remove player from team successfully")
     void testRemovePlayerSuccess() {
         // Arrange
-        when(teamRepository.findById("team123")).thenReturn(Optional.of(testTeam));
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(testTeam));
         when(teamRepository.save(any(Team.class))).thenReturn(testTeam);
 
         // Act
-        TeamResponse response = teamService.removePlayer("team123", "player1");
+        TeamResponse response = teamService.removePlayer(1L, 1L);
 
         // Assert
         assertNotNull(response);
         assertEquals("Test Team", response.getName());
-        verify(teamRepository, times(1)).findById("team123");
+        verify(teamRepository, times(1)).findById(1L);
         verify(teamRepository, times(1)).save(any(Team.class));
     }
 
@@ -130,11 +130,11 @@ class TeamServiceImplTest {
     @DisplayName("Should fail when removing player from non-existent team")
     void testRemovePlayerTeamNotFound() {
         // Arrange
-        when(teamRepository.findById("team123")).thenReturn(Optional.empty());
+        when(teamRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> teamService.removePlayer("team123", "player1"));
-        verify(teamRepository, times(1)).findById("team123");
+        assertThrows(ResourceNotFoundException.class, () -> teamService.removePlayer(1L, 1L));
+        verify(teamRepository, times(1)).findById(1L);
         verify(teamRepository, never()).save(any(Team.class));
     }
 
@@ -142,11 +142,11 @@ class TeamServiceImplTest {
     @DisplayName("Should fail when removing non-existent player from team")
     void testRemovePlayerNotInTeam() {
         // Arrange
-        when(teamRepository.findById("team123")).thenReturn(Optional.of(testTeam));
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(testTeam));
 
         // Act & Assert
-        assertThrows(BusinessRuleException.class, () -> teamService.removePlayer("team123", "player999"));
-        verify(teamRepository, times(1)).findById("team123");
+        assertThrows(BusinessRuleException.class, () -> teamService.removePlayer(1L, 999L));
+        verify(teamRepository, times(1)).findById(1L);
         verify(teamRepository, never()).save(any(Team.class));
     }
 
@@ -155,10 +155,10 @@ class TeamServiceImplTest {
     void testRemovePlayerFromEmptyTeam() {
         // Arrange
         testTeam.setPlayers(null);
-        when(teamRepository.findById("team123")).thenReturn(Optional.of(testTeam));
+        when(teamRepository.findById(1L)).thenReturn(Optional.of(testTeam));
 
         // Act & Assert
-        assertThrows(BusinessRuleException.class, () -> teamService.removePlayer("team123", "player1"));
-        verify(teamRepository, times(1)).findById("team123");
+        assertThrows(BusinessRuleException.class, () -> teamService.removePlayer(1L, 1L));
+        verify(teamRepository, times(1)).findById(1L);
     }
 }
