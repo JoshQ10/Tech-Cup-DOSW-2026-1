@@ -28,17 +28,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserResponse register(RegisterRequest request) {
         log.info("Registering new user with email: {}", request.getEmail());
+        log.debug("User registration details - name: {}, role: {}", request.getName(), request.getRole());
 
         Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             log.warn("Registration failed: email {} already exists", request.getEmail());
             throw new BusinessRuleException("Email already registered");
         }
+        log.debug("Email validation passed for: {}", request.getEmail());
 
         User user = mapToUser(request);
+        log.debug("User entity created - id: {}, role: {}", user.getId(), user.getRole());
 
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with id: {}", savedUser.getId());
+        log.debug("User persisted to database with created timestamp: {}", savedUser.getCreatedAt());
 
         return mapToUserResponse(savedUser);
     }
@@ -46,25 +50,30 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
         log.info("Login attempt for email: {}", request.getEmail());
+        log.debug("Login request validation initiated");
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
                     log.warn("Login failed: user with email {} not found", request.getEmail());
                     return new ResourceNotFoundException("User not found");
                 });
+        log.debug("User found in database with id: {}, role: {}", user.getId(), user.getRole());
 
         if (!user.getPassword().equals(request.getPassword())) {
             log.warn("Login failed: invalid password for email {}", request.getEmail());
             throw new BusinessRuleException("Invalid password");
         }
+        log.debug("Password validation passed for user: {}", user.getId());
 
         if (!user.isActive()) {
             log.warn("Login failed: user {} is inactive", request.getEmail());
             throw new BusinessRuleException("User account is inactive");
         }
+        log.debug("User active status verified: true");
 
         log.info("Login successful for user: {}", user.getId());
 
+        log.debug("Generating JWT tokens for user: {}", user.getId());
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 

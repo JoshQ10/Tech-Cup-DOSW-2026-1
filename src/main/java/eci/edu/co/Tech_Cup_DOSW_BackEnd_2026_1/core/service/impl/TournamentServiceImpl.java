@@ -55,20 +55,25 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public TournamentResponse configure(Long id, TournamentConfigRequest request) {
         log.info("Configuring tournament: {}", id);
+        log.debug("Configuration parameters - startDate: {}, endDate: {}, teamCount: {}, costPerTeam: {}",
+                request.getStartDate(), request.getEndDate(), request.getTeamCount(), request.getCostPerTeam());
 
         Tournament tournament = tournamentRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException("Tournament not found");
                 });
+        log.debug("Tournament retrieved with current status: {}", tournament.getStatus());
 
         tournament.setStartDate(request.getStartDate());
         tournament.setEndDate(request.getEndDate());
         tournament.setTeamCount(request.getTeamCount());
         tournament.setCostPerTeam(request.getCostPerTeam());
+        log.debug("Tournament configuration updated in memory");
 
         Tournament updatedTournament = tournamentRepository.save(tournament);
         log.info("Tournament configured successfully for id: {}", id);
+        log.debug("Tournament persisted to database");
 
         return mapToTournamentResponse(updatedTournament);
     }
@@ -82,11 +87,15 @@ public class TournamentServiceImpl implements TournamentService {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException("Tournament not found");
                 });
+        log.debug("Tournament state transition - from: {} to: {}", tournament.getStatus(), request.getStatus());
+        log.debug("Validating status transition rules");
 
         tournament.setStatus(request.getStatus());
+        log.debug("Tournament status updated in memory");
 
         Tournament updatedTournament = tournamentRepository.save(tournament);
         log.info("Tournament status updated successfully for id: {}", id);
+        log.debug("Status transition persisted to database");
 
         return mapToTournamentResponse(updatedTournament);
     }

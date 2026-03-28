@@ -49,17 +49,21 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public ProfileResponse changeAvailability(Long id, AvailabilityRequest request) {
         log.info("Changing availability for player: {}", id);
+        log.debug("Availability change request - new state: {}", request.isAvailable());
 
         SportProfile profile = sportProfileRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Update failed: profile {} not found", id);
                     return new ResourceNotFoundException("Profile not found");
                 });
+        log.debug("Current availability state: {}", profile.isAvailable());
 
         profile.setAvailable(request.isAvailable());
+        log.debug("Availability state transition in memory");
 
         SportProfile updatedProfile = sportProfileRepository.save(profile);
         log.info("Availability changed successfully for player: {}", id);
+        log.debug("Availability change persisted to database - new state: {}", updatedProfile.isAvailable());
 
         return mapToProfileResponse(updatedProfile);
     }
