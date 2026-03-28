@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class ProfileResponse {
     private String id;
     private String userId;
+    private String playerName;
     private Position position;
     private int jerseyNumber;
     private String photoUrl;

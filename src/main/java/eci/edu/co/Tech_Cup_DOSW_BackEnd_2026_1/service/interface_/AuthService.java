@@ -7,5 +7,12 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.response.UserResponse;
 
 public interface AuthService {
     UserResponse register(RegisterRequest request);
+
     LoginResponse login(LoginRequest request);
+
+    UserResponse verifyEmail(String token);
+
+    String resendVerification(String email);
+
+    LoginResponse refreshToken(String refreshToken);
 }

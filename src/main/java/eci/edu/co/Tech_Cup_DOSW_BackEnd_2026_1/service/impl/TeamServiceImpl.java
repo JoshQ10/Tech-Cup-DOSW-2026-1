@@ -53,6 +53,17 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public TeamResponse getRoster(String id) {
+        log.info("Fetching roster for team: {}", id);
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Team {} not found for roster", id);
+                    return new ResourceNotFoundException("Team not found");
+                });
+        return mapToTeamResponse(team);
+    }
+
+    @Override
     public TeamResponse removePlayer(String teamId, String playerId) {
         log.info("Removing player: {} from team: {}", playerId, teamId);
 

@@ -1,6 +1,7 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.ChangeStatusRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.TournamentConfigRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.request.TournamentRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.exception.ResourceNotFoundException;
@@ -49,6 +50,27 @@ public class TournamentServiceImpl implements TournamentService {
                 });
 
         return mapToTournamentResponse(tournament);
+    }
+
+    @Override
+    public TournamentResponse configure(String id, TournamentConfigRequest request) {
+        log.info("Configuring tournament: {}", id);
+
+        Tournament tournament = tournamentRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.warn("Tournament {} not found", id);
+                    return new ResourceNotFoundException("Tournament not found");
+                });
+
+        tournament.setStartDate(request.getStartDate());
+        tournament.setEndDate(request.getEndDate());
+        tournament.setTeamCount(request.getTeamCount());
+        tournament.setCostPerTeam(request.getCostPerTeam());
+
+        Tournament updatedTournament = tournamentRepository.save(tournament);
+        log.info("Tournament configured successfully for id: {}", id);
+
+        return mapToTournamentResponse(updatedTournament);
     }
 
     @Override

@@ -33,14 +33,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessRuleException("Email already registered");
         }
 
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .role(request.getRole())
-                .active(true)
-                .createdAt(LocalDateTime.now())
-                .build();
+        User user = mapToUser(request);
 
         User savedUser = userRepository.save(user);
         log.info("User registered successfully with id: {}", savedUser.getId());
@@ -74,6 +67,71 @@ public class AuthServiceImpl implements AuthService {
         return LoginResponse.builder()
                 .token("temp-token-" + user.getId())
                 .user(userResponse)
+                .build();
+    }
+
+    @Override
+    public UserResponse verifyEmail(String token) {
+        log.info("Verifying email using token: {}", token);
+
+        User user = userRepository.findById(token)
+                .orElseThrow(() -> {
+                    log.warn("Email verification failed: user with token {} not found", token);
+                    return new ResourceNotFoundException("User not found for verification token");
+                });
+
+        user.setActive(true);
+        User updatedUser = userRepository.save(user);
+        log.info("Email verified successfully for user id: {}", updatedUser.getId());
+
+        return mapToUserResponse(updatedUser);
+    }
+
+    @Override
+    public String resendVerification(String email) {
+        log.info("Resending verification email for: {}", email);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Resend verification failed: user with email {} not found", email);
+                    return new ResourceNotFoundException("User not found");
+                });
+
+        log.info("Verification email resent successfully for user id: {}", user.getId());
+        return "Verification email resent successfully";
+    }
+
+    @Override
+    public LoginResponse refreshToken(String refreshToken) {
+        log.info("Refreshing JWT token");
+
+        if (refreshToken == null || !refreshToken.startsWith("temp-token-")) {
+            log.warn("Refresh token failed: invalid token format");
+            throw new BusinessRuleException("Invalid refresh token");
+        }
+
+        String userId = refreshToken.substring("temp-token-".length());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.warn("Refresh token failed: user {} not found", userId);
+                    return new ResourceNotFoundException("User not found");
+                });
+
+        log.info("Token refreshed successfully for user id: {}", user.getId());
+        return LoginResponse.builder()
+                .token("temp-token-" + user.getId() + "-refreshed")
+                .user(mapToUserResponse(user))
+                .build();
+    }
+
+    private User mapToUser(RegisterRequest request) {
+        return User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role(request.getRole())
+                .active(true)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
