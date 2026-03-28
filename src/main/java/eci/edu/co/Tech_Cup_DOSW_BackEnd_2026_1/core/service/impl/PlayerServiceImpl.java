@@ -4,6 +4,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.Availabili
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.PhotoUploadRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.SportProfileMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
@@ -21,6 +22,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private final SportProfileRepository sportProfileRepository;
     private final UserRepository userRepository;
+    private final SportProfileMapper sportProfileMapper;
 
     @Override
     public ProfileResponse updateProfile(Long id, ProfileRequest request) {
@@ -99,19 +101,16 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     private ProfileResponse mapToProfileResponse(SportProfile profile) {
-        User user = null;
+        ProfileResponse response = sportProfileMapper.toResponse(profile);
+
+        // Mapeo especial para playerName que requiere búsqueda de usuario
         if (profile.getUserId() != null) {
-            user = userRepository.findById(profile.getUserId()).orElse(null);
+            User user = userRepository.findById(profile.getUserId()).orElse(null);
+            if (user != null) {
+                response.setPlayerName(user.getName());
+            }
         }
 
-        return ProfileResponse.builder()
-                .id(profile.getId())
-                .userId(profile.getUserId())
-                .playerName(user != null ? user.getName() : null)
-                .position(profile.getPosition())
-                .jerseyNumber(profile.getJerseyNumber())
-                .photoUrl(profile.getPhotoUrl())
-                .available(profile.isAvailable())
-                .build();
+        return response;
     }
 }

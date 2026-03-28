@@ -4,6 +4,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStat
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TournamentMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Tournament;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class TournamentServiceImpl implements TournamentService {
 
     private final TournamentRepository tournamentRepository;
+    private final TournamentMapper tournamentMapper;
 
     @Override
     public TournamentResponse create(TournamentRequest request) {
@@ -101,14 +103,6 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     private TournamentResponse mapToTournamentResponse(Tournament tournament) {
-        return TournamentResponse.builder()
-                .id(tournament.getId())
-                .name(tournament.getName())
-                .startDate(tournament.getStartDate())
-                .endDate(tournament.getEndDate())
-                .teamCount(tournament.getTeamCount())
-                .costPerTeam(tournament.getCostPerTeam())
-                .status(tournament.getStatus())
-                .build();
+        return tournamentMapper.toResponse(tournament);
     }
 }
