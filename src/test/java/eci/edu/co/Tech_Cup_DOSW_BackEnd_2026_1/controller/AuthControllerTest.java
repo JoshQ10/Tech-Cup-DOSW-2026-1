@@ -32,121 +32,121 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("AuthController Tests")
 class AuthControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockBean
-    private AuthService authService;
+        @MockBean
+        private AuthService authService;
 
         @MockBean
         private JwtService jwtService;
 
-    private RegisterRequest registerRequest;
-    private LoginRequest loginRequest;
-    private UserResponse userResponse;
-    private LoginResponse loginResponse;
+        private RegisterRequest registerRequest;
+        private LoginRequest loginRequest;
+        private UserResponse userResponse;
+        private LoginResponse loginResponse;
 
-    @BeforeEach
-    void setUp() {
-        registerRequest = RegisterRequest.builder()
-                .name("Test User")
-                .email("test@example.com")
-                .password("password123")
-                .role(Role.PLAYER)
-                .build();
+        @BeforeEach
+        void setUp() {
+                registerRequest = RegisterRequest.builder()
+                                .name("Test User")
+                                .email("test@example.com")
+                                .password("password123")
+                                .role(Role.PLAYER)
+                                .build();
 
-        loginRequest = LoginRequest.builder()
-                .email("test@example.com")
-                .password("password123")
-                .build();
+                loginRequest = LoginRequest.builder()
+                                .email("test@example.com")
+                                .password("password123")
+                                .build();
 
-        userResponse = UserResponse.builder()
-                .id("user123")
-                .name("Test User")
-                .email("test@example.com")
-                .role(Role.PLAYER)
-                .active(true)
-                .build();
+                userResponse = UserResponse.builder()
+                                .id("user123")
+                                .name("Test User")
+                                .email("test@example.com")
+                                .role(Role.PLAYER)
+                                .active(true)
+                                .build();
 
-        loginResponse = LoginResponse.builder()
-                .token("temp-token-user123")
-                .user(userResponse)
-                .build();
-    }
+                loginResponse = LoginResponse.builder()
+                                .token("temp-token-user123")
+                                .user(userResponse)
+                                .build();
+        }
 
-    @Test
-    @DisplayName("Should register user successfully")
-    void testRegisterSuccess() throws Exception {
-        // Arrange
-        when(authService.register(any(RegisterRequest.class))).thenReturn(userResponse);
+        @Test
+        @DisplayName("Should register user successfully")
+        void testRegisterSuccess() throws Exception {
+                // Arrange
+                when(authService.register(any(RegisterRequest.class))).thenReturn(userResponse);
 
-        // Act & Assert
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerRequest)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value("user123"))
-                .andExpect(jsonPath("$.email").value("test@example.com"))
-                .andExpect(jsonPath("$.name").value("Test User"));
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/auth/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(registerRequest)))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.id").value("user123"))
+                                .andExpect(jsonPath("$.email").value("test@example.com"))
+                                .andExpect(jsonPath("$.name").value("Test User"));
+        }
 
-    @Test
-    @DisplayName("Should return 400 when registering with existing email")
-    void testRegisterWithExistingEmail() throws Exception {
-        // Arrange
-        when(authService.register(any(RegisterRequest.class)))
-                .thenThrow(new BusinessRuleException("Email already registered"));
+        @Test
+        @DisplayName("Should return 400 when registering with existing email")
+        void testRegisterWithExistingEmail() throws Exception {
+                // Arrange
+                when(authService.register(any(RegisterRequest.class)))
+                                .thenThrow(new BusinessRuleException("Email already registered"));
 
-        // Act & Assert
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(registerRequest)))
-                .andExpect(status().isBadRequest());
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/auth/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(registerRequest)))
+                                .andExpect(status().isBadRequest());
+        }
 
-    @Test
-    @DisplayName("Should login successfully")
-    void testLoginSuccess() throws Exception {
-        // Arrange
-        when(authService.login(any(LoginRequest.class))).thenReturn(loginResponse);
+        @Test
+        @DisplayName("Should login successfully")
+        void testLoginSuccess() throws Exception {
+                // Arrange
+                when(authService.login(any(LoginRequest.class))).thenReturn(loginResponse);
 
-        // Act & Assert
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").isNotEmpty())
-                .andExpect(jsonPath("$.user.email").value("test@example.com"));
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginRequest)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.token").isNotEmpty())
+                                .andExpect(jsonPath("$.user.email").value("test@example.com"));
+        }
 
-    @Test
-    @DisplayName("Should return 404 when logging in with non-existent user")
-    void testLoginUserNotFound() throws Exception {
-        // Arrange
-        when(authService.login(any(LoginRequest.class)))
-                .thenThrow(new ResourceNotFoundException("User not found"));
+        @Test
+        @DisplayName("Should return 404 when logging in with non-existent user")
+        void testLoginUserNotFound() throws Exception {
+                // Arrange
+                when(authService.login(any(LoginRequest.class)))
+                                .thenThrow(new ResourceNotFoundException("User not found"));
 
-        // Act & Assert
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isNotFound());
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginRequest)))
+                                .andExpect(status().isNotFound());
+        }
 
-    @Test
-    @DisplayName("Should return 400 when logging in with invalid password")
-    void testLoginWithInvalidPassword() throws Exception {
-        // Arrange
-        when(authService.login(any(LoginRequest.class)))
-                .thenThrow(new BusinessRuleException("Invalid password"));
+        @Test
+        @DisplayName("Should return 400 when logging in with invalid password")
+        void testLoginWithInvalidPassword() throws Exception {
+                // Arrange
+                when(authService.login(any(LoginRequest.class)))
+                                .thenThrow(new BusinessRuleException("Invalid password"));
 
-        // Act & Assert
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isBadRequest());
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(loginRequest)))
+                                .andExpect(status().isBadRequest());
+        }
 }

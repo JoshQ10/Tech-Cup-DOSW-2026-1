@@ -33,121 +33,121 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("TeamController Tests")
 class TeamControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockBean
-    private TeamService teamService;
+        @MockBean
+        private TeamService teamService;
 
         @MockBean
         private JwtService jwtService;
 
-    private TeamRequest teamRequest;
-    private TeamResponse teamResponse;
+        private TeamRequest teamRequest;
+        private TeamResponse teamResponse;
 
-    @BeforeEach
-    void setUp() {
-        teamRequest = TeamRequest.builder()
-                .name("Test Team")
-                .shieldUrl("http://example.com/shield.jpg")
-                .uniformColors("Blue and White")
-                .tournamentId("tournament123")
-                .captainId("captain1")
-                .build();
+        @BeforeEach
+        void setUp() {
+                teamRequest = TeamRequest.builder()
+                                .name("Test Team")
+                                .shieldUrl("http://example.com/shield.jpg")
+                                .uniformColors("Blue and White")
+                                .tournamentId("tournament123")
+                                .captainId("captain1")
+                                .build();
 
-        teamResponse = TeamResponse.builder()
-                .id("team123")
-                .name("Test Team")
-                .shieldUrl("http://example.com/shield.jpg")
-                .uniformColors("Blue and White")
-                .tournamentId("tournament123")
-                .captainId("captain1")
-                .players(Arrays.asList("player1", "player2"))
-                .build();
-    }
+                teamResponse = TeamResponse.builder()
+                                .id("team123")
+                                .name("Test Team")
+                                .shieldUrl("http://example.com/shield.jpg")
+                                .uniformColors("Blue and White")
+                                .tournamentId("tournament123")
+                                .captainId("captain1")
+                                .players(Arrays.asList("player1", "player2"))
+                                .build();
+        }
 
-    @Test
-    @DisplayName("Should create team successfully")
-    void testCreateTeamSuccess() throws Exception {
-        // Arrange
-        when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
+        @Test
+        @DisplayName("Should create team successfully")
+        void testCreateTeamSuccess() throws Exception {
+                // Arrange
+                when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
 
-        // Act & Assert
-        mockMvc.perform(post("/api/teams")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teamRequest)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value("team123"))
-                .andExpect(jsonPath("$.name").value("Test Team"));
-    }
+                // Act & Assert
+                mockMvc.perform(post("/api/teams")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(teamRequest)))
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.id").value("team123"))
+                                .andExpect(jsonPath("$.name").value("Test Team"));
+        }
 
-    @Test
-    @DisplayName("Should get team by id successfully")
-    void testGetTeamByIdSuccess() throws Exception {
-        // Arrange
-        when(teamService.getById(anyString())).thenReturn(teamResponse);
+        @Test
+        @DisplayName("Should get team by id successfully")
+        void testGetTeamByIdSuccess() throws Exception {
+                // Arrange
+                when(teamService.getById(anyString())).thenReturn(teamResponse);
 
-        // Act & Assert
-        mockMvc.perform(get("/api/teams/team123")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("team123"))
-                .andExpect(jsonPath("$.name").value("Test Team"));
-    }
+                // Act & Assert
+                mockMvc.perform(get("/api/teams/team123")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value("team123"))
+                                .andExpect(jsonPath("$.name").value("Test Team"));
+        }
 
-    @Test
-    @DisplayName("Should return 404 when team not found")
-    void testGetTeamByIdNotFound() throws Exception {
-        // Arrange
-        when(teamService.getById(anyString()))
-                .thenThrow(new ResourceNotFoundException("Team not found"));
+        @Test
+        @DisplayName("Should return 404 when team not found")
+        void testGetTeamByIdNotFound() throws Exception {
+                // Arrange
+                when(teamService.getById(anyString()))
+                                .thenThrow(new ResourceNotFoundException("Team not found"));
 
-        // Act & Assert
-        mockMvc.perform(get("/api/teams/team999")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
+                // Act & Assert
+                mockMvc.perform(get("/api/teams/team999")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isNotFound());
+        }
 
-    @Test
-    @DisplayName("Should remove player from team successfully")
-    void testRemovePlayerSuccess() throws Exception {
-        // Arrange
-        teamResponse.setPlayers(Arrays.asList("player2"));
-        when(teamService.removePlayer(anyString(), anyString())).thenReturn(teamResponse);
+        @Test
+        @DisplayName("Should remove player from team successfully")
+        void testRemovePlayerSuccess() throws Exception {
+                // Arrange
+                teamResponse.setPlayers(Arrays.asList("player2"));
+                when(teamService.removePlayer(anyString(), anyString())).thenReturn(teamResponse);
 
-        // Act & Assert
-        mockMvc.perform(delete("/api/teams/team123/players/player1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("team123"));
-    }
+                // Act & Assert
+                mockMvc.perform(delete("/api/teams/team123/players/player1")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value("team123"));
+        }
 
-    @Test
-    @DisplayName("Should return 404 when removing player from non-existent team")
-    void testRemovePlayerTeamNotFound() throws Exception {
-        // Arrange
-        when(teamService.removePlayer(anyString(), anyString()))
-                .thenThrow(new ResourceNotFoundException("Team not found"));
+        @Test
+        @DisplayName("Should return 404 when removing player from non-existent team")
+        void testRemovePlayerTeamNotFound() throws Exception {
+                // Arrange
+                when(teamService.removePlayer(anyString(), anyString()))
+                                .thenThrow(new ResourceNotFoundException("Team not found"));
 
-        // Act & Assert
-        mockMvc.perform(delete("/api/teams/team999/players/player1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
+                // Act & Assert
+                mockMvc.perform(delete("/api/teams/team999/players/player1")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isNotFound());
+        }
 
-    @Test
-    @DisplayName("Should return 400 when removing non-existent player from team")
-    void testRemovePlayerNotInTeam() throws Exception {
-        // Arrange
-        when(teamService.removePlayer(anyString(), anyString()))
-                .thenThrow(new BusinessRuleException("Player not found in this team"));
+        @Test
+        @DisplayName("Should return 400 when removing non-existent player from team")
+        void testRemovePlayerNotInTeam() throws Exception {
+                // Arrange
+                when(teamService.removePlayer(anyString(), anyString()))
+                                .thenThrow(new BusinessRuleException("Player not found in this team"));
 
-        // Act & Assert
-        mockMvc.perform(delete("/api/teams/team123/players/player999")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
+                // Act & Assert
+                mockMvc.perform(delete("/api/teams/team123/players/player999")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isBadRequest());
+        }
 }

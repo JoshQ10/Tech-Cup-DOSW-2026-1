@@ -69,7 +69,7 @@ class PlayerServiceImplTest {
                 .available(true)
                 .build();
 
-            testUser = User.builder()
+        testUser = User.builder()
                 .id("user123")
                 .name("Player One")
                 .build();
@@ -130,7 +130,8 @@ class PlayerServiceImplTest {
         when(sportProfileRepository.findById("profile123")).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> playerService.changeAvailability("profile123", availabilityRequest));
+        assertThrows(ResourceNotFoundException.class,
+                () -> playerService.changeAvailability("profile123", availabilityRequest));
         verify(sportProfileRepository, times(1)).findById("profile123");
     }
 }
