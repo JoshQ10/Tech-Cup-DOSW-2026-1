@@ -45,7 +45,6 @@ class AuthServiceImplTest {
     private RegisterRequest registerRequest;
     private LoginRequest loginRequest;
     private User testUser;
-    private UserResponse userResponse;
 
     @BeforeEach
     void setUp() {
@@ -69,14 +68,6 @@ class AuthServiceImplTest {
                 .role(Role.PLAYER)
                 .active(true)
                 .createdAt(LocalDateTime.now())
-                .build();
-
-        userResponse = UserResponse.builder()
-                .id(1L)
-                .name("Test User")
-                .email("test@example.com")
-                .role(Role.PLAYER)
-                .active(true)
                 .build();
     }
 
