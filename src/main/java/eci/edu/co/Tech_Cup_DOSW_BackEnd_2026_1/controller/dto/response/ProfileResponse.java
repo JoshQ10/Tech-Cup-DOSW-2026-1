@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -34,4 +36,6 @@ public class ProfileResponse {
 
     @Schema(description = "Indica si el jugador está disponible para jugar", example = "true")
     private boolean available;
+    private LocalDateTime lastAvailabilityChange;
+    private String availabilityChangeReason;
 }

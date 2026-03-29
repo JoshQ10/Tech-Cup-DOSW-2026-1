@@ -52,9 +52,10 @@ public class PlayerController {
 
     @PostMapping("/{id}/photo")
     @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
-    @Operation(summary = "Subir foto de perfil", description = "Actualiza la foto de perfil del jugador")
+    @Operation(summary = "Subir foto de perfil", description = "Actualiza la foto de perfil del jugador usando base64. La foto debe estar en formato data:image/[jpeg|png];base64,...")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Foto actualizada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Foto invalida: formato no soportado, tamano excedido (max 5MB) o base64 invalido"),
             @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
     })
@@ -68,7 +69,8 @@ public class PlayerController {
 
     @PatchMapping("/{id}/availability")
     @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
-    @Operation(summary = "Cambiar disponibilidad", description = "Actualiza el estado de disponibilidad del jugador para torneos")
+    @Operation(summary = "Cambiar disponibilidad",
+               description = "Actualiza el estado de disponibilidad del jugador para torneos. Registra el timestamp y razon del cambio")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos invalidos"),
