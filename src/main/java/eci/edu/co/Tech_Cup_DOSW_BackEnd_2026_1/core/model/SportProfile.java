@@ -15,6 +15,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -42,4 +44,10 @@ public class SportProfile {
     private Integer semester;
     private String gender;
     private Integer age;
+
+    @Column(name = "last_availability_change")
+    private LocalDateTime lastAvailabilityChange;
+
+    @Column(name = "availability_change_reason")
+    private String availabilityChangeReason;
 }

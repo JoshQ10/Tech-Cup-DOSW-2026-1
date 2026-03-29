@@ -49,9 +49,10 @@ public class PlayerController {
     }
 
     @PostMapping("/{id}/photo")
-    @Operation(summary = "Subir foto de perfil", description = "Actualiza la foto de perfil del jugador")
+    @Operation(summary = "Subir foto de perfil", description = "Actualiza la foto de perfil del jugador usando base64. La foto debe estar en formato data:image/[jpeg|png];base64,...")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Foto actualizada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Foto inválida: formato no soportado, tamaño excedido (máx 5MB) o base64 inválido"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
     })
     public ResponseEntity<ProfileResponse> uploadPhoto(
@@ -63,10 +64,11 @@ public class PlayerController {
     }
 
     @PatchMapping("/{id}/availability")
-    @Operation(summary = "Cambiar disponibilidad", description = "Actualiza el estado de disponibilidad del jugador para torneos")
+    @Operation(summary = "Cambiar disponibilidad", 
+               description = "Actualiza el estado de disponibilidad del jugador para torneos. Registra el timestamp y razón del cambio")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
             @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
     })
     public ResponseEntity<ProfileResponse> changeAvailability(
