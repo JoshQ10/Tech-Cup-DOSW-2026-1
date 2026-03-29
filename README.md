@@ -719,6 +719,133 @@ mvn spring-boot:run
 
 ---
 
+## 📊 Calidad de Código: JaCoCo y SonarQube
+
+### Herramientas de Análisis de Calidad
+
+El proyecto utiliza dos herramientas complementarias para garantizar calidad y cobertura de código:
+
+#### **JaCoCo (Java Code Coverage)**
+JaCoCo es una herramienta de cobertura de código que mide qué porcentaje de tu código está cubierto por pruebas unitarias. Proporciona:
+- **Cobertura de líneas**: Porcentaje de líneas ejecutadas en tests
+- **Cobertura de ramas**: Porcentaje de caminos lógicos cubiertos
+- **Cobertura de métodos**: Porcentaje de métodos invocados en tests
+- Reportes detallados por clase y paquete
+
+#### **SonarQube (Análisis de Calidad de Código)**
+SonarQube realiza análisis estático del código fuente para detectar:
+- **Bugs y vulnerabilidades** (Security)
+- **Problemas de confiabilidad** (Reliability)
+- **Problemas de mantenibilidad** (Maintainability) - Como duplicación de código
+- **Deuda técnica** (Code Debt)
+- **Duplicación de código**
+
+### Evolución de Métricas
+
+Después de la refactorización del código, centralizando constantes de string en `AppConstants.java`, se logró una mejora significativa en las métricas de calidad:
+
+#### **Estado Inicial (Antes de Refactorización)**
+
+Presentaba **143 problemas de Mantenibilidad**, principalmente debido a duplicación de strings en múltiples servicios:
+
+![Análisis Inicial - 143 Issues](output/sonarqube-initial-143-issues.png)
+
+**Estado del Quality Gate**: ❌ **FAILED**
+- Mantenibilidad: 143 issues abiertos (clasificados como "duplicated literal")
+- Problemas encontrados en: `AuthServiceImpl`, `TeamServiceImpl`, `TournamentServiceImpl`, `PlayerServiceImpl`
+
+#### **Cambios Implementados**
+
+1. **Creación de `AppConstants.java`**: Archivo centralizado con 17 constantes predefinidas para:
+   - Mensajes de error: `ERROR_USER_NOT_FOUND`, `ERROR_PROFILE_NOT_FOUND`, etc.
+   - Mensajes de éxito: `MSG_SUCCESS`, `MSG_REFRESH`, `MSG_CREATED`
+   - Constantes JWT: `TOKEN_TYPE`, `BEARER_PREFIX`
+
+2. **Refactorización de Servicios**: Reemplazo sistemático de strings duplicados:
+   - `PlayerServiceImpl.java`: 4 instancias de "Profile not found"
+   - `AuthServiceImpl.java`: 2 instancias de "User not found"
+   - `TournamentServiceImpl.java`: 3 instancias de "Tournament not found"
+   - `TeamServiceImpl.java`: 3 instancias de "Team not found"
+
+#### **Estado Final (Después de Refactorización)**
+
+Después de centralizar las constantes, se redujo a **118 problemas de Mantenibilidad**:
+
+![Análisis Final - 118 Issues](output/sonarqube-final-118-issues.png)
+
+**Estado del Quality Gate**: ✅ **PASSED**
+- Mantenibilidad: 118 issues restantes (reducción del 17%)
+- Coverage: 21.8% (mejora en cobertura total)
+- Reliability: 2 issues (sin cambios)
+- Security: 0 issues (sin cambios)
+
+#### **Comparativa de Métricas (JaCoCo - Cobertura)**
+
+**Vista de Cobertura por Módulo:**
+
+| Módulo | Antes | Después | Cambio |
+|--------|-------|---------|--------|
+| `core.service.impl` | 42% | 60% | +18% |
+| `controller` | 0% | 80% | +80% |
+| `core.security` | 36% | 1% | -35% |
+| `core.util` | 0% | 0% | - |
+| **Total** | 20% | 44% | +24% |
+
+### Mejoras Clave Logradas
+
+✅ **Reducción de Deuda Técnica**: Centralización de constantes elimina duplicación  
+✅ **Mejor Mantenibilidad**: Cambios solo requieren actualizar en un lugar  
+✅ **Quality Gate PASSED**: Proyecto listo para producción según estándares de SonarQube  
+✅ **Preparación para Presentación**: Métricas limpias antes de la sustentación en vivo  
+
+### Cómo Ejecutar los Análisis
+
+#### **Ejecutar JaCoCo (Cobertura)**
+
+```bash
+# Compilar y ejecutar tests con JaCoCo
+mvn clean verify
+
+# Ver reporte en el navegador
+# El reporte se genera en: target/site/jacoco/index.html
+start target/site/jacoco/index.html
+```
+
+#### **Ejecutar SonarQube**
+
+Asegúrate de que **SonarQube está ejecutándose** en `http://localhost:9000`:
+
+```bash
+# Ejecutar análisis completo
+mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=tech-cup-dosw-2026 \
+  -Dsonar.projectName="Tech Cup DOSW 2026" \
+  -Dsonar.sources=src/main \
+  -Dsonar.tests=src/test \
+  -Dsonar.hostUrl=http://localhost:9000 \
+  -Dsonar.token=sqp_e54c6832b09bef5f1f2c0e0de4f6e8fea23e7513
+```
+
+**O usando login/password (alternativa):**
+
+```bash
+mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=tech-cup-dosw-2026 \
+  -Dsonar.projectName="Tech Cup DOSW 2026" \
+  -Dsonar.sources=src/main \
+  -Dsonar.tests=src/test \
+  -Dsonar.hostUrl=http://localhost:9000 \
+  -Dsonar.login=admin \
+  -Dsonar.password=TuContraseña
+```
+
+#### **Acceder a los Reportes**
+
+- **JaCoCo**: [`target/site/jacoco/index.html`](target/site/jacoco/index.html)
+- **SonarQube Dashboard**: `http://localhost:9000/dashboard?id=tech-cup-dosw-2026`
+
+---
+
 ## Requisitos Previos
 
 - **Java** 21 (LTS) ✅ Verificar en terminal: `java -version`
