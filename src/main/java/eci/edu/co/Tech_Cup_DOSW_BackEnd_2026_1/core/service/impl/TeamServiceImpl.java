@@ -2,10 +2,11 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TeamMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Team;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.TeamRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.TeamRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
+    private final TeamMapper teamMapper;
 
     @Override
     public TeamResponse create(TeamRequest request) {
@@ -87,14 +89,6 @@ public class TeamServiceImpl implements TeamService {
     }
 
     private TeamResponse mapToTeamResponse(Team team) {
-        return TeamResponse.builder()
-                .id(team.getId())
-                .name(team.getName())
-                .shieldUrl(team.getShieldUrl())
-                .uniformColors(team.getUniformColors())
-                .tournamentId(team.getTournamentId())
-                .captainId(team.getCaptainId())
-                .players(team.getPlayers())
-                .build();
+        return teamMapper.toResponse(team);
     }
 }

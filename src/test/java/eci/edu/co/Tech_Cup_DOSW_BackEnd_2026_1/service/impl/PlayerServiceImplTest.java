@@ -4,12 +4,13 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.PlayerServiceIm
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.SportProfileMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.SportProfileRepository;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.UserRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.SportProfileRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,9 @@ class PlayerServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private SportProfileMapper sportProfileMapper;
 
     @InjectMocks
     private PlayerServiceImpl playerService;
@@ -79,9 +83,12 @@ class PlayerServiceImplTest {
     @DisplayName("Should update player profile successfully")
     void testUpdateProfileSuccess() {
         // Arrange
+        ProfileResponse expectedResponse = ProfileResponse.builder()
+                .id(1L).userId(1L).position(Position.FORWARD).jerseyNumber(10).available(true).build();
         when(sportProfileRepository.findById(1L)).thenReturn(Optional.of(testProfile));
         when(sportProfileRepository.save(any(SportProfile.class))).thenReturn(testProfile);
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(sportProfileMapper.toResponse(any(SportProfile.class))).thenReturn(expectedResponse);
 
         // Act
         ProfileResponse response = playerService.updateProfile(1L, profileRequest);
@@ -109,9 +116,12 @@ class PlayerServiceImplTest {
     @DisplayName("Should change player availability successfully")
     void testChangeAvailabilitySuccess() {
         // Arrange
+        ProfileResponse expectedResponse = ProfileResponse.builder()
+                .id(1L).userId(1L).position(Position.FORWARD).jerseyNumber(10).available(false).build();
         when(sportProfileRepository.findById(1L)).thenReturn(Optional.of(testProfile));
         when(sportProfileRepository.save(any(SportProfile.class))).thenReturn(testProfile);
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(sportProfileMapper.toResponse(any(SportProfile.class))).thenReturn(expectedResponse);
 
         // Act
         ProfileResponse response = playerService.changeAvailability(1L, availabilityRequest);

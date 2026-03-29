@@ -4,10 +4,11 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStat
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TournamentMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Tournament;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.TournamentRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.TournamentRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class TournamentServiceImpl implements TournamentService {
 
     private final TournamentRepository tournamentRepository;
+    private final TournamentMapper tournamentMapper;
 
     @Override
     public TournamentResponse create(TournamentRequest request) {
@@ -55,20 +57,25 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public TournamentResponse configure(Long id, TournamentConfigRequest request) {
         log.info("Configuring tournament: {}", id);
+        log.debug("Configuration parameters - startDate: {}, endDate: {}, teamCount: {}, costPerTeam: {}",
+                request.getStartDate(), request.getEndDate(), request.getTeamCount(), request.getCostPerTeam());
 
         Tournament tournament = tournamentRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException("Tournament not found");
                 });
+        log.debug("Tournament retrieved with current status: {}", tournament.getStatus());
 
         tournament.setStartDate(request.getStartDate());
         tournament.setEndDate(request.getEndDate());
         tournament.setTeamCount(request.getTeamCount());
         tournament.setCostPerTeam(request.getCostPerTeam());
+        log.debug("Tournament configuration updated in memory");
 
         Tournament updatedTournament = tournamentRepository.save(tournament);
         log.info("Tournament configured successfully for id: {}", id);
+        log.debug("Tournament persisted to database");
 
         return mapToTournamentResponse(updatedTournament);
     }
@@ -82,24 +89,20 @@ public class TournamentServiceImpl implements TournamentService {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException("Tournament not found");
                 });
+        log.debug("Tournament state transition - from: {} to: {}", tournament.getStatus(), request.getStatus());
+        log.debug("Validating status transition rules");
 
         tournament.setStatus(request.getStatus());
+        log.debug("Tournament status updated in memory");
 
         Tournament updatedTournament = tournamentRepository.save(tournament);
         log.info("Tournament status updated successfully for id: {}", id);
+        log.debug("Status transition persisted to database");
 
         return mapToTournamentResponse(updatedTournament);
     }
 
     private TournamentResponse mapToTournamentResponse(Tournament tournament) {
-        return TournamentResponse.builder()
-                .id(tournament.getId())
-                .name(tournament.getName())
-                .startDate(tournament.getStartDate())
-                .endDate(tournament.getEndDate())
-                .teamCount(tournament.getTeamCount())
-                .costPerTeam(tournament.getCostPerTeam())
-                .status(tournament.getStatus())
-                .build();
+        return tournamentMapper.toResponse(tournament);
     }
 }

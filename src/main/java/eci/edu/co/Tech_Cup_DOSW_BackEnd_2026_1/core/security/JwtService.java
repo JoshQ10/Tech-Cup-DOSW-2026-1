@@ -40,10 +40,23 @@ public class JwtService {
         return buildToken(claims, user.getEmail(), jwtExpirationMs);
     }
 
+    public String generateAccessToken(User user, long expirationMs) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("role", user.getRole().name());
+        claims.put("type", "access");
+        return buildToken(claims, user.getEmail(), expirationMs);
+    }
+
     public String generateRefreshToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", "refresh");
         return buildToken(claims, user.getEmail(), refreshExpirationMs);
+    }
+
+    public String generateRefreshToken(User user, long expirationMs) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("type", "refresh");
+        return buildToken(claims, user.getEmail(), expirationMs);
     }
 
     public String extractEmail(String token) {

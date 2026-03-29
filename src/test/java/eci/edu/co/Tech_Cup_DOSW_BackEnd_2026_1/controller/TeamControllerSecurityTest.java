@@ -4,6 +4,8 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamReques
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.config.SecurityConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,12 @@ class TeamControllerSecurityTest {
 
     @MockBean
     private JwtService jwtService;
+
+    @MockBean
+    private CustomOAuth2UserService customOAuth2UserService;
+
+    @MockBean
+    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     private TeamRequest teamRequest;
     private TeamResponse teamResponse;

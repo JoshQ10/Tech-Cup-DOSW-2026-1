@@ -3,10 +3,11 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.TeamServiceImpl;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TeamMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Team;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.TeamRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.TeamRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ class TeamServiceImplTest {
 
     @Mock
     private TeamRepository teamRepository;
+
+    @Mock
+    private TeamMapper teamMapper;
 
     @InjectMocks
     private TeamServiceImpl teamService;
@@ -69,7 +73,10 @@ class TeamServiceImplTest {
     @DisplayName("Should create team successfully")
     void testCreateTeamSuccess() {
         // Arrange
+        TeamResponse expectedResponse = TeamResponse.builder()
+                .id(1L).name("Test Team").tournamentId(1L).captainId(1L).players(players).build();
         when(teamRepository.save(any(Team.class))).thenReturn(testTeam);
+        when(teamMapper.toResponse(any(Team.class))).thenReturn(expectedResponse);
 
         // Act
         TeamResponse response = teamService.create(teamRequest);
@@ -86,7 +93,10 @@ class TeamServiceImplTest {
     @DisplayName("Should get team by id successfully")
     void testGetTeamByIdSuccess() {
         // Arrange
+        TeamResponse expectedResponse = TeamResponse.builder()
+                .id(1L).name("Test Team").tournamentId(1L).captainId(1L).players(players).build();
         when(teamRepository.findById(1L)).thenReturn(Optional.of(testTeam));
+        when(teamMapper.toResponse(any(Team.class))).thenReturn(expectedResponse);
 
         // Act
         TeamResponse response = teamService.getById(1L);
@@ -113,8 +123,11 @@ class TeamServiceImplTest {
     @DisplayName("Should remove player from team successfully")
     void testRemovePlayerSuccess() {
         // Arrange
+        TeamResponse expectedResponse = TeamResponse.builder()
+                .id(1L).name("Test Team").tournamentId(1L).captainId(1L).players(players).build();
         when(teamRepository.findById(1L)).thenReturn(Optional.of(testTeam));
         when(teamRepository.save(any(Team.class))).thenReturn(testTeam);
+        when(teamMapper.toResponse(any(Team.class))).thenReturn(expectedResponse);
 
         // Act
         TeamResponse response = teamService.removePlayer(1L, 1L);

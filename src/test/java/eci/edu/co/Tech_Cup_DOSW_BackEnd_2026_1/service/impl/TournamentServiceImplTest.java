@@ -4,10 +4,11 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.TournamentServi
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStatusRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TournamentMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Tournament;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.TournamentRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,9 @@ class TournamentServiceImplTest {
 
     @Mock
     private TournamentRepository tournamentRepository;
+
+    @Mock
+    private TournamentMapper tournamentMapper;
 
     @InjectMocks
     private TournamentServiceImpl tournamentService;
@@ -68,7 +72,11 @@ class TournamentServiceImplTest {
     @DisplayName("Should create tournament successfully")
     void testCreateTournamentSuccess() {
         // Arrange
+        TournamentResponse expectedResponse = TournamentResponse.builder()
+                .id(1L).name("Football Tournament 2026-1").teamCount(16)
+                .costPerTeam(500000.0).status(TournamentStatus.DRAFT).build();
         when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+        when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
 
         // Act
         TournamentResponse response = tournamentService.create(tournamentRequest);
@@ -86,7 +94,11 @@ class TournamentServiceImplTest {
     @DisplayName("Should get tournament by id successfully")
     void testGetTournamentByIdSuccess() {
         // Arrange
+        TournamentResponse expectedResponse = TournamentResponse.builder()
+                .id(1L).name("Football Tournament 2026-1").teamCount(16)
+                .costPerTeam(500000.0).status(TournamentStatus.DRAFT).build();
         when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+        when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
 
         // Act
         TournamentResponse response = tournamentService.getById(1L);
@@ -113,9 +125,13 @@ class TournamentServiceImplTest {
     @DisplayName("Should change tournament status successfully")
     void testChangeStatusSuccess() {
         // Arrange
+        TournamentResponse expectedResponse = TournamentResponse.builder()
+                .id(1L).name("Football Tournament 2026-1").teamCount(16)
+                .costPerTeam(500000.0).status(TournamentStatus.ACTIVE).build();
         testTournament.setStatus(TournamentStatus.ACTIVE);
         when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
         when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+        when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
 
         // Act
         TournamentResponse response = tournamentService.changeStatus(1L, changeStatusRequest);

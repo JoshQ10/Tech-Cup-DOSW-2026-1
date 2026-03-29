@@ -5,11 +5,13 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginReque
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.UserMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository.UserRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,13 +41,15 @@ class AuthServiceImplTest {
     @Mock
     private JwtService jwtService;
 
+    @Mock
+    private UserMapper userMapper;
+
     @InjectMocks
     private AuthServiceImpl authService;
 
     private RegisterRequest registerRequest;
     private LoginRequest loginRequest;
     private User testUser;
-    private UserResponse userResponse;
 
     @BeforeEach
     void setUp() {
@@ -70,22 +74,18 @@ class AuthServiceImplTest {
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .build();
-
-        userResponse = UserResponse.builder()
-                .id(1L)
-                .name("Test User")
-                .email("test@example.com")
-                .role(Role.PLAYER)
-                .active(true)
-                .build();
     }
 
     @Test
     @DisplayName("Should register a new user successfully")
     void testRegisterUserSuccess() {
         // Arrange
+        UserResponse expectedResponse = UserResponse.builder()
+                .id(1L).name("Test User").email("test@example.com").role(Role.PLAYER).active(true).build();
         when(userRepository.findByEmail(registerRequest.getEmail())).thenReturn(Optional.empty());
+        when(userMapper.toEntity(any(RegisterRequest.class))).thenReturn(testUser);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(userMapper.toResponse(any(User.class))).thenReturn(expectedResponse);
 
         // Act
         UserResponse response = authService.register(registerRequest);
@@ -116,9 +116,12 @@ class AuthServiceImplTest {
     @DisplayName("Should login successfully with correct credentials")
     void testLoginSuccess() {
         // Arrange
+        UserResponse expectedResponse = UserResponse.builder()
+                .id(1L).name("Test User").email("test@example.com").role(Role.PLAYER).active(true).build();
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(testUser));
         when(jwtService.generateAccessToken(testUser)).thenReturn("access-token");
         when(jwtService.generateRefreshToken(testUser)).thenReturn("refresh-token");
+        when(userMapper.toResponse(any(User.class))).thenReturn(expectedResponse);
 
         // Act
         LoginResponse response = authService.login(loginRequest);
