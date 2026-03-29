@@ -83,13 +83,51 @@ Modernizar la organizacion del torneo universitario mediante una plataforma que 
 
 ---
 
+## Diagramas de Arquitectura
+
+### Diagramas Principales (Lucidchart)
+
+Todos los diagramas de arquitectura se encuentran centralizados en el siguiente documento interactivo:
+
+**[Ver todos los diagramas en Lucidchart](https://lucid.app/lucidchart/d035776f-7c94-4150-9fb5-55bcacb674df/edit?viewport_loc=-864%2C340%2C2990%2C1130%2C0_0&invitationId=inv_ccfbc0fd-443f-4d4f-b7a1-53f4693b6fe2)**
+
+Los diagramas incluyen:
+
+- **Diagrama de Contexto** - Muestra la interacción del sistema con actores externos (usuarios, sistemas externos), definiendo límites del sistema y relaciones de alto nivel.
+
+- **Diagrama de Clases Backend** - Representa todas las entidades JPA (User, Team, Tournament, Match, etc.) con sus atributos, relaciones y servicios clave del backend.
+
+- **Diagrama de Clases Frontend** - Detalla los componentes React, servicios HTTP, estados globales y la estructura de la interfaz de usuario.
+
+- **Diagrama de Componentes General** - Muestra cómo interactúan los principales módulos del sistema: frontend, backend API, base de datos y servicios externos.
+
+- **Diagrama de Componentes Específico** - Profundiza en subsistemas críticos como autenticación (JWT/OAuth2), notificaciones, pagos y gestión de torneos.
+
+- **Diagrama Entidad-Relación (ER)** - Modelo completo de la base de datos con 15 entidades, tipos de datos y relaciones (1:1, 1:N, N:N).
+
+### Diagrama de Casos de Uso (Miro)
+
+**[Ver diagrama de casos de uso en Miro](https://miro.com/app/board/uXjVGqDT2-M=/)**
+
+Especifica todas las funcionalidades del sistema agrupadas por rol de usuario (Jugador, Capitán, Árbitro, Organizador, Admin):
+- Procesos de inscripción, invitación y gestión de equipos
+- Organización de alineaciones y resultados de partidos
+- Seguimiento de standings, estadísticas y sanciones
+- Gestión de torneos, pagos y configuración del sistema
+
+---
+
 ## Enlaces del Proyecto
 
 | Recurso | Enlace |
 |---------|--------|
+| Backend (GitHub) | [Tech-Cup-DOSW-BackEnd-2026-1](https://github.com/JoshQ10/Tech-Cup-DOSW-2026-1.git) |
+| Frontend (GitHub) | [Tech-Cup-DOSW-FrontEnd-2026-1](https://github.com/JoshQ10/Tech-Cup-DOSW-FrontEnd-2026-1.git) |
 | Jira (Gestion del proyecto) | [https://n9.cl/m2as4l](https://n9.cl/m2as4l) |
-| Diagrama de Arquitectura (Lucidchart) | [Ver diagrama](https://lucid.app/lucidchart/d035776f-7c94-4150-9fb5-55bcacb674df/edit?viewport_loc=-396%2C340%2C3964%2C1684%2C0_0&invitationId=inv_ccfbc0fd-443f-4d4f-b7a1-53f4693b6fe2) |
-| Diagrama de Clases y Secuencia (Draw.io) | [Ver diagramas](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&edit=_blank&layers=1&nav=1&title=Diagrama%20de%20clases%20y%20secuencia.drawio&dark=auto) |
+| Diagramas Centralizados (Lucidchart) | [Ver todos los diagramas](https://lucid.app/lucidchart/d035776f-7c94-4150-9fb5-55bcacb674df/edit?viewport_loc=-864%2C340%2C2990%2C1130%2C0_0&invitationId=inv_ccfbc0fd-443f-4d4f-b7a1-53f4693b6fe2) |
+| Casos de Uso (Miro) | [Ver diagrama](https://miro.com/app/board/uXjVGqDT2-M=/) |
+| Matriz de Permisos | [Ver matriz](output/MATRIZ_PERMISOS.md) |
+| Documentación Completa | [Acceder a docs/](docs/INDICE.md) |
 
 ---
 
