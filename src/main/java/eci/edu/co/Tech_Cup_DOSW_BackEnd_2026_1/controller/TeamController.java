@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/teams")
@@ -32,10 +32,12 @@ public class TeamController {
     private final TeamService teamService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
     @Operation(summary = "Crear equipo", description = "Crea un nuevo equipo de futbol")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Equipo creado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos invalidos"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
             @ApiResponse(responseCode = "409", description = "Equipo ya existe")
     })
     public ResponseEntity<TeamResponse> create(@Valid @RequestBody TeamRequest request) {
@@ -45,9 +47,11 @@ public class TeamController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Obtener equipo", description = "Obtiene los detalles de un equipo por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Equipo encontrado"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "404", description = "Equipo no encontrado")
     })
     public ResponseEntity<TeamResponse> getById(
@@ -58,9 +62,11 @@ public class TeamController {
     }
 
     @GetMapping("/{id}/roster")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Ver plantilla del equipo", description = "Consulta la plantilla actual del equipo")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Plantilla obtenida exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "404", description = "Equipo no encontrado")
     })
     public ResponseEntity<TeamResponse> getRoster(
@@ -71,9 +77,11 @@ public class TeamController {
     }
 
     @DeleteMapping("/{id}/players/{playerId}")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'ADMINISTRATOR')")
     @Operation(summary = "Remover jugador del equipo", description = "Elimina un jugador de la plantilla del equipo")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Jugador removido exitosamente"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
             @ApiResponse(responseCode = "404", description = "Equipo o jugador no encontrado")
     })
     public ResponseEntity<TeamResponse> removePlayer(
