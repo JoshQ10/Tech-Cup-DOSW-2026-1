@@ -9,6 +9,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundEx
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.PhotoValidationUtil;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.SportProfileRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,9 @@ class PlayerServiceImplTest {
     @Mock
     private SportProfileMapper sportProfileMapper;
 
+    @Mock
+    private PhotoValidationUtil photoValidationUtil;
+
     @InjectMocks
     private PlayerServiceImpl playerService;
 
@@ -56,7 +60,7 @@ class PlayerServiceImplTest {
                 .photoUrl("http://example.com/photo.jpg")
                 .available(true)
                 .semester(1)
-                .gender("M")
+                .gender("Masculino")
                 .age(20)
                 .build();
 

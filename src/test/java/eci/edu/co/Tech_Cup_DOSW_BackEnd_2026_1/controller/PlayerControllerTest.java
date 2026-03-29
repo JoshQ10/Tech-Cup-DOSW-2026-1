@@ -59,12 +59,12 @@ class PlayerControllerTest {
                                 .photoUrl("http://example.com/photo.jpg")
                                 .available(true)
                                 .semester(1)
-                                .gender("M")
+                                .gender("Masculino")
                                 .age(20)
                                 .build();
 
                 photoUploadRequest = PhotoUploadRequest.builder()
-                                .photoUrl("http://example.com/new-photo.jpg")
+                                .photoUrl("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8VAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA8A/9k=")
                                 .build();
 
                 availabilityRequest = AvailabilityRequest.builder()

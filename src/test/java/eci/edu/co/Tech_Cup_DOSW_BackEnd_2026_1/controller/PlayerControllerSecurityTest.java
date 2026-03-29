@@ -64,7 +64,7 @@ class PlayerControllerSecurityTest {
                 .photoUrl("http://example.com/photo.jpg")
                 .available(true)
                 .semester(1)
-                .gender("M")
+                .gender("Masculino")
                 .age(20)
                 .build();
 
