@@ -1,6 +1,7 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.PhotoUploadRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
@@ -21,7 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,6 +47,7 @@ class PlayerControllerTest {
         private JwtService jwtService;
 
         private ProfileRequest profileRequest;
+        private PhotoUploadRequest photoUploadRequest;
         private AvailabilityRequest availabilityRequest;
         private ProfileResponse profileResponse;
 
@@ -57,6 +61,10 @@ class PlayerControllerTest {
                                 .semester(1)
                                 .gender("M")
                                 .age(20)
+                                .build();
+
+                photoUploadRequest = PhotoUploadRequest.builder()
+                                .photoUrl("http://example.com/new-photo.jpg")
                                 .build();
 
                 availabilityRequest = AvailabilityRequest.builder()
@@ -131,6 +139,61 @@ class PlayerControllerTest {
                 mockMvc.perform(patch("/api/players/999/availability")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(availabilityRequest)))
+                                .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Should upload player photo successfully")
+        void testUploadPhotoSuccess() throws Exception {
+                // Arrange
+                profileResponse.setPhotoUrl("http://example.com/new-photo.jpg");
+                when(playerService.uploadPhoto(anyLong(), any(PhotoUploadRequest.class)))
+                                .thenReturn(profileResponse);
+
+                // Act & Assert
+                mockMvc.perform(post("/api/players/1/photo")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(photoUploadRequest)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(1));
+        }
+
+        @Test
+        @DisplayName("Should return 404 when uploading photo for non-existent player")
+        void testUploadPhotoNotFound() throws Exception {
+                // Arrange
+                when(playerService.uploadPhoto(anyLong(), any(PhotoUploadRequest.class)))
+                                .thenThrow(new ResourceNotFoundException("Player not found"));
+
+                // Act & Assert
+                mockMvc.perform(post("/api/players/999/photo")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(photoUploadRequest)))
+                                .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Should get player profile successfully")
+        void testGetProfileSuccess() throws Exception {
+                // Arrange
+                when(playerService.getProfile(anyLong())).thenReturn(profileResponse);
+
+                // Act & Assert
+                mockMvc.perform(get("/api/players/1/profile"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.jerseyNumber").value(10));
+        }
+
+        @Test
+        @DisplayName("Should return 404 when getting profile for non-existent player")
+        void testGetProfileNotFound() throws Exception {
+                // Arrange
+                when(playerService.getProfile(anyLong()))
+                                .thenThrow(new ResourceNotFoundException("Profile not found"));
+
+                // Act & Assert
+                mockMvc.perform(get("/api/players/999/profile"))
                                 .andExpect(status().isNotFound());
         }
 }

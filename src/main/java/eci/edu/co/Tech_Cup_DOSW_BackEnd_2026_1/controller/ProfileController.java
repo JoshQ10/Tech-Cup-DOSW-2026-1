@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class ProfileController {
 
     @GetMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Consultar perfil autenticado", description = "Retorna información básica del usuario autenticado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Perfil obtenido exitosamente"),

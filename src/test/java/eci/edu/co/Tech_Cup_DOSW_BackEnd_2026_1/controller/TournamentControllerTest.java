@@ -1,6 +1,7 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStatusRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,6 +49,7 @@ class TournamentControllerTest {
         private JwtService jwtService;
 
         private TournamentRequest tournamentRequest;
+        private TournamentConfigRequest configRequest;
         private ChangeStatusRequest changeStatusRequest;
         private TournamentResponse tournamentResponse;
 
@@ -54,6 +57,13 @@ class TournamentControllerTest {
         void setUp() {
                 tournamentRequest = TournamentRequest.builder()
                                 .name("Football Tournament 2026-1")
+                                .startDate(LocalDate.of(2026, 3, 1))
+                                .endDate(LocalDate.of(2026, 5, 31))
+                                .teamCount(16)
+                                .costPerTeam(500000.0)
+                                .build();
+
+                configRequest = TournamentConfigRequest.builder()
                                 .startDate(LocalDate.of(2026, 3, 1))
                                 .endDate(LocalDate.of(2026, 5, 31))
                                 .teamCount(16)
@@ -145,6 +155,35 @@ class TournamentControllerTest {
                 mockMvc.perform(patch("/api/tournaments/999/status")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(changeStatusRequest)))
+                                .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Should configure tournament successfully")
+        void testConfigureTournamentSuccess() throws Exception {
+                // Arrange
+                when(tournamentService.configure(anyLong(), any(TournamentConfigRequest.class)))
+                                .thenReturn(tournamentResponse);
+
+                // Act & Assert
+                mockMvc.perform(put("/api/tournaments/1/config")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(configRequest)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").value(1));
+        }
+
+        @Test
+        @DisplayName("Should return 404 when configuring non-existent tournament")
+        void testConfigureTournamentNotFound() throws Exception {
+                // Arrange
+                when(tournamentService.configure(anyLong(), any(TournamentConfigRequest.class)))
+                                .thenThrow(new ResourceNotFoundException("Tournament not found"));
+
+                // Act & Assert
+                mockMvc.perform(put("/api/tournaments/999/config")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(configRequest)))
                                 .andExpect(status().isNotFound());
         }
 }
