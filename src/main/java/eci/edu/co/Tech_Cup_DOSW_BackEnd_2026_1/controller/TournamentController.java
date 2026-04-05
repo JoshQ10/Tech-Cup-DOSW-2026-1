@@ -3,7 +3,9 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStatusRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentSetupRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentSetupResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -77,6 +79,23 @@ public class TournamentController {
             @Valid @RequestBody TournamentConfigRequest request) {
         log.info("REST configure tournament endpoint called for id: {}", id);
         TournamentResponse response = tournamentService.configure(id, request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}/setup")
+    @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
+    @Operation(summary = "Configurar torneo", description = "Configura reglamento, canchas, horarios y sanciones del torneo")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Torneo configurado exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Datos de configuracion invalidos"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
+            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+    })
+    public ResponseEntity<TournamentSetupResponse> setup(
+            @Parameter(description = "ID del torneo", required = true) @PathVariable Long id,
+            @Valid @RequestBody TournamentSetupRequest request) {
+        log.info("REST setup tournament endpoint called for id: {}", id);
+        TournamentSetupResponse response = tournamentService.setup(id, request);
         return ResponseEntity.ok(response);
     }
 

@@ -1,10 +1,17 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStatusRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.CourtRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentDateRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentSetupRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.CourtResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentDateResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentSetupResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
@@ -20,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -185,5 +194,84 @@ class TournamentControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(configRequest)))
                                 .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Should setup tournament successfully")
+        void testSetupTournamentSuccess() throws Exception {
+                TournamentSetupRequest setupRequest = TournamentSetupRequest.builder()
+                                .rules("Partidos de 2 tiempos de 25 minutos.")
+                                .sanctionRules("Tarjeta roja = 2 partidos")
+                                .inscriptionCloseDate(LocalDate.of(2026, 3, 20))
+                                .courts(List.of(
+                                                CourtRequest.builder().name("Cancha Principal").location("Bloque B").build()))
+                                .schedule(List.of(
+                                                TournamentDateRequest.builder()
+                                                                .description("Jornada 1")
+                                                                .eventDate(LocalDate.of(2026, 4, 15)).build()))
+                                .build();
+
+                TournamentSetupResponse setupResponse = TournamentSetupResponse.builder()
+                                .tournamentId(1L)
+                                .tournamentName("Football Tournament 2026-1")
+                                .rules("Partidos de 2 tiempos de 25 minutos.")
+                                .sanctionRules("Tarjeta roja = 2 partidos")
+                                .courts(List.of(CourtResponse.builder()
+                                                .id(1L).name("Cancha Principal").location("Bloque B").build()))
+                                .schedule(List.of(TournamentDateResponse.builder()
+                                                .id(1L).description("Jornada 1")
+                                                .eventDate(LocalDate.of(2026, 4, 15)).build()))
+                                .build();
+
+                when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class)))
+                                .thenReturn(setupResponse);
+
+                mockMvc.perform(put("/api/tournaments/1/setup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(setupRequest)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.tournamentId").value(1))
+                                .andExpect(jsonPath("$.rules").value("Partidos de 2 tiempos de 25 minutos."))
+                                .andExpect(jsonPath("$.courts[0].name").value("Cancha Principal"))
+                                .andExpect(jsonPath("$.schedule[0].description").value("Jornada 1"));
+        }
+
+        @Test
+        @DisplayName("Should return 404 when setting up non-existent tournament")
+        void testSetupTournamentNotFound() throws Exception {
+                TournamentSetupRequest setupRequest = TournamentSetupRequest.builder()
+                                .rules("Reglas")
+                                .courts(List.of(CourtRequest.builder().name("C1").location("L1").build()))
+                                .schedule(List.of(TournamentDateRequest.builder()
+                                                .description("J1").eventDate(LocalDate.of(2026, 4, 15)).build()))
+                                .build();
+
+                when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class)))
+                                .thenThrow(new ResourceNotFoundException("Tournament not found"));
+
+                mockMvc.perform(put("/api/tournaments/999/setup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(setupRequest)))
+                                .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("Should return 400 when setup request has validation errors")
+        void testSetupTournamentValidationError() throws Exception {
+                TournamentSetupRequest setupRequest = TournamentSetupRequest.builder()
+                                .rules("Reglas")
+                                .courts(List.of(CourtRequest.builder().name("C1").location("L1").build()))
+                                .schedule(List.of(TournamentDateRequest.builder()
+                                                .description("J1").eventDate(LocalDate.of(2026, 4, 15)).build()))
+                                .build();
+
+                when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class)))
+                                .thenThrow(new ValidationException("Errores de validacion",
+                                                Map.of("rules", "El reglamento es requerido")));
+
+                mockMvc.perform(put("/api/tournaments/1/setup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(setupRequest)))
+                                .andExpect(status().isBadRequest());
         }
 }

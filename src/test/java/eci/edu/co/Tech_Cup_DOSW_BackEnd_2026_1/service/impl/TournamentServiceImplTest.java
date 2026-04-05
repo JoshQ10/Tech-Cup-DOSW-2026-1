@@ -2,15 +2,31 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.TournamentServiceImpl;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStatusRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.CourtRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentDateRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentSetupRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentSetupResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TournamentMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.tournament.Court;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.tournament.Tournament;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.tournament.TournamentDate;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.ChangeStatusRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentConfigRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentSetupRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.CourtRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentDateRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,13 +34,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TournamentServiceImpl Tests")
@@ -36,12 +52,32 @@ class TournamentServiceImplTest {
     @Mock
     private TournamentMapper tournamentMapper;
 
+    @Mock
+    private TournamentRequestValidator tournamentRequestValidator;
+
+    @Mock
+    private TournamentConfigRequestValidator tournamentConfigRequestValidator;
+
+    @Mock
+    private TournamentSetupRequestValidator tournamentSetupRequestValidator;
+
+    @Mock
+    private ChangeStatusRequestValidator changeStatusRequestValidator;
+
+    @Mock
+    private CourtRepository courtRepository;
+
+    @Mock
+    private TournamentDateRepository tournamentDateRepository;
+
     @InjectMocks
     private TournamentServiceImpl tournamentService;
 
     private TournamentRequest tournamentRequest;
+    private TournamentConfigRequest configRequest;
     private ChangeStatusRequest changeStatusRequest;
     private Tournament testTournament;
+    private TournamentResponse expectedResponse;
 
     @BeforeEach
     void setUp() {
@@ -51,6 +87,13 @@ class TournamentServiceImplTest {
                 .endDate(LocalDate.of(2026, 5, 31))
                 .teamCount(16)
                 .costPerTeam(500000.0)
+                .build();
+
+        configRequest = TournamentConfigRequest.builder()
+                .startDate(LocalDate.of(2026, 4, 1))
+                .endDate(LocalDate.of(2026, 6, 30))
+                .teamCount(8)
+                .costPerTeam(300000.0)
                 .build();
 
         changeStatusRequest = ChangeStatusRequest.builder()
@@ -66,93 +109,305 @@ class TournamentServiceImplTest {
                 .costPerTeam(500000.0)
                 .status(TournamentStatus.DRAFT)
                 .build();
+
+        expectedResponse = TournamentResponse.builder()
+                .id(1L)
+                .name("Football Tournament 2026-1")
+                .startDate(LocalDate.of(2026, 3, 1))
+                .endDate(LocalDate.of(2026, 5, 31))
+                .teamCount(16)
+                .costPerTeam(500000.0)
+                .status(TournamentStatus.DRAFT)
+                .build();
     }
 
-    @Test
-    @DisplayName("Should create tournament successfully")
-    void testCreateTournamentSuccess() {
-        // Arrange
-        TournamentResponse expectedResponse = TournamentResponse.builder()
-                .id(1L).name("Football Tournament 2026-1").teamCount(16)
-                .costPerTeam(500000.0).status(TournamentStatus.DRAFT).build();
-        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
-        when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
+    @Nested
+    @DisplayName("create()")
+    class CreateTests {
 
-        // Act
-        TournamentResponse response = tournamentService.create(tournamentRequest);
+        @Test
+        @DisplayName("Debe crear torneo exitosamente con datos validos")
+        void testCreateTournamentSuccess() {
+            when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+            when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals("Football Tournament 2026-1", response.getName());
-        assertEquals(1L, response.getId());
-        assertEquals(16, response.getTeamCount());
-        assertEquals(TournamentStatus.DRAFT, response.getStatus());
-        verify(tournamentRepository, times(1)).save(any(Tournament.class));
+            TournamentResponse response = tournamentService.create(tournamentRequest);
+
+            assertNotNull(response);
+            assertEquals("Football Tournament 2026-1", response.getName());
+            assertEquals(1L, response.getId());
+            assertEquals(16, response.getTeamCount());
+            assertEquals(500000.0, response.getCostPerTeam());
+            assertEquals(TournamentStatus.DRAFT, response.getStatus());
+            verify(tournamentRequestValidator).validate(tournamentRequest);
+            verify(tournamentRepository).save(any(Tournament.class));
+            verify(tournamentMapper).toResponse(any(Tournament.class));
+        }
+
+        @Test
+        @DisplayName("Debe asignar estado DRAFT al crear un torneo")
+        void testCreateTournamentSetsStatusDraft() {
+            when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+            when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
+
+            TournamentResponse response = tournamentService.create(tournamentRequest);
+
+            assertEquals(TournamentStatus.DRAFT, response.getStatus());
+        }
+
+        @Test
+        @DisplayName("Debe lanzar ValidationException cuando el request es invalido")
+        void testCreateTournamentValidationFails() {
+            doThrow(new ValidationException("Errores de validacion en la creacion del torneo"))
+                    .when(tournamentRequestValidator).validate(any(TournamentRequest.class));
+
+            assertThrows(ValidationException.class, () -> tournamentService.create(tournamentRequest));
+            verify(tournamentRepository, never()).save(any());
+        }
     }
 
-    @Test
-    @DisplayName("Should get tournament by id successfully")
-    void testGetTournamentByIdSuccess() {
-        // Arrange
-        TournamentResponse expectedResponse = TournamentResponse.builder()
-                .id(1L).name("Football Tournament 2026-1").teamCount(16)
-                .costPerTeam(500000.0).status(TournamentStatus.DRAFT).build();
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-        when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
+    @Nested
+    @DisplayName("getById()")
+    class GetByIdTests {
 
-        // Act
-        TournamentResponse response = tournamentService.getById(1L);
+        @Test
+        @DisplayName("Debe obtener torneo por ID exitosamente")
+        void testGetTournamentByIdSuccess() {
+            when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+            when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
 
-        // Assert
-        assertNotNull(response);
-        assertEquals("Football Tournament 2026-1", response.getName());
-        assertEquals(1L, response.getId());
-        verify(tournamentRepository, times(1)).findById(1L);
+            TournamentResponse response = tournamentService.getById(1L);
+
+            assertNotNull(response);
+            assertEquals("Football Tournament 2026-1", response.getName());
+            assertEquals(1L, response.getId());
+            verify(tournamentRepository).findById(1L);
+        }
+
+        @Test
+        @DisplayName("Debe lanzar ResourceNotFoundException cuando el torneo no existe")
+        void testGetTournamentByIdNotFound() {
+            when(tournamentRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class, () -> tournamentService.getById(999L));
+            verify(tournamentRepository).findById(999L);
+        }
     }
 
-    @Test
-    @DisplayName("Should fail when getting non-existent tournament")
-    void testGetTournamentByIdNotFound() {
-        // Arrange
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.empty());
+    @Nested
+    @DisplayName("configure()")
+    class ConfigureTests {
 
-        // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> tournamentService.getById(1L));
-        verify(tournamentRepository, times(1)).findById(1L);
+        @Test
+        @DisplayName("Debe configurar torneo exitosamente")
+        void testConfigureTournamentSuccess() {
+            TournamentResponse configuredResponse = TournamentResponse.builder()
+                    .id(1L).name("Football Tournament 2026-1")
+                    .startDate(LocalDate.of(2026, 4, 1))
+                    .endDate(LocalDate.of(2026, 6, 30))
+                    .teamCount(8).costPerTeam(300000.0)
+                    .status(TournamentStatus.DRAFT).build();
+
+            when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+            when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+            when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(configuredResponse);
+
+            TournamentResponse response = tournamentService.configure(1L, configRequest);
+
+            assertNotNull(response);
+            assertEquals(8, response.getTeamCount());
+            assertEquals(300000.0, response.getCostPerTeam());
+            verify(tournamentConfigRequestValidator).validate(configRequest);
+            verify(tournamentRepository).findById(1L);
+            verify(tournamentRepository).save(any(Tournament.class));
+        }
+
+        @Test
+        @DisplayName("Debe lanzar ResourceNotFoundException al configurar torneo inexistente")
+        void testConfigureTournamentNotFound() {
+            when(tournamentRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class,
+                    () -> tournamentService.configure(999L, configRequest));
+        }
+
+        @Test
+        @DisplayName("Debe lanzar ValidationException con config invalida")
+        void testConfigureTournamentValidationFails() {
+            doThrow(new ValidationException("Errores de validacion"))
+                    .when(tournamentConfigRequestValidator).validate(any());
+
+            assertThrows(ValidationException.class,
+                    () -> tournamentService.configure(1L, configRequest));
+            verify(tournamentRepository, never()).findById(anyLong());
+        }
     }
 
-    @Test
-    @DisplayName("Should change tournament status successfully")
-    void testChangeStatusSuccess() {
-        // Arrange
-        TournamentResponse expectedResponse = TournamentResponse.builder()
-                .id(1L).name("Football Tournament 2026-1").teamCount(16)
-                .costPerTeam(500000.0).status(TournamentStatus.ACTIVE).build();
-        testTournament.setStatus(TournamentStatus.ACTIVE);
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
-        when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
+    @Nested
+    @DisplayName("changeStatus()")
+    class ChangeStatusTests {
 
-        // Act
-        TournamentResponse response = tournamentService.changeStatus(1L, changeStatusRequest);
+        @Test
+        @DisplayName("Debe cambiar estado DRAFT -> ACTIVE exitosamente")
+        void testChangeStatusSuccess() {
+            TournamentResponse activeResponse = TournamentResponse.builder()
+                    .id(1L).name("Football Tournament 2026-1")
+                    .status(TournamentStatus.ACTIVE).build();
 
-        // Assert
-        assertNotNull(response);
-        assertEquals(1L, response.getId());
-        assertEquals(TournamentStatus.ACTIVE, response.getStatus());
-        verify(tournamentRepository, times(1)).findById(1L);
-        verify(tournamentRepository, times(1)).save(any(Tournament.class));
+            when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+            when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+            when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(activeResponse);
+
+            TournamentResponse response = tournamentService.changeStatus(1L, changeStatusRequest);
+
+            assertNotNull(response);
+            assertEquals(TournamentStatus.ACTIVE, response.getStatus());
+            verify(changeStatusRequestValidator).validate(TournamentStatus.DRAFT, TournamentStatus.ACTIVE);
+            verify(tournamentRepository).findById(1L);
+            verify(tournamentRepository).save(any(Tournament.class));
+        }
+
+        @Test
+        @DisplayName("Debe lanzar ResourceNotFoundException al cambiar estado de torneo inexistente")
+        void testChangeStatusNotFound() {
+            when(tournamentRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class,
+                    () -> tournamentService.changeStatus(999L, changeStatusRequest));
+        }
+
+        @Test
+        @DisplayName("Debe lanzar BusinessRuleException en transicion invalida")
+        void testChangeStatusInvalidTransition() {
+            when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+            doThrow(new BusinessRuleException("Transicion de estado no permitida: DRAFT -> FINISHED"))
+                    .when(changeStatusRequestValidator).validate(TournamentStatus.DRAFT, TournamentStatus.FINISHED);
+
+            ChangeStatusRequest invalidRequest = ChangeStatusRequest.builder()
+                    .status(TournamentStatus.FINISHED).build();
+
+            assertThrows(BusinessRuleException.class,
+                    () -> tournamentService.changeStatus(1L, invalidRequest));
+            verify(tournamentRepository, never()).save(any());
+        }
     }
 
-    @Test
-    @DisplayName("Should fail when changing status of non-existent tournament")
-    void testChangeStatusNotFound() {
-        // Arrange
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.empty());
+    @Nested
+    @DisplayName("setup()")
+    class SetupTests {
 
-        // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> tournamentService.changeStatus(1L, changeStatusRequest));
-        verify(tournamentRepository, times(1)).findById(1L);
+        private TournamentSetupRequest setupRequest;
+
+        @BeforeEach
+        void setUpRequest() {
+            setupRequest = TournamentSetupRequest.builder()
+                    .rules("Partidos de 2 tiempos de 25 minutos.")
+                    .sanctionRules("Tarjeta roja = 2 partidos")
+                    .inscriptionCloseDate(LocalDate.of(2026, 3, 20))
+                    .courts(List.of(
+                            CourtRequest.builder().name("Cancha Principal").location("Bloque B").build(),
+                            CourtRequest.builder().name("Cancha Auxiliar").location("Bloque C").build()
+                    ))
+                    .schedule(List.of(
+                            TournamentDateRequest.builder()
+                                    .description("Jornada 1")
+                                    .eventDate(LocalDate.of(2026, 4, 15))
+                                    .build()
+                    ))
+                    .build();
+        }
+
+        @Test
+        @DisplayName("Debe configurar torneo exitosamente con canchas, horarios y reglamento")
+        void testSetupSuccess() {
+            List<Court> savedCourts = List.of(
+                    Court.builder().id(1L).name("Cancha Principal").location("Bloque B").tournament(testTournament).build(),
+                    Court.builder().id(2L).name("Cancha Auxiliar").location("Bloque C").tournament(testTournament).build()
+            );
+            List<TournamentDate> savedDates = List.of(
+                    TournamentDate.builder().id(1L).description("Jornada 1")
+                            .eventDate(LocalDate.of(2026, 4, 15)).tournament(testTournament).build()
+            );
+
+            when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+            when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+            when(courtRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
+            when(courtRepository.saveAll(anyList())).thenReturn(savedCourts);
+            when(tournamentDateRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
+            when(tournamentDateRepository.saveAll(anyList())).thenReturn(savedDates);
+
+            TournamentSetupResponse response = tournamentService.setup(1L, setupRequest);
+
+            assertNotNull(response);
+            assertEquals(1L, response.getTournamentId());
+            assertEquals("Partidos de 2 tiempos de 25 minutos.", response.getRules());
+            assertEquals("Tarjeta roja = 2 partidos", response.getSanctionRules());
+            assertEquals(2, response.getCourts().size());
+            assertEquals(1, response.getSchedule().size());
+            assertEquals("Cancha Principal", response.getCourts().get(0).getName());
+            assertEquals("Jornada 1", response.getSchedule().get(0).getDescription());
+            verify(tournamentSetupRequestValidator).validate(setupRequest);
+            verify(courtRepository).saveAll(anyList());
+            verify(tournamentDateRepository).saveAll(anyList());
+        }
+
+        @Test
+        @DisplayName("Debe lanzar ResourceNotFoundException al configurar torneo inexistente")
+        void testSetupTournamentNotFound() {
+            when(tournamentRepository.findById(999L)).thenReturn(Optional.empty());
+
+            assertThrows(ResourceNotFoundException.class,
+                    () -> tournamentService.setup(999L, setupRequest));
+        }
+
+        @Test
+        @DisplayName("Debe lanzar ValidationException con request invalido")
+        void testSetupValidationFails() {
+            doThrow(new ValidationException("Errores de validacion"))
+                    .when(tournamentSetupRequestValidator).validate(any());
+
+            assertThrows(ValidationException.class,
+                    () -> tournamentService.setup(1L, setupRequest));
+            verify(tournamentRepository, never()).findById(anyLong());
+        }
+
+        @Test
+        @DisplayName("Debe reemplazar canchas existentes al reconfigurar")
+        void testSetupReplacesCourts() {
+            List<Court> existingCourts = List.of(
+                    Court.builder().id(10L).name("Vieja").location("Vieja").tournament(testTournament).build()
+            );
+            List<Court> newCourts = List.of(
+                    Court.builder().id(1L).name("Cancha Principal").location("Bloque B").tournament(testTournament).build(),
+                    Court.builder().id(2L).name("Cancha Auxiliar").location("Bloque C").tournament(testTournament).build()
+            );
+
+            when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+            when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+            when(courtRepository.findByTournamentId(1L)).thenReturn(existingCourts);
+            when(courtRepository.saveAll(anyList())).thenReturn(newCourts);
+            when(tournamentDateRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
+            when(tournamentDateRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
+
+            tournamentService.setup(1L, setupRequest);
+
+            verify(courtRepository).deleteAll(existingCourts);
+            verify(courtRepository).saveAll(anyList());
+        }
+
+        @Test
+        @DisplayName("Debe guardar inscriptionCloseDate cuando se proporciona")
+        void testSetupWithInscriptionCloseDate() {
+            when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+            when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+            when(courtRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
+            when(courtRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
+            when(tournamentDateRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
+            when(tournamentDateRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
+
+            tournamentService.setup(1L, setupRequest);
+
+            assertEquals(LocalDate.of(2026, 3, 20), testTournament.getInscriptionCloseDate());
+        }
     }
-
 }

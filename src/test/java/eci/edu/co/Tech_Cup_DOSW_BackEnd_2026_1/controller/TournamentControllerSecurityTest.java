@@ -1,9 +1,13 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStatusRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.CourtRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentDateRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentSetupRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentSetupResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
@@ -23,6 +27,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -59,7 +64,9 @@ class TournamentControllerSecurityTest {
     private TournamentRequest tournamentRequest;
     private TournamentConfigRequest configRequest;
     private ChangeStatusRequest changeStatusRequest;
+    private TournamentSetupRequest setupRequest;
     private TournamentResponse tournamentResponse;
+    private TournamentSetupResponse setupResponse;
 
     @BeforeEach
     void setUp() {
@@ -90,6 +97,20 @@ class TournamentControllerSecurityTest {
                 .teamCount(8)
                 .costPerTeam(300000.0)
                 .status(TournamentStatus.DRAFT)
+                .build();
+
+        setupRequest = TournamentSetupRequest.builder()
+                .rules("Partidos de 2 tiempos de 25 minutos.")
+                .sanctionRules("Tarjeta roja = 2 partidos")
+                .courts(List.of(CourtRequest.builder().name("Cancha 1").location("Bloque B").build()))
+                .schedule(List.of(TournamentDateRequest.builder()
+                        .description("Jornada 1").eventDate(LocalDate.of(2026, 4, 15)).build()))
+                .build();
+
+        setupResponse = TournamentSetupResponse.builder()
+                .tournamentId(1L)
+                .tournamentName("Copa DOSW 2026")
+                .rules("Partidos de 2 tiempos de 25 minutos.")
                 .build();
     }
 
@@ -221,6 +242,51 @@ class TournamentControllerSecurityTest {
         mockMvc.perform(post("/api/tournaments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(tournamentRequest)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    // ---- Tests de seguridad para setup ----
+
+    @Test
+    @WithMockUser(roles = "ORGANIZER")
+    @DisplayName("ORGANIZER puede configurar (setup) un torneo")
+    void organizerCanSetupTournament() throws Exception {
+        when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class))).thenReturn(setupResponse);
+
+        mockMvc.perform(put("/api/tournaments/1/setup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(setupRequest)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMINISTRATOR")
+    @DisplayName("ADMINISTRATOR puede configurar (setup) un torneo")
+    void administratorCanSetupTournament() throws Exception {
+        when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class))).thenReturn(setupResponse);
+
+        mockMvc.perform(put("/api/tournaments/1/setup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(setupRequest)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "PLAYER")
+    @DisplayName("PLAYER no puede configurar (setup) un torneo - 403")
+    void playerCannotSetupTournament() throws Exception {
+        mockMvc.perform(put("/api/tournaments/1/setup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(setupRequest)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("Usuario no autenticado no puede configurar (setup) un torneo - 401")
+    void unauthenticatedCannotSetupTournament() throws Exception {
+        mockMvc.perform(put("/api/tournaments/1/setup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(setupRequest)))
                 .andExpect(status().isUnauthorized());
     }
 }

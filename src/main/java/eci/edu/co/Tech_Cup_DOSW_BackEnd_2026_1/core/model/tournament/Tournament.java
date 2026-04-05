@@ -37,6 +37,9 @@ public class Tournament {
     @Column(columnDefinition = "TEXT")
     private String rules;
 
+    @Column(columnDefinition = "TEXT")
+    private String sanctionRules;
+
     private LocalDate inscriptionCloseDate;
 
     @Column(name = "created_by")

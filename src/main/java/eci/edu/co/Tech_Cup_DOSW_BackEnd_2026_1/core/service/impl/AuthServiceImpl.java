@@ -9,6 +9,8 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleExcept
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.LoginRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
@@ -27,9 +29,12 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final UserMapper userMapper;
+    private final RegisterRequestValidator registerRequestValidator;
+    private final LoginRequestValidator loginRequestValidator;
 
     @Override
     public UserResponse register(RegisterRequest request) {
+        registerRequestValidator.validate(request);
         log.info("Registering new user with email: {}", request.getEmail());
         log.debug("User registration details - name: {}, role: {}", request.getName(), request.getRole());
 
@@ -52,6 +57,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
+        loginRequestValidator.validate(request);
         log.info("Login attempt for email: {}", request.getEmail());
         log.debug("Login request validation initiated");
 
