@@ -7,8 +7,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserRespo
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.UserMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.UserRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +58,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
                     log.warn("Login failed: user with email {} not found", request.getEmail());
-                    return new ResourceNotFoundException("User not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND);
                 });
         log.debug("User found in database with id: {}, role: {}", user.getId(), user.getRole());
 
@@ -113,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("Resend verification failed: user with email {} not found", email);
-                    return new ResourceNotFoundException("User not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND);
                 });
 
         log.info("Verification email resent successfully for user id: {}", user.getId());

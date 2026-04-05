@@ -1,6 +1,6 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

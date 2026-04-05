@@ -1,8 +1,8 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.UserRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

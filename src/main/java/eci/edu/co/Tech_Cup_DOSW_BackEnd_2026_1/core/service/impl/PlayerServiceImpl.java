@@ -6,11 +6,12 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileReq
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.SportProfileMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.SportProfile;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.PhotoValidationUtil;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.SportProfileRepository;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.UserRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.SportProfileRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class PlayerServiceImpl implements PlayerService {
         SportProfile profile = sportProfileRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Update failed: profile {} not found", id);
-                    return new ResourceNotFoundException("Profile not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
                 });
 
         // Validar y actualizar posición
@@ -92,7 +93,7 @@ public class PlayerServiceImpl implements PlayerService {
         SportProfile profile = sportProfileRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Update failed: profile {} not found", id);
-                    return new ResourceNotFoundException("Profile not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
                 });
 
         boolean previousAvailability = profile.isAvailable();
@@ -137,7 +138,7 @@ public class PlayerServiceImpl implements PlayerService {
         SportProfile profile = sportProfileRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Upload photo failed: profile {} not found", id);
-                    return new ResourceNotFoundException("Profile not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
                 });
 
         profile.setPhotoUrl(request.getPhotoUrl());
@@ -154,7 +155,7 @@ public class PlayerServiceImpl implements PlayerService {
         SportProfile profile = sportProfileRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Get profile failed: profile {} not found", id);
-                    return new ResourceNotFoundException("Profile not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
                 });
 
         return mapToProfileResponse(profile);

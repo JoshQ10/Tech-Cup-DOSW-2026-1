@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.config.SecurityConfig;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityConfig;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;

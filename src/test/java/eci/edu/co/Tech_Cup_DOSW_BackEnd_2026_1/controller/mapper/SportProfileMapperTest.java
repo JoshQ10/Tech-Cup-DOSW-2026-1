@@ -4,7 +4,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileReq
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Program;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.SportProfile;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.SportProfile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

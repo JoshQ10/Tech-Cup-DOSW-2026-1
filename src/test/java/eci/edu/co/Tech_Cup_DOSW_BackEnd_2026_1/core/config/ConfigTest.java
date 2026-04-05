@@ -1,4 +1,4 @@
-package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.config;
+package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

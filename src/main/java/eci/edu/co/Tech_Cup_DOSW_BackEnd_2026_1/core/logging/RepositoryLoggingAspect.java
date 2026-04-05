@@ -13,7 +13,7 @@ public class RepositoryLoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(RepositoryLoggingAspect.class);
 
-    @Around("execution(* eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.repository..*(..))")
+    @Around("execution(* eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository..*(..))")
     public Object logRepositoryCalls(ProceedingJoinPoint joinPoint) throws Throwable {
         String method = joinPoint.getSignature().toShortString();
         long start = System.currentTimeMillis();

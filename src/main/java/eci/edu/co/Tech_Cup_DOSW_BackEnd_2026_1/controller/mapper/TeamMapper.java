@@ -2,10 +2,11 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Team;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.team.Team;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TeamMapper {
 
     /**

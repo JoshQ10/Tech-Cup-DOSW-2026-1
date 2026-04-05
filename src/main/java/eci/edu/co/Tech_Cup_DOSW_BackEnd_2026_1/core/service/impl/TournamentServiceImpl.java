@@ -6,9 +6,10 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.Tournament
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TournamentMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.Tournament;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.tournament.Tournament;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistencia.repository.TournamentRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class TournamentServiceImpl implements TournamentService {
         Tournament tournament = tournamentRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
-                    return new ResourceNotFoundException("Tournament not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
                 });
 
         return mapToTournamentResponse(tournament);
@@ -63,7 +64,7 @@ public class TournamentServiceImpl implements TournamentService {
         Tournament tournament = tournamentRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
-                    return new ResourceNotFoundException("Tournament not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
                 });
         log.debug("Tournament retrieved with current status: {}", tournament.getStatus());
 
@@ -87,7 +88,7 @@ public class TournamentServiceImpl implements TournamentService {
         Tournament tournament = tournamentRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
-                    return new ResourceNotFoundException("Tournament not found");
+                    return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
                 });
         log.debug("Tournament state transition - from: {} to: {}", tournament.getStatus(), request.getStatus());
         log.debug("Validating status transition rules");

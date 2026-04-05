@@ -2,7 +2,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.exception;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.GlobalExceptionHandler;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.handler.GlobalExceptionHandler;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.NotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
