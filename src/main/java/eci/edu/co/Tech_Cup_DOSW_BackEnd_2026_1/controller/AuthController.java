@@ -5,6 +5,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginReque
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RefreshTokenRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ResendVerificationRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.GoogleLoginRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
@@ -95,6 +96,19 @@ public class AuthController {
     public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         log.info("REST refresh-token endpoint called");
         LoginResponse response = authService.refreshToken(request.getRefreshToken());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/google-login")
+    @Operation(summary = "Login con Google OAuth2", description = "Autentica un usuario usando Google ID Token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Autenticación exitosa"),
+            @ApiResponse(responseCode = "400", description = "Token de Google inválido"),
+            @ApiResponse(responseCode = "401", description = "Token de Google expirado o inválido")
+    })
+    public ResponseEntity<LoginResponse> googleLogin(@Valid @RequestBody GoogleLoginRequest request) {
+        log.info("REST google-login endpoint called");
+        LoginResponse response = authService.loginWithGoogle(request.getIdToken());
         return ResponseEntity.ok(response);
     }
 }

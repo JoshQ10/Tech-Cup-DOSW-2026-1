@@ -17,4 +17,6 @@ public interface AuthService {
     String resendVerification(String email);
 
     LoginResponse refreshToken(String refreshToken);
+
+    LoginResponse loginWithGoogle(String idToken);
 }

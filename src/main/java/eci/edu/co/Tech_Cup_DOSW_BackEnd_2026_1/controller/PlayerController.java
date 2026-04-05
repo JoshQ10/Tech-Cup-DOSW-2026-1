@@ -3,7 +3,9 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.PhotoUploadRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.PlayerSearchResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.PlayerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -97,6 +103,29 @@ public class PlayerController {
             @Parameter(description = "ID del jugador", required = true) @PathVariable Long id) {
         log.info("REST get profile endpoint called for player: {}", id);
         ProfileResponse response = playerService.getProfile(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAnyRole('CAPTAIN', 'PLAYER', 'ADMINISTRATOR')")
+    @Operation(summary = "Buscar jugadores disponibles",
+               description = "Busca jugadores disponibles filtrados por posición, semestre, edad, género o nombre con paginación")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Búsqueda completada exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion")
+    })
+    public ResponseEntity<PlayerSearchResponse> searchPlayers(
+            @Parameter(description = "Posición del jugador") @RequestParam(required = false) Position position,
+            @Parameter(description = "Semestre académico") @RequestParam(required = false) Integer semester,
+            @Parameter(description = "Edad del jugador") @RequestParam(required = false) Integer age,
+            @Parameter(description = "Género del jugador") @RequestParam(required = false) String gender,
+            @Parameter(description = "Nombre del jugador (búsqueda parcial)") @RequestParam(required = false) String name,
+            @PageableDefault(size = 10, page = 0, sort = "id", direction = Sort.Direction.ASC)
+            Pageable pageable) {
+        log.info("REST search available players endpoint called - position: {}, semester: {}, age: {}, gender: {}, name: {}",
+                position, semester, age, gender, name);
+        PlayerSearchResponse response = playerService.searchAvailablePlayers(position, semester, age, gender, name, pageable);
         return ResponseEntity.ok(response);
     }
 }

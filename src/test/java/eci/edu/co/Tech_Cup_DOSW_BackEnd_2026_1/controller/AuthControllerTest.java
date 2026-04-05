@@ -7,6 +7,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserRespo
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,9 +52,13 @@ class AuthControllerTest {
         @BeforeEach
         void setUp() {
                 registerRequest = RegisterRequest.builder()
-                                .name("Test User")
+                                .firstName("Test")
+                                .lastName("User")
+                                .username("testuser")
                                 .email("test@example.com")
                                 .password("password123")
+                                .confirmPassword("password123")
+                                .userType(UserType.INTERNAL)
                                 .role(Role.PLAYER)
                                 .build();
 
@@ -64,8 +69,11 @@ class AuthControllerTest {
 
                 userResponse = UserResponse.builder()
                                 .id(1L)
-                                .name("Test User")
+                                .firstName("Test")
+                                .lastName("User")
+                                .username("testuser")
                                 .email("test@example.com")
+                                .userType(UserType.INTERNAL)
                                 .role(Role.PLAYER)
                                 .active(true)
                                 .build();
