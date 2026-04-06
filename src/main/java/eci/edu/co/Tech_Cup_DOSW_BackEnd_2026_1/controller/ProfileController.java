@@ -19,15 +19,15 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api")
-@Tag(name = "Perfil", description = "Endpoints de perfil autenticado")
+@Tag(name = "Profile", description = "Authenticated user profile endpoints")
 public class ProfileController {
 
     @GetMapping("/profile")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Consultar perfil autenticado", description = "Retorna información básica del usuario autenticado")
+    @Operation(summary = "Get authenticated profile", description = "Returns basic information about the authenticated user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Perfil obtenido exitosamente"),
-            @ApiResponse(responseCode = "401", description = "No autenticado")
+            @ApiResponse(responseCode = "200", description = "Profile successfully retrieved"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated")
     })
     public ResponseEntity<Map<String, Object>> profile(Authentication authentication) {
         String email = authentication != null ? authentication.getName() : null;

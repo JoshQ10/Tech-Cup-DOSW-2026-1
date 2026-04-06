@@ -29,17 +29,17 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Autenticación", description = "Endpoints para registro e inicio de sesión")
+@Tag(name = "Authentication", description = "Registration and login endpoints")
 public class AuthController {
 
     private final AuthService authService;
 
     @PostMapping("/register")
-    @Operation(summary = "Registrar nuevo usuario", description = "Crea una nueva cuenta de usuario en el sistema")
+    @Operation(summary = "Register new user", description = "Creates a new user account in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Usuario registrado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
-            @ApiResponse(responseCode = "409", description = "El usuario ya existe")
+            @ApiResponse(responseCode = "201", description = "User successfully registered"),
+            @ApiResponse(responseCode = "400", description = "Invalid data"),
+            @ApiResponse(responseCode = "409", description = "User already exists")
     })
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
         log.info("REST register endpoint called for email: {}", request.getEmail());
@@ -48,11 +48,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Iniciar sesión", description = "Autentica un usuario y retorna un token JWT")
+    @Operation(summary = "User login", description = "Authenticates a user and returns a JWT token")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Autenticación exitosa"),
-            @ApiResponse(responseCode = "400", description = "Credenciales inválidas"),
-            @ApiResponse(responseCode = "401", description = "Usuario o contraseña incorrectos")
+            @ApiResponse(responseCode = "200", description = "Authentication successful"),
+            @ApiResponse(responseCode = "400", description = "Invalid credentials"),
+            @ApiResponse(responseCode = "401", description = "Incorrect username or password")
     })
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         log.info("REST login endpoint called for email: {}", request.getEmail());
@@ -61,10 +61,10 @@ public class AuthController {
     }
 
     @GetMapping("/verify-email")
-    @Operation(summary = "Verificar correo electronico", description = "Verifica la cuenta del usuario usando el token recibido")
+    @Operation(summary = "Verify email", description = "Verifies the user account using the received token")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Correo verificado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Usuario o token no valido")
+            @ApiResponse(responseCode = "200", description = "Email successfully verified"),
+            @ApiResponse(responseCode = "404", description = "User or invalid token")
     })
     public ResponseEntity<UserResponse> verifyEmail(
             @Parameter(description = "Token de verificacion", required = true) @RequestParam String token) {
@@ -74,10 +74,10 @@ public class AuthController {
     }
 
     @PostMapping("/resend-verification")
-    @Operation(summary = "Reenviar correo de verificacion", description = "Reenvia el correo de verificacion a un usuario registrado")
+    @Operation(summary = "Resend verification email", description = "Resends the verification email to a registered user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Correo reenviado exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "Email successfully resent"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<String> resendVerification(@Valid @RequestBody ResendVerificationRequest request) {
         log.info("REST resend-verification endpoint called for email: {}", request.getEmail());
@@ -86,11 +86,11 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    @Operation(summary = "Renovar token JWT", description = "Renueva el token de autenticacion del usuario")
+    @Operation(summary = "Refresh JWT token", description = "Renews the user's authentication token")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Token renovado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Refresh token invalido"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "Token successfully renewed"),
+            @ApiResponse(responseCode = "400", description = "Invalid refresh token"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         log.info("REST refresh-token endpoint called");

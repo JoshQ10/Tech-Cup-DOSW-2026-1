@@ -16,6 +16,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserMapper userMapper;
     private final RegisterRequestValidator registerRequestValidator;
     private final LoginRequestValidator loginRequestValidator;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse register(RegisterRequest request) {
@@ -68,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
                 });
         log.debug("User found in database with id: {}, role: {}", user.getId(), user.getRole());
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             log.warn("Login failed: invalid password for email {}", request.getEmail());
             throw new BusinessRuleException("Invalid password");
         }
@@ -159,6 +161,7 @@ public class AuthServiceImpl implements AuthService {
 
     private User mapToUser(RegisterRequest request) {
         User user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setActive(true);
         user.setCreatedAt(LocalDateTime.now());
         return user;

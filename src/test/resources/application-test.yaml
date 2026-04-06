@@ -23,13 +23,14 @@ spring:
 
 app:
   oauth2:
-    success-redirect-uri: http://localhost:8080/api/auth/oauth2/success
+    success-redirect-uri: https://localhost:8443/api/auth/oauth2/success
     jwt:
       access-token-ttl-ms: 3600000
       refresh-token-ttl-ms: 86400000
 
 server:
   port: 0  # Puerto aleatorio para pruebas
+  shutdown: graceful
 
 logging:
   level:

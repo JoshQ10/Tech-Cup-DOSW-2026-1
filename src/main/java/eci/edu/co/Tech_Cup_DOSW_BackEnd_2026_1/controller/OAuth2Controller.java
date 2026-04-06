@@ -18,13 +18,13 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/api/auth/oauth2")
-@Tag(name = "OAuth2", description = "Endpoints para manejar el flujo OAuth2")
+@Tag(name = "OAuth2", description = "Endpoints for handling OAuth2 flow")
 public class OAuth2Controller {
 
     @GetMapping("/google")
-    @Operation(summary = "Iniciar autenticacion con Google", description = "Retorna la URL para iniciar el flujo OAuth2 con Google")
+    @Operation(summary = "Start authentication with Google", description = "Returns the URL to start OAuth2 flow with Google")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "URL de autorización generada")
+            @ApiResponse(responseCode = "200", description = "Authorization URL generated")
     })
     public ResponseEntity<Map<String, String>> googleAuthorizationUrl() {
         String authorizationUrl = "/oauth2/authorization/google";
@@ -33,10 +33,10 @@ public class OAuth2Controller {
     }
 
     @GetMapping("/success")
-    @Operation(summary = "Callback exitoso OAuth2", description = "Recibe tokens emitidos por la API después del login OAuth2")
+    @Operation(summary = "OAuth2 successful callback", description = "Receives tokens issued by the API after OAuth2 login")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Autenticación OAuth2 completada"),
-            @ApiResponse(responseCode = "400", description = "Faltan tokens en callback")
+            @ApiResponse(responseCode = "200", description = "OAuth2 authentication completed"),
+            @ApiResponse(responseCode = "400", description = "Missing tokens in callback")
     })
     public ResponseEntity<?> success(
             @RequestParam(required = false) String accessToken,
@@ -61,7 +61,7 @@ public class OAuth2Controller {
     }
 
     @GetMapping("/failure")
-    @Operation(summary = "Callback fallido OAuth2", description = "Retorna detalle de error en autenticación OAuth2")
+    @Operation(summary = "OAuth2 failure callback", description = "Returns error details for OAuth2 authentication failure")
     public ResponseEntity<Map<String, String>> failure(
             @RequestParam(required = false, defaultValue = "OAuth2 authentication failed") String error) {
         log.warn("OAuth2 authentication failed: {}", error);

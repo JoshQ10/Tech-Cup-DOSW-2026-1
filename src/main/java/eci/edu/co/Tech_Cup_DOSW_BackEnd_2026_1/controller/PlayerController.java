@@ -28,19 +28,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/players")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Jugadores", description = "Endpoints para gestion de perfil deportivo y disponibilidad")
+@Tag(name = "Players", description = "Endpoints for managing player profiles and availability")
 public class PlayerController {
 
     private final PlayerService playerService;
 
     @PutMapping("/{id}/profile")
     @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
-    @Operation(summary = "Actualizar perfil deportivo", description = "Actualiza la informacion del perfil deportivo del jugador")
+    @Operation(summary = "Update player profile", description = "Updates the player's sports profile information")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Perfil actualizado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
-            @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
+            @ApiResponse(responseCode = "200", description = "Profile successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid data"),
+            @ApiResponse(responseCode = "403", description = "No permission for this operation"),
+            @ApiResponse(responseCode = "404", description = "Player not found")
     })
     public ResponseEntity<ProfileResponse> updateProfile(
             @Parameter(description = "ID del jugador", required = true) @PathVariable Long id,
@@ -52,12 +52,12 @@ public class PlayerController {
 
     @PostMapping("/{id}/photo")
     @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
-    @Operation(summary = "Subir foto de perfil", description = "Actualiza la foto de perfil del jugador usando base64. La foto debe estar en formato data:image/[jpeg|png];base64,...")
+    @Operation(summary = "Upload profile photo", description = "Updates the player's profile photo using base64. The photo must be in data:image/[jpeg|png];base64,... format")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Foto actualizada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Foto invalida: formato no soportado, tamano excedido (max 5MB) o base64 invalido"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
-            @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
+            @ApiResponse(responseCode = "200", description = "Photo successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid photo: unsupported format, size exceeded (max 5MB) or invalid base64"),
+            @ApiResponse(responseCode = "403", description = "No permission for this operation"),
+            @ApiResponse(responseCode = "404", description = "Player not found")
     })
     public ResponseEntity<ProfileResponse> uploadPhoto(
             @Parameter(description = "ID del jugador", required = true) @PathVariable Long id,
@@ -69,13 +69,13 @@ public class PlayerController {
 
     @PatchMapping("/{id}/availability")
     @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
-    @Operation(summary = "Cambiar disponibilidad",
-               description = "Actualiza el estado de disponibilidad del jugador para torneos. Registra el timestamp y razon del cambio")
+    @Operation(summary = "Change availability",
+               description = "Updates the player's availability status for tournaments. Records the timestamp and reason for the change")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Disponibilidad actualizada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
-            @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
+            @ApiResponse(responseCode = "200", description = "Availability successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid data"),
+            @ApiResponse(responseCode = "403", description = "No permission for this operation"),
+            @ApiResponse(responseCode = "404", description = "Player not found")
     })
     public ResponseEntity<ProfileResponse> changeAvailability(
             @Parameter(description = "ID del jugador", required = true) @PathVariable Long id,
@@ -87,11 +87,11 @@ public class PlayerController {
 
     @GetMapping("/{id}/profile")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Consultar perfil de un jugador", description = "Retorna el perfil deportivo de un jugador")
+    @Operation(summary = "Get player profile", description = "Returns the player's sports profile")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Perfil encontrado"),
-            @ApiResponse(responseCode = "401", description = "No autenticado"),
-            @ApiResponse(responseCode = "404", description = "Jugador no encontrado")
+            @ApiResponse(responseCode = "200", description = "Profile found"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Player not found")
     })
     public ResponseEntity<ProfileResponse> getProfile(
             @Parameter(description = "ID del jugador", required = true) @PathVariable Long id) {

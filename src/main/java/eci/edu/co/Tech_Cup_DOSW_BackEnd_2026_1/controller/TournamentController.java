@@ -31,19 +31,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/tournaments")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Torneos", description = "Endpoints para creacion y administracion de torneos")
+@Tag(name = "Tournaments", description = "Endpoints for tournament creation and administration")
 public class TournamentController {
 
     private final TournamentService tournamentService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Crear torneo", description = "Crea un nuevo torneo de futbol")
+    @Operation(summary = "Create tournament", description = "Creates a new football tournament")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Torneo creado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos invalidos"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
-            @ApiResponse(responseCode = "409", description = "Torneo ya existe")
+            @ApiResponse(responseCode = "201", description = "Tournament successfully created"),
+            @ApiResponse(responseCode = "400", description = "Invalid data"),
+            @ApiResponse(responseCode = "403", description = "No permission for this operation"),
+            @ApiResponse(responseCode = "409", description = "Tournament already exists")
     })
     public ResponseEntity<TournamentResponse> create(@Valid @RequestBody TournamentRequest request) {
         log.info("REST create tournament endpoint called");
@@ -53,11 +53,11 @@ public class TournamentController {
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Obtener torneo", description = "Obtiene los detalles de un torneo por su ID")
+    @Operation(summary = "Get tournament", description = "Retrieves the details of a tournament by its ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Torneo encontrado"),
-            @ApiResponse(responseCode = "401", description = "No autenticado"),
-            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+            @ApiResponse(responseCode = "200", description = "Tournament found"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Tournament not found")
     })
     public ResponseEntity<TournamentResponse> getById(
             @Parameter(description = "ID del torneo", required = true) @PathVariable Long id) {
@@ -68,11 +68,11 @@ public class TournamentController {
 
     @PutMapping("/{id}/config")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Configurar torneo", description = "Actualiza la configuracion base del torneo")
+    @Operation(summary = "Configure tournament", description = "Updates the base configuration of the tournament")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Torneo configurado exitosamente"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
-            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+            @ApiResponse(responseCode = "200", description = "Tournament successfully configured"),
+            @ApiResponse(responseCode = "403", description = "No permission for this operation"),
+            @ApiResponse(responseCode = "404", description = "Tournament not found")
     })
     public ResponseEntity<TournamentResponse> configure(
             @Parameter(description = "ID del torneo", required = true) @PathVariable Long id,
@@ -84,12 +84,12 @@ public class TournamentController {
 
     @PutMapping("/{id}/setup")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-    @Operation(summary = "Configurar torneo", description = "Configura reglamento, canchas, horarios y sanciones del torneo")
+    @Operation(summary = "Setup tournament", description = "Configures rules, courts, schedules and sanctions for the tournament")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Torneo configurado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Datos de configuracion invalidos"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
-            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+            @ApiResponse(responseCode = "200", description = "Tournament successfully configured"),
+            @ApiResponse(responseCode = "400", description = "Invalid configuration data"),
+            @ApiResponse(responseCode = "403", description = "No permission for this operation"),
+            @ApiResponse(responseCode = "404", description = "Tournament not found")
     })
     public ResponseEntity<TournamentSetupResponse> setup(
             @Parameter(description = "ID del torneo", required = true) @PathVariable Long id,
@@ -101,12 +101,12 @@ public class TournamentController {
 
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR', 'REFEREE')")
-    @Operation(summary = "Cambiar estado del torneo", description = "Modifica el estado actual del torneo")
+    @Operation(summary = "Change tournament status", description = "Modifies the current status of the tournament")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Transicion de estado invalida"),
-            @ApiResponse(responseCode = "403", description = "Sin permisos para esta operacion"),
-            @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+            @ApiResponse(responseCode = "200", description = "Status successfully updated"),
+            @ApiResponse(responseCode = "400", description = "Invalid status transition"),
+            @ApiResponse(responseCode = "403", description = "No permission for this operation"),
+            @ApiResponse(responseCode = "404", description = "Tournament not found")
     })
     public ResponseEntity<TournamentResponse> changeStatus(
             @Parameter(description = "ID del torneo", required = true) @PathVariable Long id,

@@ -1,365 +1,504 @@
-ts=2026-04-05T12:03:12.576-05:00 level=INFO  thread=background-preinit logger=o.h.validator.internal.util.Version requestId=N/A method=N/A path=N/A msg=HV000001: Hibernate Validator 8.0.1.Final 
-ts=2026-04-05T12:03:12.694-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Starting TournamentControllerSecurityTest using Java 21.0.10 with PID 55820 (started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
-ts=2026-04-05T12:03:12.695-05:00 level=DEBUG thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
-ts=2026-04-05T12:03:12.696-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
-ts=2026-04-05T12:03:17.698-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@51be4bf5, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@54b48b, org.springframework.security.web.context.SecurityContextHolderFilter@400c0d26, org.springframework.security.web.header.HeaderWriterFilter@43e587cd, org.springframework.web.filter.CorsFilter@481d6644, org.springframework.security.web.authentication.logout.LogoutFilter@711329fe, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@26a5775f, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@2e8ff687, eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthenticationFilter@2fad7002, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@339de67e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@75351aec, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@3d3362f5, org.springframework.security.web.session.SessionManagementFilter@6557d4c6, org.springframework.security.web.access.ExceptionTranslationFilter@35c344ce, org.springframework.security.web.access.intercept.AuthorizationFilter@234ad505] 
-ts=2026-04-05T12:03:18.196-05:00 level=DEBUG thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=N/A method=N/A path=N/A msg=Filter 'requestTracingFilter' configured for use 
-ts=2026-04-05T12:03:18.197-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.JwtAuthenticationFilter requestId=N/A method=N/A path=N/A msg=Filter 'jwtAuthenticationFilter' configured for use 
-ts=2026-04-05T12:03:18.213-05:00 level=INFO  thread=main logger=o.s.b.t.m.w.SpringBootMockServletContext requestId=N/A method=N/A path=N/A msg=Initializing Spring TestDispatcherServlet '' 
-ts=2026-04-05T12:03:18.213-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Initializing Servlet '' 
-ts=2026-04-05T12:03:18.215-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Completed initialization in 2 ms 
-ts=2026-04-05T12:03:18.263-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Started TournamentControllerSecurityTest in 6.716 seconds (process running for 9.237) 
-ts=2026-04-05T12:03:18.543-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=7780a069-f2ee-46c9-bb67-5b15a594c1a0 method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:03:18.826-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=7780a069-f2ee-46c9-bb67-5b15a594c1a0 method=POST path=/api/tournaments msg=REST create tournament endpoint called 
-ts=2026-04-05T12:03:18.865-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=7780a069-f2ee-46c9-bb67-5b15a594c1a0 method=POST path=/api/tournaments msg=request_completed status=201 durationMs=323 
-ts=2026-04-05T12:03:18.906-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=66ab716c-8bb0-4ba8-8167-cf140afca41c method=GET path=/api/tournaments/1 msg=request_received 
-ts=2026-04-05T12:03:18.910-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=66ab716c-8bb0-4ba8-8167-cf140afca41c method=GET path=/api/tournaments/1 msg=REST get tournament endpoint called for id: 1 
-ts=2026-04-05T12:03:18.911-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=66ab716c-8bb0-4ba8-8167-cf140afca41c method=GET path=/api/tournaments/1 msg=request_completed status=200 durationMs=5 
-ts=2026-04-05T12:03:18.925-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e4672c3b-a990-40ca-9645-547ff7a0c5a2 method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:03:18.936-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=e4672c3b-a990-40ca-9645-547ff7a0c5a2 method=PATCH path=/api/tournaments/1/status msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:03:18.937-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e4672c3b-a990-40ca-9645-547ff7a0c5a2 method=PATCH path=/api/tournaments/1/status msg=request_completed status=200 durationMs=12 
-ts=2026-04-05T12:03:18.948-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=bc476a13-f7e5-4c48-bf33-292ae1f639bc method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:03:18.949-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=bc476a13-f7e5-4c48-bf33-292ae1f639bc method=POST path=/api/tournaments msg=REST create tournament endpoint called 
-ts=2026-04-05T12:03:18.950-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=bc476a13-f7e5-4c48-bf33-292ae1f639bc method=POST path=/api/tournaments msg=request_completed status=201 durationMs=2 
-ts=2026-04-05T12:03:18.961-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8729d548-2a5b-432c-be0d-5c804c06a60f method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:03:18.966-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=8729d548-2a5b-432c-be0d-5c804c06a60f method=PATCH path=/api/tournaments/1/status msg=access_denied message=Access Denied 
-ts=2026-04-05T12:03:18.974-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8729d548-2a5b-432c-be0d-5c804c06a60f method=PATCH path=/api/tournaments/1/status msg=request_completed status=403 durationMs=13 
-ts=2026-04-05T12:03:18.983-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=22097ccd-e591-45f2-9040-14271f8178c3 method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:03:18.984-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=22097ccd-e591-45f2-9040-14271f8178c3 method=POST path=/api/tournaments msg=access_denied message=Access Denied 
-ts=2026-04-05T12:03:18.985-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=22097ccd-e591-45f2-9040-14271f8178c3 method=POST path=/api/tournaments msg=request_completed status=403 durationMs=2 
-ts=2026-04-05T12:03:19.020-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=eb35d939-6ae7-45e1-ab6d-573fb16162a6 method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:03:19.022-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=eb35d939-6ae7-45e1-ab6d-573fb16162a6 method=POST path=/api/tournaments msg=access_denied message=Access Denied 
-ts=2026-04-05T12:03:19.023-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=eb35d939-6ae7-45e1-ab6d-573fb16162a6 method=POST path=/api/tournaments msg=request_completed status=403 durationMs=3 
-ts=2026-04-05T12:03:19.034-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=83a8279e-6c06-4d42-ac37-44dd2b631eb9 method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:03:19.035-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=83a8279e-6c06-4d42-ac37-44dd2b631eb9 method=PATCH path=/api/tournaments/1/status msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:03:19.036-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=83a8279e-6c06-4d42-ac37-44dd2b631eb9 method=PATCH path=/api/tournaments/1/status msg=request_completed status=200 durationMs=3 
-ts=2026-04-05T12:03:19.046-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=c7befc76-4bdd-4dae-8e3a-0d274819f8d1 method=PUT path=/api/tournaments/1/config msg=request_received 
-ts=2026-04-05T12:03:19.053-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=c7befc76-4bdd-4dae-8e3a-0d274819f8d1 method=PUT path=/api/tournaments/1/config msg=access_denied message=Access Denied 
-ts=2026-04-05T12:03:19.055-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=c7befc76-4bdd-4dae-8e3a-0d274819f8d1 method=PUT path=/api/tournaments/1/config msg=request_completed status=403 durationMs=9 
-ts=2026-04-05T12:03:19.064-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e8f6f830-ef8f-459e-bbe5-f005e15e8278 method=PUT path=/api/tournaments/1/config msg=request_received 
-ts=2026-04-05T12:03:19.066-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=e8f6f830-ef8f-459e-bbe5-f005e15e8278 method=PUT path=/api/tournaments/1/config msg=REST configure tournament endpoint called for id: 1 
-ts=2026-04-05T12:03:19.067-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e8f6f830-ef8f-459e-bbe5-f005e15e8278 method=PUT path=/api/tournaments/1/config msg=request_completed status=200 durationMs=3 
-ts=2026-04-05T12:03:19.083-05:00 level=INFO  thread=main logger=o.s.t.c.s.AnnotationConfigContextLoaderUtils requestId=N/A method=N/A path=N/A msg=Could not detect default configuration classes for test class [eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.TournamentControllerTest]: TournamentControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration. 
-ts=2026-04-05T12:03:19.111-05:00 level=INFO  thread=main logger=o.s.b.t.c.SpringBootTestContextBootstrapper requestId=N/A method=N/A path=N/A msg=Found @SpringBootConfiguration eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.TechCupDoswBackEnd20261Application for test class eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.TournamentControllerTest 
-ts=2026-04-05T12:03:19.200-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Starting TournamentControllerTest using Java 21.0.10 with PID 55820 (started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
-ts=2026-04-05T12:03:19.201-05:00 level=DEBUG thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
-ts=2026-04-05T12:03:19.201-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
-ts=2026-04-05T12:03:22.247-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4c3133a1, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2fea162a, org.springframework.security.web.context.SecurityContextHolderFilter@7020deaa, org.springframework.security.web.header.HeaderWriterFilter@7ec65043, org.springframework.web.filter.CorsFilter@40889699, org.springframework.security.web.csrf.CsrfFilter@25428bab, org.springframework.security.web.authentication.logout.LogoutFilter@2d22d4b9, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@1222d0e4, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@64992713, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@7746ae18, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@6a584533, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@639f7054, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@418e1cd6, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@26505df2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@26f6fbbd, org.springframework.security.oauth2.client.web.OAuth2AuthorizationCodeGrantFilter@20e06a86, org.springframework.security.web.access.ExceptionTranslationFilter@15fe48f5, org.springframework.security.web.access.intercept.AuthorizationFilter@64f0271e] 
-ts=2026-04-05T12:03:22.263-05:00 level=INFO  thread=main logger=o.s.b.t.m.w.SpringBootMockServletContext requestId=N/A method=N/A path=N/A msg=Initializing Spring TestDispatcherServlet '' 
-ts=2026-04-05T12:03:22.263-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Initializing Servlet '' 
-ts=2026-04-05T12:03:22.265-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Completed initialization in 2 ms 
-ts=2026-04-05T12:03:22.271-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Started TournamentControllerTest in 3.149 seconds (process running for 13.244) 
-ts=2026-04-05T12:03:22.292-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST configure tournament endpoint called for id: 999 
-ts=2026-04-05T12:03:22.295-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:03:22.308-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST get tournament endpoint called for id: 1 
-ts=2026-04-05T12:03:22.397-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST create tournament endpoint called 
-ts=2026-04-05T12:03:22.405-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST get tournament endpoint called for id: 999 
-ts=2026-04-05T12:03:22.406-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:03:22.417-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:03:22.431-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST change tournament status endpoint called for id: 999 
-ts=2026-04-05T12:03:22.432-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:03:22.443-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST configure tournament endpoint called for id: 1 
-ts=2026-04-05T12:03:22.921-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Changing status for tournament: 1 to ACTIVE 
-ts=2026-04-05T12:03:22.924-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament state transition - from: DRAFT to: ACTIVE 
-ts=2026-04-05T12:03:22.924-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Validating status transition rules 
-ts=2026-04-05T12:03:22.924-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament status updated in memory 
-ts=2026-04-05T12:03:22.925-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament status updated successfully for id: 1 
-ts=2026-04-05T12:03:22.925-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Status transition persisted to database 
-ts=2026-04-05T12:03:22.951-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Changing status for tournament: 999 to ACTIVE 
-ts=2026-04-05T12:03:22.951-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:03:22.971-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuring tournament: 999 
-ts=2026-04-05T12:03:22.971-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuration parameters - startDate: 2026-04-01, endDate: 2026-06-30, teamCount: 8, costPerTeam: 300000.0 
-ts=2026-04-05T12:03:22.972-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:03:22.987-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuring tournament: 1 
-ts=2026-04-05T12:03:22.988-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuration parameters - startDate: 2026-04-01, endDate: 2026-06-30, teamCount: 8, costPerTeam: 300000.0 
-ts=2026-04-05T12:03:22.988-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament retrieved with current status: DRAFT 
-ts=2026-04-05T12:03:22.988-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament configuration updated in memory 
-ts=2026-04-05T12:03:22.988-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament configured successfully for id: 1 
-ts=2026-04-05T12:03:22.988-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament persisted to database 
-ts=2026-04-05T12:03:22.997-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Fetching tournament: 1 
-ts=2026-04-05T12:03:23.004-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Fetching tournament: 999 
-ts=2026-04-05T12:03:23.004-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:03:23.013-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Creating new tournament: Football Tournament 2026-1 
-ts=2026-04-05T12:03:23.013-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament created successfully with id: 1 
-ts=2026-04-05T12:03:23.020-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Creating new tournament: Football Tournament 2026-1 
-ts=2026-04-05T12:03:23.020-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament created successfully with id: 1 
-ts=2026-04-05T12:03:44.827-05:00 level=INFO  thread=background-preinit logger=o.h.validator.internal.util.Version requestId=N/A method=N/A path=N/A msg=HV000001: Hibernate Validator 8.0.1.Final 
-ts=2026-04-05T12:03:44.855-05:00 level=INFO  thread=main logger=e.e.c.T.c.mapper.TournamentMapperTest requestId=N/A method=N/A path=N/A msg=Starting TournamentMapperTest using Java 21.0.10 with PID 51440 (started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
-ts=2026-04-05T12:03:44.856-05:00 level=DEBUG thread=main logger=e.e.c.T.c.mapper.TournamentMapperTest requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
-ts=2026-04-05T12:03:44.857-05:00 level=INFO  thread=main logger=e.e.c.T.c.mapper.TournamentMapperTest requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
-ts=2026-04-05T12:03:46.096-05:00 level=INFO  thread=main logger=o.s.d.r.c.RepositoryConfigurationDelegate requestId=N/A method=N/A path=N/A msg=Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
-ts=2026-04-05T12:03:46.276-05:00 level=INFO  thread=main logger=o.s.d.r.c.RepositoryConfigurationDelegate requestId=N/A method=N/A path=N/A msg=Finished Spring Data repository scanning in 168 ms. Found 15 JPA repository interfaces. 
-ts=2026-04-05T12:03:47.422-05:00 level=INFO  thread=main logger=o.hibernate.jpa.internal.util.LogHelper requestId=N/A method=N/A path=N/A msg=HHH000204: Processing PersistenceUnitInfo [name: default] 
-ts=2026-04-05T12:03:47.529-05:00 level=INFO  thread=main logger=org.hibernate.Version requestId=N/A method=N/A path=N/A msg=HHH000412: Hibernate ORM core version 6.5.2.Final 
-ts=2026-04-05T12:03:47.581-05:00 level=INFO  thread=main logger=o.h.c.internal.RegionFactoryInitiator requestId=N/A method=N/A path=N/A msg=HHH000026: Second-level cache disabled 
-ts=2026-04-05T12:03:48.077-05:00 level=INFO  thread=main logger=o.s.o.j.p.SpringPersistenceUnitInfo requestId=N/A method=N/A path=N/A msg=No LoadTimeWeaver setup: ignoring JPA class transformer 
-ts=2026-04-05T12:03:48.114-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Starting... 
-ts=2026-04-05T12:03:48.410-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.pool.HikariPool requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@13d5606c 
-ts=2026-04-05T12:03:48.412-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Start completed. 
-ts=2026-04-05T12:03:48.497-05:00 level=WARN  thread=main logger=org.hibernate.orm.deprecation requestId=N/A method=N/A path=N/A msg=HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default) 
-ts=2026-04-05T12:03:50.330-05:00 level=INFO  thread=main logger=o.h.e.t.j.p.i.JtaPlatformInitiator requestId=N/A method=N/A path=N/A msg=HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
-ts=2026-04-05T12:03:50.502-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
-    alter table if exists tournaments 
-       alter column rules set data type TEXT 
-ts=2026-04-05T12:03:50.905-05:00 level=INFO  thread=main logger=o.s.o.j.LocalContainerEntityManagerFactoryBean requestId=N/A method=N/A path=N/A msg=Initialized JPA EntityManagerFactory for persistence unit 'default' 
-ts=2026-04-05T12:03:52.563-05:00 level=WARN  thread=main logger=o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration requestId=N/A method=N/A path=N/A msg=spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
-ts=2026-04-05T12:03:53.307-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6999dca2, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@312af870, org.springframework.security.web.context.SecurityContextHolderFilter@3eff5c32, org.springframework.security.web.header.HeaderWriterFilter@158119bf, org.springframework.web.filter.CorsFilter@27df971b, org.springframework.security.web.authentication.logout.LogoutFilter@10014459, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@6e245068, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@1bb1ba54, eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthenticationFilter@5b5f06bb, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@31e08c61, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2db15764, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1160c54b, org.springframework.security.web.session.SessionManagementFilter@7980eb2, org.springframework.security.web.access.ExceptionTranslationFilter@6d9069ab, org.springframework.security.web.access.intercept.AuthorizationFilter@63793f16] 
-ts=2026-04-05T12:03:54.115-05:00 level=INFO  thread=main logger=e.e.c.T.c.mapper.TournamentMapperTest requestId=N/A method=N/A path=N/A msg=Started TournamentMapperTest in 9.878 seconds (process running for 11.348) 
-ts=2026-04-05T12:03:54.936-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request method=TournamentMapperImpl.toEntity(..) args=[TournamentRequest(name=Copa DOSW 2026, startDate=2026-04-01, endDate=2026-06-30, teamCount=8, costPerTeam=300000.0)] 
-ts=2026-04-05T12:03:54.937-05:00 level=DEBUG thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request_debug method=TournamentMapperImpl.toEntity(..) argCount=1 
-ts=2026-04-05T12:03:54.937-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_response method=TournamentMapperImpl.toEntity(..) durationMs=1 status=OK 
-ts=2026-04-05T12:03:54.975-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request method=TournamentMapperImpl.toResponse(..) args=[Tournament(id=1, name=Copa DOSW 2026, startDate=2026-04-01, endDate=2026-06-30, teamCount=8, costPerTeam=300000.0, rules=null, inscriptionCloseDate=null, createdBy=null, status=DRAFT)] 
-ts=2026-04-05T12:03:54.976-05:00 level=DEBUG thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request_debug method=TournamentMapperImpl.toResponse(..) argCount=1 
-ts=2026-04-05T12:03:54.977-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_response method=TournamentMapperImpl.toResponse(..) durationMs=2 status=OK 
-ts=2026-04-05T12:03:54.987-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request method=TournamentMapperImpl.toResponse(..) args=[Tournament(id=1, name=Test, startDate=null, endDate=null, teamCount=0, costPerTeam=0.0, rules=null, inscriptionCloseDate=null, createdBy=null, status=DRAFT)] 
-ts=2026-04-05T12:03:54.987-05:00 level=DEBUG thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request_debug method=TournamentMapperImpl.toResponse(..) argCount=1 
-ts=2026-04-05T12:03:54.988-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_response method=TournamentMapperImpl.toResponse(..) durationMs=1 status=OK 
-ts=2026-04-05T12:03:54.988-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request method=TournamentMapperImpl.toResponse(..) args=[Tournament(id=1, name=Test, startDate=null, endDate=null, teamCount=0, costPerTeam=0.0, rules=null, inscriptionCloseDate=null, createdBy=null, status=ACTIVE)] 
-ts=2026-04-05T12:03:54.988-05:00 level=DEBUG thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request_debug method=TournamentMapperImpl.toResponse(..) argCount=1 
-ts=2026-04-05T12:03:54.988-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_response method=TournamentMapperImpl.toResponse(..) durationMs=0 status=OK 
-ts=2026-04-05T12:03:54.988-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request method=TournamentMapperImpl.toResponse(..) args=[Tournament(id=1, name=Test, startDate=null, endDate=null, teamCount=0, costPerTeam=0.0, rules=null, inscriptionCloseDate=null, createdBy=null, status=IN_PROGRESS)] 
-ts=2026-04-05T12:03:54.989-05:00 level=DEBUG thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request_debug method=TournamentMapperImpl.toResponse(..) argCount=1 
-ts=2026-04-05T12:03:54.989-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_response method=TournamentMapperImpl.toResponse(..) durationMs=1 status=OK 
-ts=2026-04-05T12:03:54.989-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request method=TournamentMapperImpl.toResponse(..) args=[Tournament(id=1, name=Test, startDate=null, endDate=null, teamCount=0, costPerTeam=0.0, rules=null, inscriptionCloseDate=null, createdBy=null, status=FINISHED)] 
-ts=2026-04-05T12:03:54.989-05:00 level=DEBUG thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request_debug method=TournamentMapperImpl.toResponse(..) argCount=1 
-ts=2026-04-05T12:03:54.989-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_response method=TournamentMapperImpl.toResponse(..) durationMs=0 status=OK 
-ts=2026-04-05T12:03:54.997-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request method=TournamentMapperImpl.toEntity(..) args=[TournamentRequest(name=null, startDate=null, endDate=null, teamCount=0, costPerTeam=0.0)] 
-ts=2026-04-05T12:03:54.997-05:00 level=DEBUG thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_request_debug method=TournamentMapperImpl.toEntity(..) argCount=1 
-ts=2026-04-05T12:03:54.997-05:00 level=INFO  thread=main logger=e.e.c.T.c.l.ControllerLoggingAspect requestId=N/A method=N/A path=N/A msg=controller_response method=TournamentMapperImpl.toEntity(..) durationMs=0 status=OK 
-ts=2026-04-05T12:03:55.069-05:00 level=INFO  thread=SpringApplicationShutdownHook logger=o.s.o.j.LocalContainerEntityManagerFactoryBean requestId=N/A method=N/A path=N/A msg=Closing JPA EntityManagerFactory for persistence unit 'default' 
-ts=2026-04-05T12:03:55.072-05:00 level=INFO  thread=SpringApplicationShutdownHook logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Shutdown initiated... 
-ts=2026-04-05T12:03:55.076-05:00 level=INFO  thread=SpringApplicationShutdownHook logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Shutdown completed. 
-ts=2026-04-05T12:16:14.232-05:00 level=INFO  thread=background-preinit logger=o.h.validator.internal.util.Version requestId=N/A method=N/A path=N/A msg=HV000001: Hibernate Validator 8.0.1.Final 
-ts=2026-04-05T12:16:14.297-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Starting TournamentControllerSecurityTest using Java 21.0.10 with PID 10696 (started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
-ts=2026-04-05T12:16:14.298-05:00 level=DEBUG thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
-ts=2026-04-05T12:16:14.298-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
-ts=2026-04-05T12:16:17.874-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@16e5344c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3ba5c4dd, org.springframework.security.web.context.SecurityContextHolderFilter@562f6681, org.springframework.security.web.header.HeaderWriterFilter@4ea48b2e, org.springframework.web.filter.CorsFilter@47fca3cc, org.springframework.security.web.authentication.logout.LogoutFilter@1868ed54, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@26712838, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@11978f52, eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthenticationFilter@38a38ed4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@990b86b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@105c6c9e, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@55746340, org.springframework.security.web.session.SessionManagementFilter@76f9e000, org.springframework.security.web.access.ExceptionTranslationFilter@6cfd08e9, org.springframework.security.web.access.intercept.AuthorizationFilter@4dd4965a] 
-ts=2026-04-05T12:16:18.175-05:00 level=DEBUG thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=N/A method=N/A path=N/A msg=Filter 'requestTracingFilter' configured for use 
-ts=2026-04-05T12:16:18.176-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.JwtAuthenticationFilter requestId=N/A method=N/A path=N/A msg=Filter 'jwtAuthenticationFilter' configured for use 
-ts=2026-04-05T12:16:18.186-05:00 level=INFO  thread=main logger=o.s.b.t.m.w.SpringBootMockServletContext requestId=N/A method=N/A path=N/A msg=Initializing Spring TestDispatcherServlet '' 
-ts=2026-04-05T12:16:18.187-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Initializing Servlet '' 
-ts=2026-04-05T12:16:18.190-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Completed initialization in 3 ms 
-ts=2026-04-05T12:16:18.226-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Started TournamentControllerSecurityTest in 4.605 seconds (process running for 6.138) 
-ts=2026-04-05T12:16:18.454-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=85ba5614-a81e-41d3-b6a6-a2d3ebe6b0ef method=PUT path=/api/tournaments/1/setup msg=request_received 
-ts=2026-04-05T12:16:18.619-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=85ba5614-a81e-41d3-b6a6-a2d3ebe6b0ef method=PUT path=/api/tournaments/1/setup msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:18.651-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=85ba5614-a81e-41d3-b6a6-a2d3ebe6b0ef method=PUT path=/api/tournaments/1/setup msg=request_completed status=200 durationMs=198 
-ts=2026-04-05T12:16:18.689-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=59904921-f466-4a32-92cc-3522e200bc05 method=PUT path=/api/tournaments/1/setup msg=request_received 
-ts=2026-04-05T12:16:18.694-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=59904921-f466-4a32-92cc-3522e200bc05 method=PUT path=/api/tournaments/1/setup msg=access_denied message=Access Denied 
-ts=2026-04-05T12:16:18.703-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=59904921-f466-4a32-92cc-3522e200bc05 method=PUT path=/api/tournaments/1/setup msg=request_completed status=403 durationMs=14 
-ts=2026-04-05T12:16:18.718-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=1a323dac-1153-4f69-87ca-3bcf37c6be99 method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:16:18.731-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=1a323dac-1153-4f69-87ca-3bcf37c6be99 method=POST path=/api/tournaments msg=REST create tournament endpoint called 
-ts=2026-04-05T12:16:18.738-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=1a323dac-1153-4f69-87ca-3bcf37c6be99 method=POST path=/api/tournaments msg=request_completed status=201 durationMs=20 
-ts=2026-04-05T12:16:18.747-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e42d6cc9-fa8a-494b-b8bf-622e5711e289 method=GET path=/api/tournaments/1 msg=request_received 
-ts=2026-04-05T12:16:18.749-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=e42d6cc9-fa8a-494b-b8bf-622e5711e289 method=GET path=/api/tournaments/1 msg=REST get tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:18.751-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e42d6cc9-fa8a-494b-b8bf-622e5711e289 method=GET path=/api/tournaments/1 msg=request_completed status=200 durationMs=4 
-ts=2026-04-05T12:16:18.764-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=67f241fe-ed13-48d0-9772-193847ca5408 method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:16:18.773-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=67f241fe-ed13-48d0-9772-193847ca5408 method=PATCH path=/api/tournaments/1/status msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:16:18.776-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=67f241fe-ed13-48d0-9772-193847ca5408 method=PATCH path=/api/tournaments/1/status msg=request_completed status=200 durationMs=12 
-ts=2026-04-05T12:16:18.784-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=6becf358-3ba8-4d86-b792-0e0bdb6b712f method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:16:18.785-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=6becf358-3ba8-4d86-b792-0e0bdb6b712f method=POST path=/api/tournaments msg=REST create tournament endpoint called 
-ts=2026-04-05T12:16:18.786-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=6becf358-3ba8-4d86-b792-0e0bdb6b712f method=POST path=/api/tournaments msg=request_completed status=201 durationMs=2 
-ts=2026-04-05T12:16:18.796-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=451c6dfd-8de7-42a6-9257-2aa56e1e6911 method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:16:18.798-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=451c6dfd-8de7-42a6-9257-2aa56e1e6911 method=PATCH path=/api/tournaments/1/status msg=access_denied message=Access Denied 
-ts=2026-04-05T12:16:18.800-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=451c6dfd-8de7-42a6-9257-2aa56e1e6911 method=PATCH path=/api/tournaments/1/status msg=request_completed status=403 durationMs=4 
-ts=2026-04-05T12:16:18.809-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=660934c4-a829-4606-8caf-e740dc6783ef method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:16:18.811-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=660934c4-a829-4606-8caf-e740dc6783ef method=POST path=/api/tournaments msg=access_denied message=Access Denied 
-ts=2026-04-05T12:16:18.813-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=660934c4-a829-4606-8caf-e740dc6783ef method=POST path=/api/tournaments msg=request_completed status=403 durationMs=4 
-ts=2026-04-05T12:16:18.846-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8b272ea0-5b87-48e4-80dc-7b3cbce3d8a8 method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:16:18.850-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=8b272ea0-5b87-48e4-80dc-7b3cbce3d8a8 method=POST path=/api/tournaments msg=access_denied message=Access Denied 
-ts=2026-04-05T12:16:18.852-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8b272ea0-5b87-48e4-80dc-7b3cbce3d8a8 method=POST path=/api/tournaments msg=request_completed status=403 durationMs=6 
-ts=2026-04-05T12:16:18.862-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=c071c1b7-96e8-44f8-a13c-7816111bc1ec method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:16:18.863-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=c071c1b7-96e8-44f8-a13c-7816111bc1ec method=PATCH path=/api/tournaments/1/status msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:16:18.864-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=c071c1b7-96e8-44f8-a13c-7816111bc1ec method=PATCH path=/api/tournaments/1/status msg=request_completed status=200 durationMs=3 
-ts=2026-04-05T12:16:18.873-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=440dbad4-19d5-48fc-a3eb-dea199c75f2c method=PUT path=/api/tournaments/1/config msg=request_received 
-ts=2026-04-05T12:16:18.878-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=440dbad4-19d5-48fc-a3eb-dea199c75f2c method=PUT path=/api/tournaments/1/config msg=access_denied message=Access Denied 
-ts=2026-04-05T12:16:18.879-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=440dbad4-19d5-48fc-a3eb-dea199c75f2c method=PUT path=/api/tournaments/1/config msg=request_completed status=403 durationMs=6 
-ts=2026-04-05T12:16:18.891-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8e5301bf-ea19-442b-afd9-32c806b31c83 method=PUT path=/api/tournaments/1/config msg=request_received 
-ts=2026-04-05T12:16:18.893-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=8e5301bf-ea19-442b-afd9-32c806b31c83 method=PUT path=/api/tournaments/1/config msg=REST configure tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:18.895-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8e5301bf-ea19-442b-afd9-32c806b31c83 method=PUT path=/api/tournaments/1/config msg=request_completed status=200 durationMs=4 
-ts=2026-04-05T12:16:18.905-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=f0125f94-9e70-4b75-a6fe-f3b705d2d40d method=PUT path=/api/tournaments/1/setup msg=request_received 
-ts=2026-04-05T12:16:18.907-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=f0125f94-9e70-4b75-a6fe-f3b705d2d40d method=PUT path=/api/tournaments/1/setup msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:18.908-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=f0125f94-9e70-4b75-a6fe-f3b705d2d40d method=PUT path=/api/tournaments/1/setup msg=request_completed status=200 durationMs=3 
-ts=2026-04-05T12:16:18.922-05:00 level=INFO  thread=main logger=o.s.t.c.s.AnnotationConfigContextLoaderUtils requestId=N/A method=N/A path=N/A msg=Could not detect default configuration classes for test class [eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.TournamentControllerTest]: TournamentControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration. 
-ts=2026-04-05T12:16:18.948-05:00 level=INFO  thread=main logger=o.s.b.t.c.SpringBootTestContextBootstrapper requestId=N/A method=N/A path=N/A msg=Found @SpringBootConfiguration eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.TechCupDoswBackEnd20261Application for test class eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.TournamentControllerTest 
-ts=2026-04-05T12:16:19.007-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Starting TournamentControllerTest using Java 21.0.10 with PID 10696 (started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
-ts=2026-04-05T12:16:19.008-05:00 level=DEBUG thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
-ts=2026-04-05T12:16:19.008-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
-ts=2026-04-05T12:16:21.782-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3dbf3bc, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@626ff077, org.springframework.security.web.context.SecurityContextHolderFilter@8ad182c, org.springframework.security.web.header.HeaderWriterFilter@10f60e36, org.springframework.web.filter.CorsFilter@3b850bb7, org.springframework.security.web.csrf.CsrfFilter@7010c9e4, org.springframework.security.web.authentication.logout.LogoutFilter@3a83cfbc, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@164db8f0, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@1f6d3a81, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@8a7cd7c, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@12925d2, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@6802c10e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7e84af34, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@218e186b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@341889a1, org.springframework.security.oauth2.client.web.OAuth2AuthorizationCodeGrantFilter@39a09c0, org.springframework.security.web.access.ExceptionTranslationFilter@28befd62, org.springframework.security.web.access.intercept.AuthorizationFilter@7a689979] 
-ts=2026-04-05T12:16:21.798-05:00 level=INFO  thread=main logger=o.s.b.t.m.w.SpringBootMockServletContext requestId=N/A method=N/A path=N/A msg=Initializing Spring TestDispatcherServlet '' 
-ts=2026-04-05T12:16:21.799-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Initializing Servlet '' 
-ts=2026-04-05T12:16:21.799-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Completed initialization in 0 ms 
-ts=2026-04-05T12:16:21.806-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Started TournamentControllerTest in 2.851 seconds (process running for 9.719) 
-ts=2026-04-05T12:16:21.827-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST setup tournament endpoint called for id: 999 
-ts=2026-04-05T12:16:21.829-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:16:21.854-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST configure tournament endpoint called for id: 999 
-ts=2026-04-05T12:16:21.855-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:16:21.867-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST get tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:21.941-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST create tournament endpoint called 
-ts=2026-04-05T12:16:21.953-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:21.954-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=validation_exception message=Errores de validacion 
-ts=2026-04-05T12:16:21.970-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST get tournament endpoint called for id: 999 
-ts=2026-04-05T12:16:21.972-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:16:21.986-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:16:21.997-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:22.011-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST change tournament status endpoint called for id: 999 
-ts=2026-04-05T12:16:22.012-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:16:22.020-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST configure tournament endpoint called for id: 1 
-ts=2026-04-05T12:16:22.686-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 999 
-ts=2026-04-05T12:16:22.687-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:16:22.699-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 1 
-ts=2026-04-05T12:16:22.700-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament rules and sanction config updated 
-ts=2026-04-05T12:16:22.703-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 0 courts for tournament 1 
-ts=2026-04-05T12:16:22.705-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 0 dates for tournament 1 
-ts=2026-04-05T12:16:22.705-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 1 setup completed successfully 
-ts=2026-04-05T12:16:22.732-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 1 
-ts=2026-04-05T12:16:22.733-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament rules and sanction config updated 
-ts=2026-04-05T12:16:22.733-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 2 courts for tournament 1 
-ts=2026-04-05T12:16:22.733-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 0 dates for tournament 1 
-ts=2026-04-05T12:16:22.733-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 1 setup completed successfully 
-ts=2026-04-05T12:16:22.741-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 1 
-ts=2026-04-05T12:16:22.741-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament rules and sanction config updated 
-ts=2026-04-05T12:16:22.741-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 2 courts for tournament 1 
-ts=2026-04-05T12:16:22.741-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 1 dates for tournament 1 
-ts=2026-04-05T12:16:22.742-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 1 setup completed successfully 
-ts=2026-04-05T12:16:22.754-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Changing status for tournament: 1 to ACTIVE 
-ts=2026-04-05T12:16:22.754-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament state transition - from: DRAFT to: ACTIVE 
-ts=2026-04-05T12:16:22.755-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Validating status transition rules 
-ts=2026-04-05T12:16:22.755-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament status updated in memory 
-ts=2026-04-05T12:16:22.755-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament status updated successfully for id: 1 
-ts=2026-04-05T12:16:22.755-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Status transition persisted to database 
-ts=2026-04-05T12:16:22.761-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Changing status for tournament: 999 to ACTIVE 
-ts=2026-04-05T12:16:22.762-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:16:22.772-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuring tournament: 999 
-ts=2026-04-05T12:16:22.772-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuration parameters - startDate: 2026-04-01, endDate: 2026-06-30, teamCount: 8, costPerTeam: 300000.0 
-ts=2026-04-05T12:16:22.773-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:16:22.787-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuring tournament: 1 
-ts=2026-04-05T12:16:22.787-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuration parameters - startDate: 2026-04-01, endDate: 2026-06-30, teamCount: 8, costPerTeam: 300000.0 
-ts=2026-04-05T12:16:22.787-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament retrieved with current status: DRAFT 
-ts=2026-04-05T12:16:22.787-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament configuration updated in memory 
-ts=2026-04-05T12:16:22.788-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament configured successfully for id: 1 
-ts=2026-04-05T12:16:22.788-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament persisted to database 
-ts=2026-04-05T12:16:22.795-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Fetching tournament: 1 
-ts=2026-04-05T12:16:22.802-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Fetching tournament: 999 
-ts=2026-04-05T12:16:22.803-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:16:22.811-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Creating new tournament: Football Tournament 2026-1 
-ts=2026-04-05T12:16:22.811-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament created successfully with id: 1 
-ts=2026-04-05T12:16:22.818-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Creating new tournament: Football Tournament 2026-1 
-ts=2026-04-05T12:16:22.819-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament created successfully with id: 1 
-ts=2026-04-05T12:38:21.510-05:00 level=INFO  thread=background-preinit logger=o.h.validator.internal.util.Version requestId=N/A method=N/A path=N/A msg=HV000001: Hibernate Validator 8.0.1.Final 
-ts=2026-04-05T12:38:21.569-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Starting TournamentControllerSecurityTest using Java 21.0.10 with PID 28204 (started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
-ts=2026-04-05T12:38:21.570-05:00 level=DEBUG thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
-ts=2026-04-05T12:38:21.571-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
-ts=2026-04-05T12:38:26.122-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1e23ee0e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@b144175, org.springframework.security.web.context.SecurityContextHolderFilter@2507a170, org.springframework.security.web.header.HeaderWriterFilter@46b21632, org.springframework.web.filter.CorsFilter@38923cfe, org.springframework.security.web.authentication.logout.LogoutFilter@6f6f65a4, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@11f9b95a, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@299786b1, eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthenticationFilter@531a716c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@3af39e7b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1c62d2ad, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1ac3a6f, org.springframework.security.web.session.SessionManagementFilter@79144d0e, org.springframework.security.web.access.ExceptionTranslationFilter@2842c098, org.springframework.security.web.access.intercept.AuthorizationFilter@67593f7b] 
-ts=2026-04-05T12:38:26.527-05:00 level=DEBUG thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=N/A method=N/A path=N/A msg=Filter 'requestTracingFilter' configured for use 
-ts=2026-04-05T12:38:26.527-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.JwtAuthenticationFilter requestId=N/A method=N/A path=N/A msg=Filter 'jwtAuthenticationFilter' configured for use 
-ts=2026-04-05T12:38:26.537-05:00 level=INFO  thread=main logger=o.s.b.t.m.w.SpringBootMockServletContext requestId=N/A method=N/A path=N/A msg=Initializing Spring TestDispatcherServlet '' 
-ts=2026-04-05T12:38:26.537-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Initializing Servlet '' 
-ts=2026-04-05T12:38:26.539-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Completed initialization in 1 ms 
-ts=2026-04-05T12:38:26.576-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerSecurityTest requestId=N/A method=N/A path=N/A msg=Started TournamentControllerSecurityTest in 5.828 seconds (process running for 7.663) 
-ts=2026-04-05T12:38:26.847-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=974fdfbf-4603-42fc-a198-3ccc1ca73ab5 method=PUT path=/api/tournaments/1/setup msg=request_received 
-ts=2026-04-05T12:38:27.067-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=974fdfbf-4603-42fc-a198-3ccc1ca73ab5 method=PUT path=/api/tournaments/1/setup msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:27.133-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=974fdfbf-4603-42fc-a198-3ccc1ca73ab5 method=PUT path=/api/tournaments/1/setup msg=request_completed status=200 durationMs=287 
-ts=2026-04-05T12:38:27.172-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=2c248e23-79e5-4a99-9034-fc31c84e8dd8 method=PUT path=/api/tournaments/1/setup msg=request_received 
-ts=2026-04-05T12:38:27.177-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=2c248e23-79e5-4a99-9034-fc31c84e8dd8 method=PUT path=/api/tournaments/1/setup msg=access_denied message=Access Denied 
-ts=2026-04-05T12:38:27.186-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=2c248e23-79e5-4a99-9034-fc31c84e8dd8 method=PUT path=/api/tournaments/1/setup msg=request_completed status=403 durationMs=14 
-ts=2026-04-05T12:38:27.198-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=5146028f-676e-41d0-8b03-2cc6130017ae method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:38:27.211-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=5146028f-676e-41d0-8b03-2cc6130017ae method=POST path=/api/tournaments msg=REST create tournament endpoint called 
-ts=2026-04-05T12:38:27.218-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=5146028f-676e-41d0-8b03-2cc6130017ae method=POST path=/api/tournaments msg=request_completed status=201 durationMs=20 
-ts=2026-04-05T12:38:27.228-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=c0f4d2e4-4cc9-4f6d-81ec-1c7928e00d7c method=GET path=/api/tournaments/1 msg=request_received 
-ts=2026-04-05T12:38:27.230-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=c0f4d2e4-4cc9-4f6d-81ec-1c7928e00d7c method=GET path=/api/tournaments/1 msg=REST get tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:27.232-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=c0f4d2e4-4cc9-4f6d-81ec-1c7928e00d7c method=GET path=/api/tournaments/1 msg=request_completed status=200 durationMs=4 
-ts=2026-04-05T12:38:27.241-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=1acabdac-c5ce-416c-aec3-7807a09cbede method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:38:27.250-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=1acabdac-c5ce-416c-aec3-7807a09cbede method=PATCH path=/api/tournaments/1/status msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:38:27.251-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=1acabdac-c5ce-416c-aec3-7807a09cbede method=PATCH path=/api/tournaments/1/status msg=request_completed status=200 durationMs=10 
-ts=2026-04-05T12:38:27.260-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=b92e6c76-27bb-4ebb-b58b-b7d81b9f287b method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:38:27.261-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=b92e6c76-27bb-4ebb-b58b-b7d81b9f287b method=POST path=/api/tournaments msg=REST create tournament endpoint called 
-ts=2026-04-05T12:38:27.262-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=b92e6c76-27bb-4ebb-b58b-b7d81b9f287b method=POST path=/api/tournaments msg=request_completed status=201 durationMs=2 
-ts=2026-04-05T12:38:27.269-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=ccd75ef9-ea88-4bdc-aea3-3bd382438d6e method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:38:27.270-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=ccd75ef9-ea88-4bdc-aea3-3bd382438d6e method=PATCH path=/api/tournaments/1/status msg=access_denied message=Access Denied 
-ts=2026-04-05T12:38:27.271-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=ccd75ef9-ea88-4bdc-aea3-3bd382438d6e method=PATCH path=/api/tournaments/1/status msg=request_completed status=403 durationMs=2 
-ts=2026-04-05T12:38:27.279-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=063f70b2-0ece-4954-81a7-362d89d5113c method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:38:27.280-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=063f70b2-0ece-4954-81a7-362d89d5113c method=POST path=/api/tournaments msg=access_denied message=Access Denied 
-ts=2026-04-05T12:38:27.281-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=063f70b2-0ece-4954-81a7-362d89d5113c method=POST path=/api/tournaments msg=request_completed status=403 durationMs=2 
-ts=2026-04-05T12:38:27.316-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=df78b0ef-c934-44fa-b18f-46c0a94c6a5e method=POST path=/api/tournaments msg=request_received 
-ts=2026-04-05T12:38:27.318-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=df78b0ef-c934-44fa-b18f-46c0a94c6a5e method=POST path=/api/tournaments msg=access_denied message=Access Denied 
-ts=2026-04-05T12:38:27.318-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=df78b0ef-c934-44fa-b18f-46c0a94c6a5e method=POST path=/api/tournaments msg=request_completed status=403 durationMs=2 
-ts=2026-04-05T12:38:27.327-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=1a6941a7-fe5d-4dd3-99ad-f236cfd8d2e9 method=PATCH path=/api/tournaments/1/status msg=request_received 
-ts=2026-04-05T12:38:27.328-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=1a6941a7-fe5d-4dd3-99ad-f236cfd8d2e9 method=PATCH path=/api/tournaments/1/status msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:38:27.329-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=1a6941a7-fe5d-4dd3-99ad-f236cfd8d2e9 method=PATCH path=/api/tournaments/1/status msg=request_completed status=200 durationMs=2 
-ts=2026-04-05T12:38:27.337-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=6e4ce872-71ec-4e23-a200-43deab742f4f method=PUT path=/api/tournaments/1/config msg=request_received 
-ts=2026-04-05T12:38:27.342-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=6e4ce872-71ec-4e23-a200-43deab742f4f method=PUT path=/api/tournaments/1/config msg=access_denied message=Access Denied 
-ts=2026-04-05T12:38:27.342-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=6e4ce872-71ec-4e23-a200-43deab742f4f method=PUT path=/api/tournaments/1/config msg=request_completed status=403 durationMs=5 
-ts=2026-04-05T12:38:27.351-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=18ba2e19-5f7d-4e15-8ba3-587ef85ed8e4 method=PUT path=/api/tournaments/1/config msg=request_received 
-ts=2026-04-05T12:38:27.354-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=18ba2e19-5f7d-4e15-8ba3-587ef85ed8e4 method=PUT path=/api/tournaments/1/config msg=REST configure tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:27.356-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=18ba2e19-5f7d-4e15-8ba3-587ef85ed8e4 method=PUT path=/api/tournaments/1/config msg=request_completed status=200 durationMs=5 
-ts=2026-04-05T12:38:27.370-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=2842172e-e92c-4007-a94b-7a34a6247ac1 method=PUT path=/api/tournaments/1/setup msg=request_received 
-ts=2026-04-05T12:38:27.371-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=2842172e-e92c-4007-a94b-7a34a6247ac1 method=PUT path=/api/tournaments/1/setup msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:27.372-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=2842172e-e92c-4007-a94b-7a34a6247ac1 method=PUT path=/api/tournaments/1/setup msg=request_completed status=200 durationMs=2 
-ts=2026-04-05T12:38:27.384-05:00 level=INFO  thread=main logger=o.s.t.c.s.AnnotationConfigContextLoaderUtils requestId=N/A method=N/A path=N/A msg=Could not detect default configuration classes for test class [eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.TournamentControllerTest]: TournamentControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration. 
-ts=2026-04-05T12:38:27.404-05:00 level=INFO  thread=main logger=o.s.b.t.c.SpringBootTestContextBootstrapper requestId=N/A method=N/A path=N/A msg=Found @SpringBootConfiguration eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.TechCupDoswBackEnd20261Application for test class eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.TournamentControllerTest 
-ts=2026-04-05T12:38:27.461-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Starting TournamentControllerTest using Java 21.0.10 with PID 28204 (started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
-ts=2026-04-05T12:38:27.461-05:00 level=DEBUG thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
-ts=2026-04-05T12:38:27.461-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
-ts=2026-04-05T12:38:29.906-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7010c9e4, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@28befd62, org.springframework.security.web.context.SecurityContextHolderFilter@1d45c4b7, org.springframework.security.web.header.HeaderWriterFilter@7dd2a5f7, org.springframework.web.filter.CorsFilter@10f60e36, org.springframework.security.web.csrf.CsrfFilter@6c26e588, org.springframework.security.web.authentication.logout.LogoutFilter@2396408a, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@6406b84d, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@5e643402, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@5274acd1, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@7575f7e1, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@8ad182c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@46146832, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1d6014a7, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7e84af34, org.springframework.security.oauth2.client.web.OAuth2AuthorizationCodeGrantFilter@763ddfc3, org.springframework.security.web.access.ExceptionTranslationFilter@62f73b0c, org.springframework.security.web.access.intercept.AuthorizationFilter@5f7bd970] 
-ts=2026-04-05T12:38:29.929-05:00 level=INFO  thread=main logger=o.s.b.t.m.w.SpringBootMockServletContext requestId=N/A method=N/A path=N/A msg=Initializing Spring TestDispatcherServlet '' 
-ts=2026-04-05T12:38:29.929-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Initializing Servlet '' 
-ts=2026-04-05T12:38:29.930-05:00 level=INFO  thread=main logger=o.s.t.web.servlet.TestDispatcherServlet requestId=N/A method=N/A path=N/A msg=Completed initialization in 1 ms 
-ts=2026-04-05T12:38:29.938-05:00 level=INFO  thread=main logger=e.e.c.T.c.TournamentControllerTest requestId=N/A method=N/A path=N/A msg=Started TournamentControllerTest in 2.528 seconds (process running for 11.026) 
-ts=2026-04-05T12:38:29.968-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST setup tournament endpoint called for id: 999 
-ts=2026-04-05T12:38:29.969-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:38:29.987-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST configure tournament endpoint called for id: 999 
-ts=2026-04-05T12:38:29.989-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:38:29.999-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST get tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:30.063-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST create tournament endpoint called 
-ts=2026-04-05T12:38:30.071-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:30.072-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=validation_exception message=Errores de validacion 
-ts=2026-04-05T12:38:30.087-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST get tournament endpoint called for id: 999 
-ts=2026-04-05T12:38:30.088-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:38:30.098-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST change tournament status endpoint called for id: 1 
-ts=2026-04-05T12:38:30.109-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST setup tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:30.121-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST change tournament status endpoint called for id: 999 
-ts=2026-04-05T12:38:30.121-05:00 level=WARN  thread=main logger=e.e.c.T.c.handler.GlobalExceptionHandler requestId=N/A method=N/A path=N/A msg=resource_not_found message=Tournament not found 
-ts=2026-04-05T12:38:30.128-05:00 level=INFO  thread=main logger=e.e.c.T.controller.TournamentController requestId=N/A method=N/A path=N/A msg=REST configure tournament endpoint called for id: 1 
-ts=2026-04-05T12:38:30.894-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 999 
-ts=2026-04-05T12:38:30.895-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:38:30.908-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 1 
-ts=2026-04-05T12:38:30.908-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament rules and sanction config updated 
-ts=2026-04-05T12:38:30.911-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 0 courts for tournament 1 
-ts=2026-04-05T12:38:30.913-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 0 dates for tournament 1 
-ts=2026-04-05T12:38:30.913-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 1 setup completed successfully 
-ts=2026-04-05T12:38:30.956-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 1 
-ts=2026-04-05T12:38:30.957-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament rules and sanction config updated 
-ts=2026-04-05T12:38:30.957-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 2 courts for tournament 1 
-ts=2026-04-05T12:38:30.957-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 0 dates for tournament 1 
-ts=2026-04-05T12:38:30.957-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 1 setup completed successfully 
-ts=2026-04-05T12:38:30.965-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Setting up tournament: 1 
-ts=2026-04-05T12:38:30.966-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament rules and sanction config updated 
-ts=2026-04-05T12:38:30.966-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 2 courts for tournament 1 
-ts=2026-04-05T12:38:30.967-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Saved 1 dates for tournament 1 
-ts=2026-04-05T12:38:30.967-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 1 setup completed successfully 
-ts=2026-04-05T12:38:30.977-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Changing status for tournament: 1 to ACTIVE 
-ts=2026-04-05T12:38:30.978-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament state transition - from: DRAFT to: ACTIVE 
-ts=2026-04-05T12:38:30.979-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Status transition validated successfully 
-ts=2026-04-05T12:38:30.979-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament status updated in memory 
-ts=2026-04-05T12:38:30.979-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament status updated successfully for id: 1 
-ts=2026-04-05T12:38:30.979-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Status transition persisted to database 
-ts=2026-04-05T12:38:30.988-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Changing status for tournament: 1 to FINISHED 
-ts=2026-04-05T12:38:30.988-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament state transition - from: DRAFT to: FINISHED 
-ts=2026-04-05T12:38:30.994-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Changing status for tournament: 999 to ACTIVE 
-ts=2026-04-05T12:38:30.994-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:38:31.003-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuring tournament: 999 
-ts=2026-04-05T12:38:31.003-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuration parameters - startDate: 2026-04-01, endDate: 2026-06-30, teamCount: 8, costPerTeam: 300000.0 
-ts=2026-04-05T12:38:31.004-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:38:31.019-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuring tournament: 1 
-ts=2026-04-05T12:38:31.020-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Configuration parameters - startDate: 2026-04-01, endDate: 2026-06-30, teamCount: 8, costPerTeam: 300000.0 
-ts=2026-04-05T12:38:31.020-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament retrieved with current status: DRAFT 
-ts=2026-04-05T12:38:31.020-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament configuration updated in memory 
-ts=2026-04-05T12:38:31.020-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament configured successfully for id: 1 
-ts=2026-04-05T12:38:31.020-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament persisted to database 
-ts=2026-04-05T12:38:31.028-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Fetching tournament: 1 
-ts=2026-04-05T12:38:31.035-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Fetching tournament: 999 
-ts=2026-04-05T12:38:31.035-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament 999 not found 
-ts=2026-04-05T12:38:31.043-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Creating new tournament: Football Tournament 2026-1 
-ts=2026-04-05T12:38:31.044-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament created successfully with id: 1 
-ts=2026-04-05T12:38:31.047-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Creating new tournament: Football Tournament 2026-1 
-ts=2026-04-05T12:38:31.048-05:00 level=INFO  thread=main logger=e.e.c.T.c.s.impl.TournamentServiceImpl requestId=N/A method=N/A path=N/A msg=Tournament created successfully with id: 1 
+ts=2026-04-06T18:19:37.723-05:00 level=INFO  thread=background-preinit logger=o.h.validator.internal.util.Version requestId=N/A method=N/A path=N/A msg=HV000001: Hibernate Validator 8.0.1.Final 
+ts=2026-04-06T18:19:37.800-05:00 level=INFO  thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=Starting TechCupDoswBackEnd20261Application v0.0.1-SNAPSHOT using Java 21.0.8 with PID 15076 (E:\DOSW\Proyecto_T2\Backend\Tech-Cup-DOSW-2026-1-main\Tech-Cup-DOSW-2026-1-main\target\Tech-Cup-DOSW-BackEnd-2026-1-0.0.1-SNAPSHOT.jar started by ASUS in E:\DOSW\Proyecto_T2\Backend\Tech-Cup-DOSW-2026-1-main\Tech-Cup-DOSW-2026-1-main) 
+ts=2026-04-06T18:19:37.802-05:00 level=DEBUG thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
+ts=2026-04-06T18:19:37.803-05:00 level=INFO  thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "dev" 
+ts=2026-04-06T18:19:40.217-05:00 level=INFO  thread=main logger=o.s.d.r.c.RepositoryConfigurationDelegate requestId=N/A method=N/A path=N/A msg=Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+ts=2026-04-06T18:19:40.739-05:00 level=INFO  thread=main logger=o.s.d.r.c.RepositoryConfigurationDelegate requestId=N/A method=N/A path=N/A msg=Finished Spring Data repository scanning in 487 ms. Found 15 JPA repository interfaces. 
+ts=2026-04-06T18:19:42.606-05:00 level=INFO  thread=main logger=o.s.b.w.embedded.tomcat.TomcatWebServer requestId=N/A method=N/A path=N/A msg=Tomcat initialized with ports 8443 (https), 8080 (http) 
+ts=2026-04-06T18:19:42.624-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=The ["https-jsse-nio-0.0.0.0-8443"] connector has been configured to support negotiation to [h2] via ALPN 
+ts=2026-04-06T18:19:42.626-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Initializing ProtocolHandler ["https-jsse-nio-0.0.0.0-8443"] 
+ts=2026-04-06T18:19:42.631-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Initializing ProtocolHandler ["http-nio-8080"] 
+ts=2026-04-06T18:19:42.633-05:00 level=INFO  thread=main logger=o.apache.catalina.core.StandardService requestId=N/A method=N/A path=N/A msg=Starting service [Tomcat] 
+ts=2026-04-06T18:19:42.634-05:00 level=INFO  thread=main logger=org.apache.catalina.core.StandardEngine requestId=N/A method=N/A path=N/A msg=Starting Servlet engine: [Apache Tomcat/10.1.24] 
+ts=2026-04-06T18:19:42.699-05:00 level=INFO  thread=main logger=o.a.c.c.C.[Tomcat].[localhost].[/] requestId=N/A method=N/A path=N/A msg=Initializing Spring embedded WebApplicationContext 
+ts=2026-04-06T18:19:42.699-05:00 level=INFO  thread=main logger=o.s.b.w.s.c.ServletWebServerApplicationContext requestId=N/A method=N/A path=N/A msg=Root WebApplicationContext: initialization completed in 4788 ms 
+ts=2026-04-06T18:19:42.781-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Starting... 
+ts=2026-04-06T18:19:43.090-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.pool.HikariPool requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:techcup_dev user=SA 
+ts=2026-04-06T18:19:43.093-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Start completed. 
+ts=2026-04-06T18:19:43.108-05:00 level=INFO  thread=main logger=o.s.b.a.h2.H2ConsoleAutoConfiguration requestId=N/A method=N/A path=N/A msg=H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:techcup_dev' 
+ts=2026-04-06T18:19:43.324-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.JwtAuthenticationFilter requestId=N/A method=N/A path=N/A msg=Filter 'jwtAuthenticationFilter' configured for use 
+ts=2026-04-06T18:19:43.325-05:00 level=DEBUG thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=N/A method=N/A path=N/A msg=Filter 'requestTracingFilter' configured for use 
+ts=2026-04-06T18:19:43.479-05:00 level=INFO  thread=main logger=o.hibernate.jpa.internal.util.LogHelper requestId=N/A method=N/A path=N/A msg=HHH000204: Processing PersistenceUnitInfo [name: default] 
+ts=2026-04-06T18:19:43.575-05:00 level=INFO  thread=main logger=org.hibernate.Version requestId=N/A method=N/A path=N/A msg=HHH000412: Hibernate ORM core version 6.5.2.Final 
+ts=2026-04-06T18:19:43.626-05:00 level=INFO  thread=main logger=o.h.c.internal.RegionFactoryInitiator requestId=N/A method=N/A path=N/A msg=HHH000026: Second-level cache disabled 
+ts=2026-04-06T18:19:44.156-05:00 level=INFO  thread=main logger=o.s.o.j.p.SpringPersistenceUnitInfo requestId=N/A method=N/A path=N/A msg=No LoadTimeWeaver setup: ignoring JPA class transformer 
+ts=2026-04-06T18:19:44.242-05:00 level=WARN  thread=main logger=org.hibernate.orm.deprecation requestId=N/A method=N/A path=N/A msg=HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default) 
+ts=2026-04-06T18:19:46.211-05:00 level=INFO  thread=main logger=o.h.e.t.j.p.i.JtaPlatformInitiator requestId=N/A method=N/A path=N/A msg=HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+ts=2026-04-06T18:19:46.228-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists courts cascade  
+ts=2026-04-06T18:19:46.234-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists elimination_brackets cascade  
+ts=2026-04-06T18:19:46.234-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists lineup_players cascade  
+ts=2026-04-06T18:19:46.235-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists lineups cascade  
+ts=2026-04-06T18:19:46.235-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists match_events cascade  
+ts=2026-04-06T18:19:46.236-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists matches cascade  
+ts=2026-04-06T18:19:46.236-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists payments cascade  
+ts=2026-04-06T18:19:46.237-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists sanctions cascade  
+ts=2026-04-06T18:19:46.237-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists sport_profiles cascade  
+ts=2026-04-06T18:19:46.238-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists standings cascade  
+ts=2026-04-06T18:19:46.238-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists team_invitations cascade  
+ts=2026-04-06T18:19:46.239-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists team_players cascade  
+ts=2026-04-06T18:19:46.240-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists teams cascade  
+ts=2026-04-06T18:19:46.240-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists tournament_dates cascade  
+ts=2026-04-06T18:19:46.241-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists tournaments cascade  
+ts=2026-04-06T18:19:46.243-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    drop table if exists users cascade  
+ts=2026-04-06T18:19:46.258-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table courts (
+        id bigint generated by default as identity,
+        tournament_id bigint,
+        location varchar(255),
+        name varchar(255),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.268-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table elimination_brackets (
+        match_position integer not null,
+        id bigint generated by default as identity,
+        match_id bigint unique,
+        tournament_id bigint,
+        round varchar(255),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.272-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table lineup_players (
+        positionx integer,
+        positiony integer,
+        starter boolean not null,
+        id bigint generated by default as identity,
+        lineup_id bigint,
+        player_id bigint,
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.274-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table lineups (
+        id bigint generated by default as identity,
+        match_id bigint,
+        team_id bigint,
+        formation varchar(255),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.275-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table match_events (
+        minute integer not null,
+        id bigint generated by default as identity,
+        match_id bigint,
+        player_id bigint,
+        team_id bigint,
+        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.278-05:00 level=WARN  thread=main logger=o.h.t.s.i.ExceptionHandlerLoggedImpl requestId=N/A method=N/A path=N/A msg=GenerationTarget encountered exception accepting command : Error executing DDL "
+    create table match_events (
+        minute integer not null,
+        id bigint generated by default as identity,
+        match_id bigint,
+        player_id bigint,
+        team_id bigint,
+        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),
+        primary key (id)
+    )" via JDBC [Error de Sintaxis en sentencia SQL "\000d\000a    create table match_events (\000d\000a        [*]minute integer not null,\000d\000a        id bigint generated by default as identity,\000d\000a        match_id bigint,\000d\000a        player_id bigint,\000d\000a        team_id bigint,\000d\000a        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),\000d\000a        primary key (id)\000d\000a    )"; se esperaba "identifier"
+Syntax error in SQL statement "\000d\000a    create table match_events (\000d\000a        [*]minute integer not null,\000d\000a        id bigint generated by default as identity,\000d\000a        match_id bigint,\000d\000a        player_id bigint,\000d\000a        team_id bigint,\000d\000a        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),\000d\000a        primary key (id)\000d\000a    )"; expected "identifier";] org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
+    create table match_events (
+        minute integer not null,
+        id bigint generated by default as identity,
+        match_id bigint,
+        player_id bigint,
+        team_id bigint,
+        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),
+        primary key (id)
+    )" via JDBC [Error de Sintaxis en sentencia SQL "\000d\000a    create table match_events (\000d\000a        [*]minute integer not null,\000d\000a        id bigint generated by default as identity,\000d\000a        match_id bigint,\000d\000a        player_id bigint,\000d\000a        team_id bigint,\000d\000a        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),\000d\000a        primary key (id)\000d\000a    )"; se esperaba "identifier"
+Syntax error in SQL statement "\000d\000a    create table match_events (\000d\000a        [*]minute integer not null,\000d\000a        id bigint generated by default as identity,\000d\000a        match_id bigint,\000d\000a        player_id bigint,\000d\000a        team_id bigint,\000d\000a        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),\000d\000a        primary key (id)\000d\000a    )"; expected "identifier";]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
+	at org.hibernate.tool.schema.internal.Helper.applySqlString(Helper.java:233)
+	at org.hibernate.tool.schema.internal.Helper.applySqlStrings(Helper.java:217)
+	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.createTables(SchemaCreatorImpl.java:428)
+	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.createSequencesTablesConstraints(SchemaCreatorImpl.java:344)
+	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.createFromMetadata(SchemaCreatorImpl.java:239)
+	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.performCreation(SchemaCreatorImpl.java:172)
+	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.doCreation(SchemaCreatorImpl.java:142)
+	at org.hibernate.tool.schema.internal.SchemaCreatorImpl.doCreation(SchemaCreatorImpl.java:118)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:250)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:322)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:457)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1835)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1784)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:952)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.TechCupDoswBackEnd20261Application.main(TechCupDoswBackEnd20261Application.java:10)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53)
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58)
+Caused by: org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "\000d\000a    create table match_events (\000d\000a        [*]minute integer not null,\000d\000a        id bigint generated by default as identity,\000d\000a        match_id bigint,\000d\000a        player_id bigint,\000d\000a        team_id bigint,\000d\000a        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),\000d\000a        primary key (id)\000d\000a    )"; se esperaba "identifier"
+Syntax error in SQL statement "\000d\000a    create table match_events (\000d\000a        [*]minute integer not null,\000d\000a        id bigint generated by default as identity,\000d\000a        match_id bigint,\000d\000a        player_id bigint,\000d\000a        team_id bigint,\000d\000a        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),\000d\000a        primary key (id)\000d\000a    )"; expected "identifier"; SQL statement:
+
+    create table match_events (
+        minute integer not null,
+        id bigint generated by default as identity,
+        match_id bigint,
+        player_id bigint,
+        team_id bigint,
+        event_type enum ('GOAL','RED_CARD','YELLOW_CARD'),
+        primary key (id)
+    ) [42001-224]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.getSyntaxError(DbException.java:261)
+	at org.h2.command.Parser.readIdentifier(Parser.java:5533)
+	at org.h2.command.Parser.parseTableColumnDefinition(Parser.java:8994)
+	at org.h2.command.Parser.parseCreateTable(Parser.java:8939)
+	at org.h2.command.Parser.parseCreate(Parser.java:6404)
+	at org.h2.command.Parser.parsePrepared(Parser.java:666)
+	at org.h2.command.Parser.parse(Parser.java:592)
+	at org.h2.command.Parser.parse(Parser.java:564)
+	at org.h2.command.Parser.prepareCommand(Parser.java:483)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:639)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:559)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1166)
+	at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:245)
+	at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:231)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
+	... 44 common frames omitted
+
+ts=2026-04-06T18:19:46.288-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table matches (
+        away_score integer,
+        home_score integer,
+        match_date date,
+        match_time time(6),
+        played boolean not null,
+        away_team_id bigint,
+        court_id bigint,
+        home_team_id bigint,
+        id bigint generated by default as identity,
+        referee_id bigint,
+        tournament_id bigint,
+        phase enum ('FINAL','GROUP','QUARTER_FINAL','SEMI_FINAL'),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.291-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table payments (
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        reviewed_by bigint,
+        team_id bigint,
+        updated_at timestamp(6),
+        comments varchar(255),
+        receipt_url varchar(255),
+        status enum ('APPROVED','IN_REVIEW','PENDING','REJECTED'),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.294-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table sanctions (
+        sanction_date date,
+        suspended_matches integer not null,
+        id bigint generated by default as identity,
+        match_id bigint,
+        player_id bigint,
+        tournament_id bigint,
+        description varchar(255),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.296-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table sport_profiles (
+        age integer,
+        available boolean not null,
+        jersey_number integer not null,
+        semester integer,
+        id bigint generated by default as identity,
+        last_availability_change timestamp(6),
+        user_id bigint,
+        availability_change_reason varchar(255),
+        gender varchar(255),
+        photo_url varchar(255),
+        position enum ('DEFENDER','FORWARD','GOALKEEPER','MIDFIELDER'),
+        program enum ('AI_ENGINEERING','CYBERSECURITY_ENGINEERING','DATA_SCIENCE_MASTERS','INFORMATICS_MASTERS','INFORMATION_MANAGEMENT_MASTERS','OTHER','STATISTICS_ENGINEERING','SYSTEMS_ENGINEERING'),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.298-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table standings (
+        drawn integer not null,
+        goal_difference integer not null,
+        goals_against integer not null,
+        goals_for integer not null,
+        lost integer not null,
+        played integer not null,
+        points integer not null,
+        won integer not null,
+        id bigint generated by default as identity,
+        team_id bigint,
+        tournament_id bigint,
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.300-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table team_invitations (
+        id bigint generated by default as identity,
+        player_id bigint,
+        responded_at timestamp(6),
+        sent_at timestamp(6),
+        team_id bigint,
+        status enum ('ACCEPTED','PENDING','REJECTED'),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.302-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table team_players (
+        player_id bigint,
+        team_id bigint not null
+    ) 
+ts=2026-04-06T18:19:46.303-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table teams (
+        captain_id bigint,
+        id bigint generated by default as identity,
+        tournament_id bigint,
+        name varchar(255),
+        shield_url varchar(255),
+        uniform_colors varchar(255),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.306-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table tournament_dates (
+        event_date date,
+        id bigint generated by default as identity,
+        tournament_id bigint,
+        description varchar(255),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.309-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table tournaments (
+        cost_per_team float(53) not null,
+        end_date date,
+        inscription_close_date date,
+        start_date date,
+        team_count integer not null,
+        created_by bigint,
+        id bigint generated by default as identity,
+        name varchar(255),
+        rules TEXT,
+        sanction_rules TEXT,
+        status enum ('ACTIVE','DRAFT','FINISHED','IN_PROGRESS'),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.310-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table users (
+        active boolean not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        email varchar(255) not null unique,
+        identification varchar(255),
+        name varchar(255),
+        password varchar(255) not null,
+        program enum ('AI_ENGINEERING','CYBERSECURITY_ENGINEERING','DATA_SCIENCE_MASTERS','INFORMATICS_MASTERS','INFORMATION_MANAGEMENT_MASTERS','OTHER','STATISTICS_ENGINEERING','SYSTEMS_ENGINEERING'),
+        role enum ('ADMINISTRATOR','CAPTAIN','ORGANIZER','PLAYER','REFEREE'),
+        user_type enum ('ADMINISTRATIVE','FAMILY','GRADUATE','PROFESSOR','STUDENT'),
+        primary key (id)
+    ) 
+ts=2026-04-06T18:19:46.312-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists courts 
+       add constraint FK8kp1dcp5vfkayi1w6t4218n5 
+       foreign key (tournament_id) 
+       references tournaments 
+ts=2026-04-06T18:19:46.331-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists elimination_brackets 
+       add constraint FKag0gs24od5wt3aa6spkw2liee 
+       foreign key (match_id) 
+       references matches 
+ts=2026-04-06T18:19:46.333-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists elimination_brackets 
+       add constraint FKrji09jawb9cdi21boyrlhewq3 
+       foreign key (tournament_id) 
+       references tournaments 
+ts=2026-04-06T18:19:46.334-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists lineup_players 
+       add constraint FK39tfeqdxgk5xi5bjab6u9bs8o 
+       foreign key (lineup_id) 
+       references lineups 
+ts=2026-04-06T18:19:46.336-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists lineup_players 
+       add constraint FKlxescn3o7y0ae28e7qt1jgkdq 
+       foreign key (player_id) 
+       references users 
+ts=2026-04-06T18:19:46.339-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists lineups 
+       add constraint FK8tc4ikmh6tjbd2mqsnk1ay2ee 
+       foreign key (match_id) 
+       references matches 
+ts=2026-04-06T18:19:46.343-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists lineups 
+       add constraint FK1ct28rvuuc63ym5t1mlxi02ij 
+       foreign key (team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.346-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists match_events 
+       add constraint FKdid29vmxxv18fh9p07a9vjnkf 
+       foreign key (match_id) 
+       references matches 
+ts=2026-04-06T18:19:46.346-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists match_events 
+       add constraint FK714f8blaldhcljfgqr6f86yno 
+       foreign key (player_id) 
+       references users 
+ts=2026-04-06T18:19:46.347-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists match_events 
+       add constraint FKm5qon0d2h6dwbl54f6hfsnnkw 
+       foreign key (team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.348-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists matches 
+       add constraint FK2e8erbfecb0tjtq9iudg36bxu 
+       foreign key (away_team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.350-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists matches 
+       add constraint FK9at6y4yc6k2kbtmqxkkh9xi0u 
+       foreign key (court_id) 
+       references courts 
+ts=2026-04-06T18:19:46.354-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists matches 
+       add constraint FK8k68nekawp47js52dq8720voe 
+       foreign key (home_team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.356-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists matches 
+       add constraint FKjefeporn1y6kfowpanuya6b69 
+       foreign key (referee_id) 
+       references users 
+ts=2026-04-06T18:19:46.360-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists matches 
+       add constraint FKeeniokyjgo5k6rmhjujatn27i 
+       foreign key (tournament_id) 
+       references tournaments 
+ts=2026-04-06T18:19:46.363-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists payments 
+       add constraint FK6jedsr868j0apr7xvtj5xgod6 
+       foreign key (reviewed_by) 
+       references users 
+ts=2026-04-06T18:19:46.366-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists payments 
+       add constraint FKrpeqmtrgsonho79riim36p76j 
+       foreign key (team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.369-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists sanctions 
+       add constraint FKkljdvdmhaq449hs2e7mm6ca3i 
+       foreign key (match_id) 
+       references matches 
+ts=2026-04-06T18:19:46.371-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists sanctions 
+       add constraint FKnxxr7d5fn3hgirxuw507hytm8 
+       foreign key (player_id) 
+       references users 
+ts=2026-04-06T18:19:46.373-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists sanctions 
+       add constraint FKis3y8ggr7y27jt5yq7t57f5bm 
+       foreign key (tournament_id) 
+       references tournaments 
+ts=2026-04-06T18:19:46.376-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists standings 
+       add constraint FK6ak9f4ieqoq2bam5sjt9us7e 
+       foreign key (team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.379-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists standings 
+       add constraint FKtnlpbtpihbdku56ptvkpxqasf 
+       foreign key (tournament_id) 
+       references tournaments 
+ts=2026-04-06T18:19:46.381-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists team_invitations 
+       add constraint FKkm7ov509n0nqj0fq0senp2l1d 
+       foreign key (player_id) 
+       references users 
+ts=2026-04-06T18:19:46.384-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists team_invitations 
+       add constraint FKn2spna496q3cr3fmqc8gda2my 
+       foreign key (team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.387-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists team_players 
+       add constraint FK3bhsykltbdhsmmb61l2ml12h 
+       foreign key (team_id) 
+       references teams 
+ts=2026-04-06T18:19:46.391-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists tournament_dates 
+       add constraint FK77vj8umop06rfugrl1ixsvd21 
+       foreign key (tournament_id) 
+       references tournaments 
+ts=2026-04-06T18:19:46.402-05:00 level=INFO  thread=main logger=o.s.o.j.LocalContainerEntityManagerFactoryBean requestId=N/A method=N/A path=N/A msg=Initialized JPA EntityManagerFactory for persistence unit 'default' 
+ts=2026-04-06T18:19:49.000-05:00 level=WARN  thread=main logger=o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration requestId=N/A method=N/A path=N/A msg=spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+ts=2026-04-06T18:19:50.293-05:00 level=INFO  thread=main logger=o.s.s.w.a.c.ChannelProcessingFilter requestId=N/A method=N/A path=N/A msg=Validated configuration attributes 
+ts=2026-04-06T18:19:50.327-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@62a193e0, org.springframework.security.web.access.channel.ChannelProcessingFilter@601c953c, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@489ec791, org.springframework.security.web.context.SecurityContextHolderFilter@58cd7486, org.springframework.security.web.header.HeaderWriterFilter@2c226db0, org.springframework.web.filter.CorsFilter@3597174b, org.springframework.security.web.authentication.logout.LogoutFilter@62e7e3df, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@7fe1a856, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@11f8d64, eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthenticationFilter@5fdb7394, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@42f15e87, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2acb6c9a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@24a38ef3, org.springframework.security.web.session.SessionManagementFilter@2f4a89fa, org.springframework.security.web.access.ExceptionTranslationFilter@50cfe725, org.springframework.security.web.access.intercept.AuthorizationFilter@339b9869] 
+ts=2026-04-06T18:19:51.193-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Starting ProtocolHandler ["https-jsse-nio-0.0.0.0-8443"] 
+ts=2026-04-06T18:19:51.936-05:00 level=INFO  thread=main logger=o.a.t.util.net.NioEndpoint.certificate requestId=N/A method=N/A path=N/A msg=Connector [https-jsse-nio-0.0.0.0-8443], TLS virtual host [_default_], certificate type [UNDEFINED] configured from keystore [C:\Users\ASUS\.keystore] using alias [techcup] with trust store [null] 
+ts=2026-04-06T18:19:51.967-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Starting ProtocolHandler ["http-nio-8080"] 
+ts=2026-04-06T18:19:51.980-05:00 level=INFO  thread=main logger=o.s.b.w.embedded.tomcat.TomcatWebServer requestId=N/A method=N/A path=N/A msg=Tomcat started on ports 8443 (https), 8080 (http) with context path '/' 
+ts=2026-04-06T18:19:52.022-05:00 level=INFO  thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=Started TechCupDoswBackEnd20261Application in 15.082 seconds (process running for 15.842) 
+ts=2026-04-06T18:20:16.626-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=o.a.c.c.C.[Tomcat].[localhost].[/] requestId=N/A method=N/A path=N/A msg=Initializing Spring DispatcherServlet 'dispatcherServlet' 
+ts=2026-04-06T18:20:16.628-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=o.s.web.servlet.DispatcherServlet requestId=N/A method=N/A path=N/A msg=Initializing Servlet 'dispatcherServlet' 
+ts=2026-04-06T18:20:16.630-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=o.s.web.servlet.DispatcherServlet requestId=N/A method=N/A path=N/A msg=Completed initialization in 2 ms 
+ts=2026-04-06T18:20:16.675-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=cc2d457e-9fe8-42ee-aab8-adf96d5cdddd method=GET path=/api-docs msg=request_received 
+ts=2026-04-06T18:20:18.326-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=o.springdoc.api.AbstractOpenApiResource requestId=cc2d457e-9fe8-42ee-aab8-adf96d5cdddd method=GET path=/api-docs msg=Init duration for springdoc-openapi is: 1577 ms 
+ts=2026-04-06T18:20:18.392-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=cc2d457e-9fe8-42ee-aab8-adf96d5cdddd method=GET path=/api-docs msg=request_completed status=200 durationMs=1718 
+ts=2026-04-06T18:20:23.791-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=ed0446e6-4f9a-4995-a9a4-00ca88092223 method=GET path=/swagger-ui.html msg=request_received 
+ts=2026-04-06T18:20:23.817-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=ed0446e6-4f9a-4995-a9a4-00ca88092223 method=GET path=/swagger-ui.html msg=request_completed status=302 durationMs=26 
+ts=2026-04-06T18:20:23.836-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-10 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=2f67d023-295f-4c86-904e-a1acc9469149 method=GET path=/swagger-ui/index.html msg=request_received 
+ts=2026-04-06T18:20:23.846-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-10 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=2f67d023-295f-4c86-904e-a1acc9469149 method=GET path=/swagger-ui/index.html msg=request_completed status=200 durationMs=10 
+ts=2026-04-06T18:20:23.924-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-7 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e8ff6a03-b5ed-4c57-b029-1a46c321a70d method=GET path=/swagger-ui/swagger-ui.css msg=request_received 
+ts=2026-04-06T18:20:23.926-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-4 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=39b58a2a-87a2-4332-a71f-c9717fbf12e3 method=GET path=/swagger-ui/swagger-ui-bundle.js msg=request_received 
+ts=2026-04-06T18:20:23.929-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-8 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=dcedbb84-5853-49a1-bd6a-34fc777b9046 method=GET path=/swagger-ui/index.css msg=request_received 
+ts=2026-04-06T18:20:23.945-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-8 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=dcedbb84-5853-49a1-bd6a-34fc777b9046 method=GET path=/swagger-ui/index.css msg=request_completed status=200 durationMs=16 
+ts=2026-04-06T18:20:23.952-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-7 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e8ff6a03-b5ed-4c57-b029-1a46c321a70d method=GET path=/swagger-ui/swagger-ui.css msg=request_completed status=200 durationMs=28 
+ts=2026-04-06T18:20:23.985-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-5 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8c5358d3-343b-4967-a76c-d794a4aceed3 method=GET path=/swagger-ui/swagger-ui-standalone-preset.js msg=request_received 
+ts=2026-04-06T18:20:23.987-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-2 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=b246e3f2-5f6c-4f38-8432-411a7889b907 method=GET path=/swagger-ui/swagger-initializer.js msg=request_received 
+ts=2026-04-06T18:20:24.014-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-2 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=b246e3f2-5f6c-4f38-8432-411a7889b907 method=GET path=/swagger-ui/swagger-initializer.js msg=request_completed status=200 durationMs=27 
+ts=2026-04-06T18:20:24.020-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-9 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=d5d85c2d-da6c-4a03-9635-ec4a4a83fd6f method=GET path=/swagger-ui/swagger-ui.css msg=request_received 
+ts=2026-04-06T18:20:24.020-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-2 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e0da2e5d-b2a0-4228-b772-9d7bbc8fe206 method=GET path=/swagger-ui/index.css msg=request_received 
+ts=2026-04-06T18:20:24.024-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-5 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=8c5358d3-343b-4967-a76c-d794a4aceed3 method=GET path=/swagger-ui/swagger-ui-standalone-preset.js msg=request_completed status=200 durationMs=39 
+ts=2026-04-06T18:20:24.031-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-2 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=e0da2e5d-b2a0-4228-b772-9d7bbc8fe206 method=GET path=/swagger-ui/index.css msg=request_completed status=200 durationMs=11 
+ts=2026-04-06T18:20:24.036-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-9 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=d5d85c2d-da6c-4a03-9635-ec4a4a83fd6f method=GET path=/swagger-ui/swagger-ui.css msg=request_completed status=200 durationMs=16 
+ts=2026-04-06T18:20:24.102-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-4 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=39b58a2a-87a2-4332-a71f-c9717fbf12e3 method=GET path=/swagger-ui/swagger-ui-bundle.js msg=request_completed status=200 durationMs=176 
+ts=2026-04-06T18:20:24.254-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-8 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=3cb857bb-4619-4548-8b22-534f6672bf83 method=GET path=/api-docs/swagger-config msg=request_received 
+ts=2026-04-06T18:20:24.261-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-8 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=3cb857bb-4619-4548-8b22-534f6672bf83 method=GET path=/api-docs/swagger-config msg=request_completed status=200 durationMs=7 
+ts=2026-04-06T18:20:24.278-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-6 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=bb190bd1-549f-42b4-831d-e7536fadd45d method=GET path=/swagger-ui/favicon-16x16.png msg=request_received 
+ts=2026-04-06T18:20:24.279-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=bcc0e755-a1d6-4443-8fe0-51838340e8de method=GET path=/api-docs msg=request_received 
+ts=2026-04-06T18:20:24.288-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-6 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=bb190bd1-549f-42b4-831d-e7536fadd45d method=GET path=/swagger-ui/favicon-16x16.png msg=request_completed status=200 durationMs=9 
+ts=2026-04-06T18:20:25.126-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=o.springdoc.api.AbstractOpenApiResource requestId=bcc0e755-a1d6-4443-8fe0-51838340e8de method=GET path=/api-docs msg=Init duration for springdoc-openapi is: 841 ms 
+ts=2026-04-06T18:20:25.135-05:00 level=INFO  thread=http-nio-0.0.0.0-8443-exec-3 logger=e.e.c.T.c.logging.RequestTracingFilter requestId=bcc0e755-a1d6-4443-8fe0-51838340e8de method=GET path=/api-docs msg=request_completed status=200 durationMs=856 

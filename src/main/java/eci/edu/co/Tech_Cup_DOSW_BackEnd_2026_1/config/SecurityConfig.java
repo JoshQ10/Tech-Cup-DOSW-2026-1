@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,10 +21,13 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import org.springframework.context.annotation.Profile;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
+@Profile("!test") // Solo usar esta config en perfil no-test (producción, dev)
 public class SecurityConfig {
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -30,8 +35,14 @@ public class SecurityConfig {
         private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
         @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
+
+        @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 http
+                                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .authorizeHttpRequests(authz -> authz
                                                 // Permitir acceso público a Swagger/OpenAPI
@@ -50,7 +61,7 @@ public class SecurityConfig {
                                 .csrf(csrf -> csrf.disable())
                                 .httpBasic(basic -> basic.disable())
                                 .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .oauth2Login(oauth2 -> oauth2
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
