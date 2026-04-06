@@ -26,7 +26,9 @@ class JwtServiceTest {
 
         testUser = User.builder()
                 .id(1L)
-                .name("Test User")
+                .firstName("Test")
+                .lastName("User")
+                .username("testuser")
                 .email("test@example.com")
                 .password("password")
                 .role(Role.PLAYER)
@@ -231,7 +233,9 @@ class JwtServiceTest {
         // Arrange
         User anotherUser = User.builder()
                 .id(2L)
-                .name("Another User")
+                .firstName("Another")
+                .lastName("User")
+                .username("anotheruser")
                 .email("another@example.com")
                 .password("password")
                 .role(Role.CAPTAIN)

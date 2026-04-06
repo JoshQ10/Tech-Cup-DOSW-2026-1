@@ -48,18 +48,32 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private User createOauthUser(String email, String name) {
+        // Separar nombre y apellido si es posible
+        String firstName = name != null ? name : "User";
+        String lastName = "";
+        if (name != null && name.contains(" ")) {
+            String[] parts = name.split(" ", 2);
+            firstName = parts[0];
+            lastName = parts[1];
+        }
+
+        // Determinar tipo de usuario según dominio
+        UserType userType = email.endsWith("@escuelaing.edu.co") ? UserType.INTERNAL : UserType.EXTERNAL;
+
         User newUser = User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .username(email.split("@")[0])
                 .email(email)
-                .name(name != null ? name : email)
                 .password("oauth2-" + UUID.randomUUID())
                 .role(Role.PLAYER)
-                .userType(UserType.STUDENT)
+                .userType(userType)
                 .active(true)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         User saved = userRepository.save(newUser);
-        log.info("Created local account for OAuth2 user: {}", email);
+        log.info("Created local account for OAuth2 user: {} with type: {}", email, userType);
         return saved;
     }
 

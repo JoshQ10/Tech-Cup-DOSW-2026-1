@@ -68,8 +68,10 @@ class CustomOAuth2UserServiceTest {
         // Arrange
         User user = User.builder()
                 .id(1L)
+                .firstName("OAuth")
+                .lastName("User")
+                .username("oauthuser")
                 .email("oauth@example.com")
-                .name("OAuth User")
                 .role(Role.PLAYER)
                 .userType(UserType.STUDENT)
                 .createdAt(LocalDateTime.now())
@@ -78,7 +80,8 @@ class CustomOAuth2UserServiceTest {
         // Act & Assert
         assertNotNull(user);
         assertEquals("oauth@example.com", user.getEmail());
-        assertEquals("OAuth User", user.getName());
+        assertEquals("OAuth", user.getFirstName());
+        assertEquals("User", user.getLastName());
         assertEquals(Role.PLAYER, user.getRole());
     }
 
@@ -106,8 +109,10 @@ class CustomOAuth2UserServiceTest {
     void testOAuth2UserSaveToDB() {
         // Arrange
         User newUser = User.builder()
+                .firstName("New")
+                .lastName("OAuth User")
+                .username("newoauthuser")
                 .email("newuser@oauth.com")
-                .name("New OAuth User")
                 .userType(UserType.STUDENT)
                 .role(Role.PLAYER)
                 .build();

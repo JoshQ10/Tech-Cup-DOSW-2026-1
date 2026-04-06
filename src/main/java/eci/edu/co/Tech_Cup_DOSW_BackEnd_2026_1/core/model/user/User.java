@@ -30,15 +30,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(unique = true, nullable = false)
+    private String username;
 
     @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
-
-    private String identification;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -49,7 +54,16 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Program program;
 
+    private String identification;
+
+    @Column(name = "relationship_type")
+    private String relationshipType;
+
+    @Column(name = "relationship_description", length = 500)
+    private String relationshipDescription;
+
     private boolean active;
 
     private LocalDateTime createdAt;
 }
+

@@ -3,8 +3,10 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.PhotoUploadRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.PlayerSearchResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.SportProfileMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
@@ -15,9 +17,12 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserReposi
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -168,7 +173,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (profile.getUserId() != null) {
             User user = userRepository.findById(profile.getUserId()).orElse(null);
             if (user != null) {
-                response.setPlayerName(user.getName());
+                response.setPlayerName(user.getFirstName() + " " + user.getLastName());
             }
         }
 
@@ -176,6 +181,41 @@ public class PlayerServiceImpl implements PlayerService {
         response.setLastAvailabilityChange(profile.getLastAvailabilityChange());
         response.setAvailabilityChangeReason(profile.getAvailabilityChangeReason());
 
+        return response;
+    }
+
+    @Override
+    public PlayerSearchResponse searchAvailablePlayers(
+            Position position,
+            Integer semester,
+            Integer age,
+            String gender,
+            String name,
+            Pageable pageable) {
+        log.info("Searching available players with filters - position: {}, semester: {}, age: {}, gender: {}, name: {}",
+                position, semester, age, gender, name);
+
+        Page<SportProfile> page = sportProfileRepository.searchAvailablePlayers(
+                position, semester, age, gender, name, pageable);
+
+        log.debug("Found {} available players matching criteria", page.getTotalElements());
+
+        var players = page.getContent().stream()
+                .map(this::mapToProfileResponse)
+                .collect(Collectors.toList());
+
+        PlayerSearchResponse response = PlayerSearchResponse.builder()
+                .players(players)
+                .currentPage(page.getNumber())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .pageSize(page.getSize())
+                .hasNextPage(page.hasNext())
+                .isFirstPage(page.isFirst())
+                .isLastPage(page.isLast())
+                .build();
+
+        log.info("Player search completed successfully - returned {} players", players.size());
         return response;
     }
 }
