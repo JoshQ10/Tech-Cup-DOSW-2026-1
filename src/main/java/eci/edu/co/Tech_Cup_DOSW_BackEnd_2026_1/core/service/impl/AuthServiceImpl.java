@@ -42,6 +42,7 @@ public class AuthServiceImpl implements AuthService {
     private final GoogleOAuth2Service googleOAuth2Service;
 
     @Override
+    @SuppressWarnings("null")
     public UserResponse register(RegisterRequest request) {
         registerRequestValidator.validate(request);
         log.info("Registering new user with email: {}", request.getEmail());
@@ -71,8 +72,7 @@ public class AuthServiceImpl implements AuthService {
                 .expiresAt(LocalDateTime.now().plusHours(24)) // Válido por 24 horas
                 .verified(false)
                 .build();
-        @SuppressWarnings("null")
-        VerificationToken savedToken = verificationTokenRepository.save(token);
+        verificationTokenRepository.save(token);
         log.debug("Verification token created for user: {}", savedUser.getId());
 
         // Enviar email de verificación
@@ -185,6 +185,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @SuppressWarnings("null")
     public String resendVerification(String email) {
         log.info("Resending verification email for: {}", email);
 
@@ -218,8 +219,7 @@ public class AuthServiceImpl implements AuthService {
                 .expiresAt(LocalDateTime.now().plusHours(24))
                 .verified(false)
                 .build();
-        @SuppressWarnings("null")
-        VerificationToken savedNewToken = verificationTokenRepository.save(verificationToken);
+        verificationTokenRepository.save(verificationToken);
         log.debug("New verification token created for user: {}", user.getId());
 
         // Enviar email
