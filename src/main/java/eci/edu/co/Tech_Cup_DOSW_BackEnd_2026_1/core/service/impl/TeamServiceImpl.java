@@ -39,6 +39,7 @@ public class TeamServiceImpl implements TeamService {
                 .players(new ArrayList<>())
                 .build();
 
+        @SuppressWarnings("null")
         Team savedTeam = teamRepository.save(team);
         log.info("Team created successfully with id: {}", savedTeam.getId());
 
@@ -49,6 +50,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamResponse getById(Long id) {
         log.info("Fetching team: {}", id);
 
+        @SuppressWarnings("null")
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Team {} not found", id);
@@ -61,6 +63,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamResponse getRoster(Long id) {
         log.info("Fetching roster for team: {}", id);
+        @SuppressWarnings("null")
         Team team = teamRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn("Team {} not found for roster", id);
@@ -73,6 +76,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamResponse removePlayer(Long teamId, Long playerId) {
         log.info("Removing player: {} from team: {}", playerId, teamId);
 
+        @SuppressWarnings("null")
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> {
                     log.warn("Team {} not found", teamId);

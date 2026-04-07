@@ -72,6 +72,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .createdAt(LocalDateTime.now())
                 .build();
 
+        @SuppressWarnings("null")
         User saved = userRepository.save(newUser);
         log.info("Created local account for OAuth2 user: {} with type: {}", email, userType);
         return saved;
