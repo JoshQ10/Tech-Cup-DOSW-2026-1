@@ -71,6 +71,7 @@ public class GoogleOAuth2Service {
                     .createdAt(LocalDateTime.now())
                     .build();
 
+            @SuppressWarnings("null")
             User savedUser = userRepository.save(newUser);
             log.info("New user created from Google authentication with id: {}", savedUser.getId());
 

@@ -156,8 +156,6 @@ class JwtAuthenticationFilterTest {
     @DisplayName("JWT filter preserves request attributes")
     void testJwtFilterPreservesAttributes() throws ServletException, IOException {
         // Arrange
-        String attribute = "userId";
-        String value = "123";
         when(mockRequest.getServletPath()).thenReturn("/api/profile");
         when(mockRequest.getHeader("Authorization")).thenReturn(null);
 

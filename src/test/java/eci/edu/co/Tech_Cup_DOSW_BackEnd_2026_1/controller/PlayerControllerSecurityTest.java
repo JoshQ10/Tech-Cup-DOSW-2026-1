@@ -32,138 +32,140 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(PlayerController.class)
 @Import(SecurityConfig.class)
 @DisplayName("PlayerController Security Tests")
+@SuppressWarnings("null")
 class PlayerControllerSecurityTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockBean
-    private PlayerService playerService;
+        @MockBean
+        private PlayerService playerService;
 
-    @MockBean
-    private JwtService jwtService;
+        @MockBean
+        private JwtService jwtService;
 
-    @MockBean
-    private CustomOAuth2UserService customOAuth2UserService;
+        @MockBean
+        private CustomOAuth2UserService customOAuth2UserService;
 
-    @MockBean
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+        @MockBean
+        private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    private ProfileRequest profileRequest;
-    private AvailabilityRequest availabilityRequest;
-    private ProfileResponse profileResponse;
+        private ProfileRequest profileRequest;
+        private AvailabilityRequest availabilityRequest;
+        private ProfileResponse profileResponse;
 
-    @BeforeEach
-    void setUp() {
-        profileRequest = ProfileRequest.builder()
-                .position(Position.FORWARD)
-                .jerseyNumber(10)
-                .photoUrl("http://example.com/photo.jpg")
-                .available(true)
-                .semester(1)
-                .gender("Masculino")
-                .age(20)
-                .build();
+        @BeforeEach
+        void setUp() {
+                profileRequest = ProfileRequest.builder()
+                                .position(Position.FORWARD)
+                                .jerseyNumber(10)
+                                .photoUrl("http://example.com/photo.jpg")
+                                .available(true)
+                                .semester(1)
+                                .gender("Masculino")
+                                .age(20)
+                                .build();
 
-        availabilityRequest = AvailabilityRequest.builder()
-                .available(true)
-                .build();
+                availabilityRequest = AvailabilityRequest.builder()
+                                .available(true)
+                                .build();
 
-        profileResponse = ProfileResponse.builder()
-                .id(1L)
-                .userId(1L)
-                .position(Position.FORWARD)
-                .jerseyNumber(10)
-                .available(true)
-                .build();
-    }
+                profileResponse = ProfileResponse.builder()
+                                .id(1L)
+                                .userId(1L)
+                                .position(Position.FORWARD)
+                                .jerseyNumber(10)
+                                .available(true)
+                                .build();
+        }
 
-    // ---- Operaciones permitidas por rol ----
+        // ---- Operaciones permitidas por rol ----
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER puede actualizar su perfil deportivo")
-    void playerCanUpdateProfile() throws Exception {
-        when(playerService.updateProfile(anyLong(), any(ProfileRequest.class))).thenReturn(profileResponse);
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER puede actualizar su perfil deportivo")
+        void playerCanUpdateProfile() throws Exception {
+                when(playerService.updateProfile(anyLong(), any(ProfileRequest.class))).thenReturn(profileResponse);
 
-        mockMvc.perform(put("/api/players/1/profile")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileRequest)))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(put("/api/players/1/profile")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(profileRequest)))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @WithMockUser(roles = "CAPTAIN")
-    @DisplayName("CAPTAIN puede actualizar perfil deportivo")
-    void captainCanUpdateProfile() throws Exception {
-        when(playerService.updateProfile(anyLong(), any(ProfileRequest.class))).thenReturn(profileResponse);
+        @Test
+        @WithMockUser(roles = "CAPTAIN")
+        @DisplayName("CAPTAIN puede actualizar perfil deportivo")
+        void captainCanUpdateProfile() throws Exception {
+                when(playerService.updateProfile(anyLong(), any(ProfileRequest.class))).thenReturn(profileResponse);
 
-        mockMvc.perform(put("/api/players/1/profile")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileRequest)))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(put("/api/players/1/profile")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(profileRequest)))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER puede cambiar disponibilidad")
-    void playerCanChangeAvailability() throws Exception {
-        when(playerService.changeAvailability(anyLong(), any(AvailabilityRequest.class))).thenReturn(profileResponse);
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER puede cambiar disponibilidad")
+        void playerCanChangeAvailability() throws Exception {
+                when(playerService.changeAvailability(anyLong(), any(AvailabilityRequest.class)))
+                                .thenReturn(profileResponse);
 
-        mockMvc.perform(patch("/api/players/1/availability")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(availabilityRequest)))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(patch("/api/players/1/availability")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(availabilityRequest)))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("Cualquier usuario autenticado puede consultar un perfil")
-    void anyAuthenticatedUserCanGetProfile() throws Exception {
-        when(playerService.getProfile(anyLong())).thenReturn(profileResponse);
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("Cualquier usuario autenticado puede consultar un perfil")
+        void anyAuthenticatedUserCanGetProfile() throws Exception {
+                when(playerService.getProfile(anyLong())).thenReturn(profileResponse);
 
-        mockMvc.perform(get("/api/players/1/profile"))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(get("/api/players/1/profile"))
+                                .andExpect(status().isOk());
+        }
 
-    // ---- Acceso denegado a operaciones sin permisos ----
+        // ---- Acceso denegado a operaciones sin permisos ----
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER no puede actualizar perfil deportivo - 403")
-    void organizerCannotUpdateProfile() throws Exception {
-        mockMvc.perform(put("/api/players/1/profile")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileRequest)))
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("ORGANIZER no puede actualizar perfil deportivo - 403")
+        void organizerCannotUpdateProfile() throws Exception {
+                mockMvc.perform(put("/api/players/1/profile")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(profileRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockUser(roles = "REFEREE")
-    @DisplayName("REFEREE no puede cambiar disponibilidad de jugador - 403")
-    void refereeCannotChangeAvailability() throws Exception {
-        mockMvc.perform(patch("/api/players/1/availability")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(availabilityRequest)))
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockUser(roles = "REFEREE")
+        @DisplayName("REFEREE no puede cambiar disponibilidad de jugador - 403")
+        void refereeCannotChangeAvailability() throws Exception {
+                mockMvc.perform(patch("/api/players/1/availability")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(availabilityRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @DisplayName("Usuario no autenticado no puede acceder a perfil - 401")
-    void unauthenticatedCannotGetProfile() throws Exception {
-        mockMvc.perform(get("/api/players/1/profile"))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        @DisplayName("Usuario no autenticado no puede acceder a perfil - 401")
+        void unauthenticatedCannotGetProfile() throws Exception {
+                mockMvc.perform(get("/api/players/1/profile"))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @DisplayName("Usuario no autenticado no puede actualizar perfil - 401")
-    void unauthenticatedCannotUpdateProfile() throws Exception {
-        mockMvc.perform(put("/api/players/1/profile")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileRequest)))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        @DisplayName("Usuario no autenticado no puede actualizar perfil - 401")
+        void unauthenticatedCannotUpdateProfile() throws Exception {
+                mockMvc.perform(put("/api/players/1/profile")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(profileRequest)))
+                                .andExpect(status().isUnauthorized());
+        }
 }

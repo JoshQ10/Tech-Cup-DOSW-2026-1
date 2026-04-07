@@ -71,7 +71,8 @@ public class AuthServiceImpl implements AuthService {
                 .expiresAt(LocalDateTime.now().plusHours(24)) // Válido por 24 horas
                 .verified(false)
                 .build();
-        verificationTokenRepository.save(token);
+        @SuppressWarnings("null")
+        VerificationToken savedToken = verificationTokenRepository.save(token);
         log.debug("Verification token created for user: {}", savedUser.getId());
 
         // Enviar email de verificación
@@ -155,7 +156,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Obtener usuario y activarlo
-        User user = userRepository.findById(verificationToken.getUserId())
+        Long userId = verificationToken.getUserId();
+        @SuppressWarnings("null")
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> {
                     log.warn("Email verification failed: user not found");
                     return new ResourceNotFoundException("User not found");
@@ -215,7 +218,8 @@ public class AuthServiceImpl implements AuthService {
                 .expiresAt(LocalDateTime.now().plusHours(24))
                 .verified(false)
                 .build();
-        verificationTokenRepository.save(verificationToken);
+        @SuppressWarnings("null")
+        VerificationToken savedNewToken = verificationTokenRepository.save(verificationToken);
         log.debug("New verification token created for user: {}", user.getId());
 
         // Enviar email
@@ -270,9 +274,6 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setActive(false); // Por defecto inactivo hasta verificar email
         user.setCreatedAt(LocalDateTime.now());
-
-        // Concatenar nombre y apellido para compatibilidad si es necesario
-        String fullName = request.getFirstName() + " " + request.getLastName();
 
         // Asegurar que userType está correctamente asignado
         if (request.getUserType() != null) {

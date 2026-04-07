@@ -35,6 +35,7 @@ public class PlayerServiceImpl implements PlayerService {
     private final PhotoValidationUtil photoValidationUtil;
 
     @Override
+    @SuppressWarnings("null")
     public ProfileResponse updateProfile(Long id, ProfileRequest request) {
         log.info("Updating profile for player: {}", id);
 
@@ -91,9 +92,11 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    @SuppressWarnings("null")
     public ProfileResponse changeAvailability(Long id, AvailabilityRequest request) {
         log.info("Changing availability for player: {}", id);
-        log.debug("Availability change request - new state: {}, reason: {}", request.isAvailable(), request.getReason());
+        log.debug("Availability change request - new state: {}, reason: {}", request.isAvailable(),
+                request.getReason());
 
         SportProfile profile = sportProfileRepository.findById(id)
                 .orElseThrow(() -> {
@@ -108,26 +111,27 @@ public class PlayerServiceImpl implements PlayerService {
         if (previousAvailability == request.isAvailable()) {
             log.info("Availability state unchanged for player: {}. New state is same as current state", id);
         } else {
-            log.info("Availability state changed for player: {} from {} to {}", 
-                id, previousAvailability, request.isAvailable());
+            log.info("Availability state changed for player: {} from {} to {}",
+                    id, previousAvailability, request.isAvailable());
         }
 
         // Actualizar estado y auditoría
         profile.setAvailable(request.isAvailable());
         profile.setLastAvailabilityChange(LocalDateTime.now());
         profile.setAvailabilityChangeReason(request.getReason());
-        
+
         log.debug("Availability state transition in memory");
 
         SportProfile updatedProfile = sportProfileRepository.save(profile);
         log.info("Availability changed successfully for player: {}", id);
-        log.debug("Availability change persisted to database - new state: {}, changed at: {}", 
-            updatedProfile.isAvailable(), updatedProfile.getLastAvailabilityChange());
+        log.debug("Availability change persisted to database - new state: {}, changed at: {}",
+                updatedProfile.isAvailable(), updatedProfile.getLastAvailabilityChange());
 
         return mapToProfileResponse(updatedProfile);
     }
 
     @Override
+    @SuppressWarnings("null")
     public ProfileResponse uploadPhoto(Long id, PhotoUploadRequest request) {
         log.info("Uploading profile photo for player: {}", id);
 
@@ -154,6 +158,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    @SuppressWarnings("null")
     public ProfileResponse getProfile(Long id) {
         log.info("Fetching profile for player: {}", id);
 
@@ -171,6 +176,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         // Mapeo especial para playerName que requiere búsqueda de usuario
         if (profile.getUserId() != null) {
+            @SuppressWarnings("null")
             User user = userRepository.findById(profile.getUserId()).orElse(null);
             if (user != null) {
                 response.setPlayerName(user.getFirstName() + " " + user.getLastName());

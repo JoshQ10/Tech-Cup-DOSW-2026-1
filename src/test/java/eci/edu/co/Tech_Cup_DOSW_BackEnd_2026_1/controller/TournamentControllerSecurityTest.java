@@ -41,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TournamentController.class)
 @Import(SecurityConfig.class)
 @DisplayName("TournamentController Security Tests")
+@SuppressWarnings("null")
 class TournamentControllerSecurityTest {
 
     @Autowired

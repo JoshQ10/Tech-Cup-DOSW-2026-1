@@ -30,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AuthController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @DisplayName("AuthController Tests")
+@SuppressWarnings("null")
 class AuthControllerTest {
 
         @Autowired

@@ -41,7 +41,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
         String email = oauth2User.getAttribute("email");
-        String name = oauth2User.getAttribute("name");
 
         if (email == null || email.isBlank()) {
             log.error("OAuth2 login failed: provider did not return email");
@@ -58,6 +57,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String accessToken = jwtService.generateAccessToken(user, oauth2AccessTokenTtlMs);
         String refreshToken = jwtService.generateRefreshToken(user, oauth2RefreshTokenTtlMs);
 
+        @SuppressWarnings("null")
         String redirectUrl = UriComponentsBuilder.fromUriString(successRedirectUri)
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)

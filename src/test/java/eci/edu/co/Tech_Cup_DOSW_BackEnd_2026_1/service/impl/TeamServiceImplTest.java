@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TeamServiceImpl Tests")
+@SuppressWarnings("null")
 class TeamServiceImplTest {
 
     @Mock

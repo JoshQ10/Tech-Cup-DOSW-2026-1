@@ -3,12 +3,8 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -66,7 +62,7 @@ class CoreLoggingTest {
     void testRequestTracingFilterHandlesHttpMethods() throws ServletException, IOException {
         // Arrange
         RequestTracingFilter filter = new RequestTracingFilter();
-        String[] methods = {"GET", "POST", "PUT", "DELETE", "PATCH"};
+        String[] methods = { "GET", "POST", "PUT", "DELETE", "PATCH" };
 
         for (String method : methods) {
             // Arrange
