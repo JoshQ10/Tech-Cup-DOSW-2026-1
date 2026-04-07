@@ -82,8 +82,7 @@ public class AuthServiceImpl implements AuthService {
                     savedUser.getFirstName(),
                     savedUser.getLastName(),
                     verificationToken,
-                    savedUser.getUserType()
-            );
+                    savedUser.getUserType());
         } catch (Exception e) {
             log.warn("Error sending verification email to {}: {}", savedUser.getEmail(), e.getMessage());
             // No lanzar excepción, el usuario se registró correctamente
@@ -199,7 +198,8 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Invalidar token antiguo si existe
-        Optional<VerificationToken> existingToken = verificationTokenRepository.findByUserIdAndVerifiedFalse(user.getId());
+        Optional<VerificationToken> existingToken = verificationTokenRepository
+                .findByUserIdAndVerifiedFalse(user.getId());
         existingToken.ifPresent(token -> {
             token.setVerified(true); // Marcar como usado para invalidarlo
             verificationTokenRepository.save(token);
@@ -226,8 +226,7 @@ public class AuthServiceImpl implements AuthService {
                     user.getFirstName(),
                     user.getLastName(),
                     newToken,
-                    user.getUserType()
-            );
+                    user.getUserType());
             log.info("Verification email resent successfully for user: {}", user.getId());
             return "Verification email resent successfully. Please check your inbox.";
         } catch (Exception e) {
