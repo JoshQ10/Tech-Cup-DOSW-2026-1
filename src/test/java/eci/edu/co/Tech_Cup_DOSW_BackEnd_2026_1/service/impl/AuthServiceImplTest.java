@@ -32,7 +32,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("AuthServiceImpl Tests")@SuppressWarnings(\"null\")class AuthServiceImplTest {
+@DisplayName("AuthServiceImpl Tests")
+@SuppressWarnings("null")
+class AuthServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
