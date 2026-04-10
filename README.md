@@ -223,3 +223,7 @@ El objetivo de **TechCup Fútbol** es modernizar la organización del torneo uni
 - Reducir errores administrativos
 - Facilitar la comunicación entre jugadores, capitanes, árbitros y organizadores
 - Brindar transparencia en resultados, estadísticas y clasificación
+
+FIGMA
+<img width="1374" height="742" alt="image" src="https://github.com/user-attachments/assets/66bf457b-7dd2-4ac0-b8ce-d7d2143e8ebe" />
+
