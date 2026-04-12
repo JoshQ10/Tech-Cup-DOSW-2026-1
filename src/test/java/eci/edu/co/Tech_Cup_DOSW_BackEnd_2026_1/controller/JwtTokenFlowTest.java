@@ -1,6 +1,6 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityConfig;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityTestConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +24,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PlayerController.class)
-@Import(SecurityConfig.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(SecurityTestConfig.class)
 @DisplayName("JWT Token Flow Tests")
 class JwtTokenFlowTest {
 
