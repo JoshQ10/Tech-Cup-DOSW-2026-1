@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(PlayerController.class)
 @Import(SecurityTestConfig.class)
-@TestPropertySource(properties = {"spring.profiles.active=test"})
+@TestPropertySource(properties = { "spring.profiles.active=test" })
 @DisplayName("JWT Token Flow Tests")
 class JwtTokenFlowTest {
 
