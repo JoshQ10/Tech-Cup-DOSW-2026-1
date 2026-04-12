@@ -1567,6 +1567,128 @@ mvn --version
 
 ---
 
+## Docker: Construccion y Despliegue
+
+### Requisitos
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado y ejecutandose
+- Archivo `.env` configurado (ver seccion siguiente)
+
+### Configurar variables de entorno
+
+```bash
+# Copiar el archivo de referencia
+cp .env.example .env
+
+# Editar .env con tus valores reales
+# (el archivo .env NO se sube al repositorio)
+```
+
+Variables disponibles en `.env`:
+
+| Variable | Descripcion | Valor por defecto |
+|----------|-------------|-------------------|
+| `DB_USER` | Usuario PostgreSQL | `postgres` |
+| `DB_PASSWORD` | Contrasena PostgreSQL | `postgres` |
+| `DB_NAME` | Nombre de la base de datos | `techcup_db` |
+| `JWT_SECRET` | Clave secreta para firmar tokens JWT | valor hardcoded de dev |
+| `SSL_KEY_STORE_PASSWORD` | Contrasena del keystore PKCS12 | `password` |
+
+### Construir la imagen
+
+```bash
+# Construir la imagen del backend
+docker build -t techcup-app .
+
+# O directamente con docker-compose (lo construye y levanta todo)
+docker compose build
+```
+
+### Levantar el entorno completo (PostgreSQL + App)
+
+```bash
+# Levantar todos los servicios en segundo plano
+docker compose up -d
+
+# Ver logs en tiempo real
+docker compose logs -f app
+
+# Ver solo los logs de PostgreSQL
+docker compose logs -f postgres
+```
+
+La aplicacion estara disponible en:
+- **API (HTTPS)**: `https://localhost:8443`
+- **Swagger UI**: `https://localhost:8443/swagger-ui.html`
+- **OpenAPI JSON**: `https://localhost:8443/api-docs`
+
+> El certificado es autofirmado. En el navegador: *Avanzado → Continuar a localhost*.
+
+### Detener el entorno
+
+```bash
+# Detener contenedores (preserva datos de BD)
+docker compose down
+
+# Detener y eliminar el volumen de datos
+docker compose down -v
+```
+
+### Reconstruir tras cambios de codigo
+
+```bash
+docker compose up -d --build
+```
+
+---
+
+## Perfiles Spring: Local vs Azure
+
+El proyecto usa **Spring Profiles** para separar la configuracion segun el entorno.
+
+| Perfil | Cuando usarlo | BD apunta a |
+|--------|---------------|-------------|
+| `local` | Docker Compose local | Contenedor `postgres` de docker-compose |
+| `azure` | Despliegue en Azure | Azure PostgreSQL Flexible Server |
+
+### Perfil local (por defecto en docker-compose)
+
+`docker-compose.yml` inyecta `SPRING_PROFILES_ACTIVE=local` y `DB_HOST=postgres`.
+No se requiere configuracion adicional para desarrollo local.
+
+### Perfil azure (conexion a Azure PostgreSQL)
+
+Para desplegar en Azure, definir las siguientes variables de entorno en el servidor:
+
+```bash
+SPRING_PROFILES_ACTIVE=azure
+AZURE_DB_HOST=your-server.postgres.database.azure.com
+AZURE_DB_NAME=techcup_db
+AZURE_DB_USER=adminuser
+AZURE_DB_PASSWORD=your-secure-password
+ALLOWED_ORIGINS=https://your-frontend.azurewebsites.net
+JWT_SECRET=your-production-jwt-secret
+SSL_KEY_STORE_PASSWORD=your-keystore-password
+```
+
+Diferencias del perfil `azure` respecto a `local`:
+- Conexion a PostgreSQL con `sslmode=require` (obligatorio en Azure)
+- `ddl-auto=validate` (no modifica el esquema en produccion)
+- `show-sql=false` y logging reducido
+- CORS restringido a los origenes de produccion
+
+### Ejecutar localmente con un perfil especifico
+
+```bash
+# Con Maven (sin Docker)
+mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
+
+# Con Docker Compose cambiando el perfil
+SPRING_PROFILES_ACTIVE=local docker compose up -d
+```
+
+---
+
 ## Reporte de Cumplimiento - Requisitos de Seguridad HTTPS/SSL y CORS
 
 ### Resumen Ejecutivo

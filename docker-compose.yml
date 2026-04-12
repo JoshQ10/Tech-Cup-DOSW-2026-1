@@ -1,18 +1,50 @@
 version: '3.8'
 
+networks:
+  techcup-network:
+    driver: bridge
+
 services:
   postgres:
     image: postgres:16-alpine
     container_name: techcup-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: techcup_db
+      POSTGRES_DB: ${DB_NAME:-techcup_db}
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
       - techcup_pgdata:/var/lib/postgresql/data
+    networks:
+      - techcup-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-techcup_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: techcup-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-techcup_db}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      JWT_SECRET: ${JWT_SECRET:-TechCupDosw2026SecretKeyForJwtTokensMustBeLongEnough123456}
+      SSL_KEY_STORE_PASSWORD: ${SSL_KEY_STORE_PASSWORD:-password}
+    ports:
+      - "8443:8443"
+    networks:
+      - techcup-network
 
 volumes:
   techcup_pgdata:
