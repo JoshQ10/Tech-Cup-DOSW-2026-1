@@ -10,16 +10,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityConfig;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityTestConfig;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProfileController.class)
-@Import(SecurityConfig.class)
+@Import(SecurityTestConfig.class)
+@ActiveProfiles("test")
 @DisplayName("ProfileController Tests")
 class ProfileControllerTest {
 
