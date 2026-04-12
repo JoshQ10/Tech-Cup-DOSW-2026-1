@@ -53,8 +53,14 @@ public class SecurityTestConfig {
                                                 .requestMatchers(
                                                                 "/swagger-ui.html",
                                                                 "/swagger-ui/**",
+                                                                "/swagger-resources/**",
+                                                                "/swagger-resources",
                                                                 "/v3/api-docs/**",
+                                                                "/v3/api-docs",
                                                                 "/api-docs/**",
+                                                                "/api-docs",
+                                                                "/webjars/**",
+                                                                "/h2-console/**",
                                                                 "/oauth2/**",
                                                                 "/login/oauth2/**")
                                                 .permitAll()
@@ -85,13 +91,14 @@ public class SecurityTestConfig {
                 configuration.setAllowedOriginPatterns(
                                 Arrays.asList("http://localhost:*", "https://localhost:*", "http://127.0.0.1:*",
                                                 "https://127.0.0.1:*"));
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                configuration.setAllowedMethods(
+                                Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
                 configuration.setAllowedHeaders(Arrays.asList("*"));
                 configuration.setAllowCredentials(true);
                 configuration.setMaxAge(3600L);
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/api/**", configuration);
+                source.registerCorsConfiguration("/**", configuration);
                 return source;
         }
 }

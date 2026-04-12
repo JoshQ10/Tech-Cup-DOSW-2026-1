@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.InstitutionEmailUtils;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .orElseGet(() -> createOauthUser(email, name));
 
         ensureDefaults(user);
+        validatePlayerCaptainLoginPolicy(user);
         log.debug("OAuth2 user processed successfully for email: {}", email);
 
         return oauth2User;
@@ -61,7 +63,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         // Determinar tipo de usuario según dominio
-        UserType userType = email.endsWith("@escuelaing.edu.co") ? UserType.INTERNAL : UserType.EXTERNAL;
+        UserType userType = InstitutionEmailUtils.isEscuelaingEmail(email) ? UserType.INTERNAL : UserType.EXTERNAL;
 
         User newUser = User.builder()
                 .firstName(firstName)
@@ -101,6 +103,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (needsUpdate) {
             log.debug("Normalizing OAuth2 user defaults for: {}", user.getEmail());
             userRepository.save(userPersistenceMapper.toEntity(user));
+        }
+    }
+
+    private void validatePlayerCaptainLoginPolicy(User user) {
+        if ((user.getRole() == Role.CAPTAIN || user.getRole() == Role.PLAYER)
+                && !InstitutionEmailUtils.isValidCaptainInstitutionalEmailFormat(user.getEmail())) {
+            throw new OAuth2AuthenticationException(
+                    new OAuth2Error(
+                            "invalid_player_captain_email",
+                            "El usuario PLAYER/CAPTAIN solo puede iniciar sesion con correo institucional valido",
+                            null));
         }
     }
 }

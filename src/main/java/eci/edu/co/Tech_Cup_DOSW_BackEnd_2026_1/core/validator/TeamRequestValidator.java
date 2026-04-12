@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.InstitutionEmailUtils;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -58,9 +59,6 @@ public class TeamRequestValidator {
     }
 
     private boolean isInternalEmail(String email) {
-        if (email == null || email.isBlank()) {
-            return false;
-        }
-        return email.endsWith("@mail.escuelaing.edu.co") || email.endsWith("@escuelaing.edu.co");
+        return InstitutionEmailUtils.isEscuelaingEmail(email);
     }
 }

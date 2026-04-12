@@ -42,10 +42,17 @@ server:
 
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+    use-path-normalization: true
+  show-actuator: false
+  use-swagger-ui: true
+
+app:
+  security:
+    require-ssl: true
 
 logging:
   level:

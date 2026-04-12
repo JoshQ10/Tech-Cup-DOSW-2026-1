@@ -17,4 +17,6 @@ public interface TournamentService {
     TournamentResponse changeStatus(Long id, ChangeStatusRequest request);
 
     TournamentSetupResponse setup(Long id, TournamentSetupRequest request);
+
+    void delete(Long id);
 }

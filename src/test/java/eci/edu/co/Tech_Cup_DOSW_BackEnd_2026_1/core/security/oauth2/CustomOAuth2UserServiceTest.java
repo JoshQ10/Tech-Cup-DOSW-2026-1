@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +31,9 @@ class CustomOAuth2UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private UserPersistenceMapper userPersistenceMapper;
+
     @InjectMocks
     private CustomOAuth2UserService customOAuth2UserService;
 
@@ -41,10 +45,10 @@ class CustomOAuth2UserServiceTest {
     }
 
     @Test
-    @DisplayName("CustomOAuth2UserService should have userRepository")
-    void testUserRepositoryInjection() {
+    @DisplayName("CustomOAuth2UserService should have userRepository and mapper")
+    void testUserRepositoryAndMapperInjection() {
         // Arrange & Act
-        CustomOAuth2UserService service = new CustomOAuth2UserService(userRepository);
+        CustomOAuth2UserService service = new CustomOAuth2UserService(userRepository, userPersistenceMapper);
 
         // Assert
         assertNotNull(service);

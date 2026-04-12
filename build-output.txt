@@ -1,0 +1,27 @@
+Picked up JAVA_TOOL_OPTIONS: -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------< eci.edu.co:Tech-Cup-DOSW-BackEnd-2026-1 >---------------
+[INFO] Building Tech Cup DOSW BackEnd 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ Tech-Cup-DOSW-BackEnd-2026-1 ---
+[INFO] Deleting E:\DOSW\Proyecto_T2\Backend\Tech-Cup-DOSW-2026-1-main\Tech-Cup-DOSW-2026-1-main\target
+[INFO] 
+[INFO] --- jacoco:0.8.11:prepare-agent (prepare-agent) @ Tech-Cup-DOSW-BackEnd-2026-1 ---
+[INFO] argLine set to -javaagent:C:\\Users\\ASUS\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.11\\org.jacoco.agent-0.8.11-runtime.jar=destfile=E:\\DOSW\\Proyecto_T2\\Backend\\Tech-Cup-DOSW-2026-1-main\\Tech-Cup-DOSW-2026-1-main\\target\\jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ Tech-Cup-DOSW-BackEnd-2026-1 ---
+[INFO] Copying 5 resources from src\main\resources to target\classes
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ Tech-Cup-DOSW-BackEnd-2026-1 ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 137 source files with javac [debug parameters release 21] to target\classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  19.763 s
+[INFO] Finished at: 2026-04-12T13:01:42-05:00
+[INFO] ------------------------------------------------------------------------

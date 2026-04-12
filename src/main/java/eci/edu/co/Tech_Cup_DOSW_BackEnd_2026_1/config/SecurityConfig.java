@@ -5,6 +5,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,6 +35,9 @@ public class SecurityConfig {
         private final CustomOAuth2UserService customOAuth2UserService;
         private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
+        @Value("${app.security.require-ssl:false}")
+        private boolean requireSsl;
+
         @Bean
         public PasswordEncoder passwordEncoder() {
                 return new BCryptPasswordEncoder();
@@ -41,16 +45,26 @@ public class SecurityConfig {
 
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+                if (requireSsl) {
+                        http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
+                }
+
                 http
-                                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                                 .authorizeHttpRequests(authz -> authz
                                                 // Permitir acceso público a Swagger/OpenAPI
                                                 .requestMatchers(
+                                                                "/swagger-ui.htm",
                                                                 "/swagger-ui.html",
                                                                 "/swagger-ui/**",
+                                                                "/swagger-resources/**",
+                                                                "/swagger-resources",
                                                                 "/v3/api-docs/**",
+                                                                "/v3/api-docs",
                                                                 "/api-docs/**",
+                                                                "/api-docs",
+                                                                "/webjars/**",
+                                                                "/h2-console/**",
                                                                 "/oauth2/**",
                                                                 "/login/oauth2/**")
                                                 .permitAll()
@@ -79,14 +93,16 @@ public class SecurityConfig {
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
                 configuration.setAllowedOriginPatterns(
-                                Arrays.asList("https://localhost:*", "http://localhost:*", "https://127.0.0.1:*"));
-                configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                                Arrays.asList("https://localhost:*", "http://localhost:*", "https://127.0.0.1:*",
+                                                "http://127.0.0.1:*"));
+                configuration.setAllowedMethods(
+                                Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
                 configuration.setAllowedHeaders(Arrays.asList("*"));
                 configuration.setAllowCredentials(true);
                 configuration.setMaxAge(3600L);
 
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/api/**", configuration);
+                source.registerCorsConfiguration("/**", configuration);
                 return source;
         }
 }
