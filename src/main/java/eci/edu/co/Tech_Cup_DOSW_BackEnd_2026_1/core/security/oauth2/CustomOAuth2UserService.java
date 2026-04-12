@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
+    private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -39,6 +41,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         User user = userRepository.findByEmail(email)
+                .map(userPersistenceMapper::toModel)
                 .orElseGet(() -> createOauthUser(email, name));
 
         ensureDefaults(user);
@@ -73,7 +76,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .build();
 
         @SuppressWarnings("null")
-        User saved = userRepository.save(newUser);
+        User saved = userPersistenceMapper.toModel(
+                userRepository.save(userPersistenceMapper.toEntity(newUser)));
         log.info("Created local account for OAuth2 user: {} with type: {}", email, userType);
         return saved;
     }
@@ -96,7 +100,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         if (needsUpdate) {
             log.debug("Normalizing OAuth2 user defaults for: {}", user.getEmail());
-            userRepository.save(user);
+            userRepository.save(userPersistenceMapper.toEntity(user));
         }
     }
 }

@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.Map;
 public class TeamRequestValidator {
 
     private final UserRepository userRepository;
+    private final UserPersistenceMapper userPersistenceMapper;
 
     public void validate(TeamRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -40,6 +42,7 @@ public class TeamRequestValidator {
 
     private void validateCaptainIsInternal(Long captainId, Map<String, String> errors) {
         User captain = userRepository.findById(captainId)
+                .map(userPersistenceMapper::toModel)
                 .orElse(null);
 
         if (captain == null) {

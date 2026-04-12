@@ -8,6 +8,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundEx
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.team.Team;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TeamRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.TeamPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TeamRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final TeamMapper teamMapper;
     private final TeamRequestValidator teamRequestValidator;
+    private final TeamPersistenceMapper teamPersistenceMapper;
 
     @Override
     public TeamResponse create(TeamRequest request) {
@@ -40,7 +42,8 @@ public class TeamServiceImpl implements TeamService {
                 .build();
 
         @SuppressWarnings("null")
-        Team savedTeam = teamRepository.save(team);
+        Team savedTeam = teamPersistenceMapper.toModel(
+                teamRepository.save(teamPersistenceMapper.toEntity(team)));
         log.info("Team created successfully with id: {}", savedTeam.getId());
 
         return mapToTeamResponse(savedTeam);
@@ -52,6 +55,7 @@ public class TeamServiceImpl implements TeamService {
 
         @SuppressWarnings("null")
         Team team = teamRepository.findById(id)
+                .map(teamPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Team {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_TEAM_NOT_FOUND);
@@ -65,6 +69,7 @@ public class TeamServiceImpl implements TeamService {
         log.info("Fetching roster for team: {}", id);
         @SuppressWarnings("null")
         Team team = teamRepository.findById(id)
+                .map(teamPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Team {} not found for roster", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_TEAM_NOT_FOUND);
@@ -78,6 +83,7 @@ public class TeamServiceImpl implements TeamService {
 
         @SuppressWarnings("null")
         Team team = teamRepository.findById(teamId)
+                .map(teamPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Team {} not found", teamId);
                     return new ResourceNotFoundException(AppConstants.ERROR_TEAM_NOT_FOUND);
@@ -90,7 +96,8 @@ public class TeamServiceImpl implements TeamService {
 
         team.getPlayers().remove(playerId);
 
-        Team updatedTeam = teamRepository.save(team);
+        Team updatedTeam = teamPersistenceMapper.toModel(
+                teamRepository.save(teamPersistenceMapper.toEntity(team)));
         log.info("Player removed successfully from team: {}", teamId);
 
         return mapToTeamResponse(updatedTeam);

@@ -12,12 +12,12 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.PhotoValidationUtil;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.SportProfileRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +33,7 @@ public class PlayerServiceImpl implements PlayerService {
     private final UserRepository userRepository;
     private final SportProfileMapper sportProfileMapper;
     private final PhotoValidationUtil photoValidationUtil;
+    private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
     @SuppressWarnings("null")
@@ -40,6 +41,7 @@ public class PlayerServiceImpl implements PlayerService {
         log.info("Updating profile for player: {}", id);
 
         SportProfile profile = sportProfileRepository.findById(id)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Update failed: profile {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
@@ -85,7 +87,8 @@ public class PlayerServiceImpl implements PlayerService {
             profile.setAge(request.getAge());
         }
 
-        SportProfile updatedProfile = sportProfileRepository.save(profile);
+        SportProfile updatedProfile = userPersistenceMapper.toModel(
+                sportProfileRepository.save(userPersistenceMapper.toEntity(profile)));
         log.info("Profile updated successfully for player: {}", id);
 
         return mapToProfileResponse(updatedProfile);
@@ -99,6 +102,7 @@ public class PlayerServiceImpl implements PlayerService {
                 request.getReason());
 
         SportProfile profile = sportProfileRepository.findById(id)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Update failed: profile {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
@@ -122,7 +126,8 @@ public class PlayerServiceImpl implements PlayerService {
 
         log.debug("Availability state transition in memory");
 
-        SportProfile updatedProfile = sportProfileRepository.save(profile);
+        SportProfile updatedProfile = userPersistenceMapper.toModel(
+                sportProfileRepository.save(userPersistenceMapper.toEntity(profile)));
         log.info("Availability changed successfully for player: {}", id);
         log.debug("Availability change persisted to database - new state: {}, changed at: {}",
                 updatedProfile.isAvailable(), updatedProfile.getLastAvailabilityChange());
@@ -145,13 +150,15 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         SportProfile profile = sportProfileRepository.findById(id)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Upload photo failed: profile {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
                 });
 
         profile.setPhotoUrl(request.getPhotoUrl());
-        SportProfile updatedProfile = sportProfileRepository.save(profile);
+        SportProfile updatedProfile = userPersistenceMapper.toModel(
+                sportProfileRepository.save(userPersistenceMapper.toEntity(profile)));
         log.info("Profile photo uploaded successfully for player: {}", id);
 
         return mapToProfileResponse(updatedProfile);
@@ -163,6 +170,7 @@ public class PlayerServiceImpl implements PlayerService {
         log.info("Fetching profile for player: {}", id);
 
         SportProfile profile = sportProfileRepository.findById(id)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Get profile failed: profile {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_PROFILE_NOT_FOUND);
@@ -177,7 +185,8 @@ public class PlayerServiceImpl implements PlayerService {
         // Mapeo especial para playerName que requiere búsqueda de usuario
         if (profile.getUserId() != null) {
             @SuppressWarnings("null")
-            User user = userRepository.findById(profile.getUserId()).orElse(null);
+            User user = userRepository.findById(profile.getUserId())
+                    .map(userPersistenceMapper::toModel).orElse(null);
             if (user != null) {
                 response.setPlayerName(user.getFirstName() + " " + user.getLastName());
             }
@@ -201,24 +210,25 @@ public class PlayerServiceImpl implements PlayerService {
         log.info("Searching available players with filters - position: {}, semester: {}, age: {}, gender: {}, name: {}",
                 position, semester, age, gender, name);
 
-        Page<SportProfile> page = sportProfileRepository.searchAvailablePlayers(
+        var entityPage = sportProfileRepository.searchAvailablePlayers(
                 position, semester, age, gender, name, pageable);
 
-        log.debug("Found {} available players matching criteria", page.getTotalElements());
+        log.debug("Found {} available players matching criteria", entityPage.getTotalElements());
 
-        var players = page.getContent().stream()
+        var players = entityPage.getContent().stream()
+                .map(userPersistenceMapper::toModel)
                 .map(this::mapToProfileResponse)
                 .collect(Collectors.toList());
 
         PlayerSearchResponse response = PlayerSearchResponse.builder()
                 .players(players)
-                .currentPage(page.getNumber())
-                .totalElements(page.getTotalElements())
-                .totalPages(page.getTotalPages())
-                .pageSize(page.getSize())
-                .hasNextPage(page.hasNext())
-                .isFirstPage(page.isFirst())
-                .isLastPage(page.isLast())
+                .currentPage(entityPage.getNumber())
+                .totalElements(entityPage.getTotalElements())
+                .totalPages(entityPage.getTotalPages())
+                .pageSize(entityPage.getSize())
+                .hasNextPage(entityPage.hasNext())
+                .isFirstPage(entityPage.isFirst())
+                .isLastPage(entityPage.isLast())
                 .build();
 
         log.info("Player search completed successfully - returned {} players", players.size());

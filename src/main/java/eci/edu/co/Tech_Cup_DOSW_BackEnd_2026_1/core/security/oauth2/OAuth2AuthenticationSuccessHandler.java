@@ -2,6 +2,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import java.io.IOException;
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
+    private final UserPersistenceMapper userPersistenceMapper;
     private final JwtService jwtService;
 
     @Value("${app.oauth2.success-redirect-uri}")
@@ -49,6 +51,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         }
 
         User user = userRepository.findByEmail(email)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.error("OAuth2 login failed: local user not found after OAuth2 processing for {}", email);
                     return new IllegalStateException("OAuth2 local user integration failed");

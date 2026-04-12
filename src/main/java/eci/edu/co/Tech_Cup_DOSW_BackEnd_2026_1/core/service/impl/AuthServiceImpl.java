@@ -12,6 +12,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.LoginRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.VerificationTokenEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.VerificationTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
@@ -40,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final GoogleOAuth2Service googleOAuth2Service;
+    private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
     @SuppressWarnings("null")
@@ -49,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         log.debug("User registration details - name: {} {}, username: {}, role: {}",
                 request.getFirstName(), request.getLastName(), request.getUsername(), request.getRole());
 
-        Optional<User> existingUser = userRepository.findByEmail(request.getEmail());
+        Optional<UserEntity> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             log.warn("Registration failed: email {} already exists", request.getEmail());
             throw new BusinessRuleException("Email already registered");
@@ -59,7 +63,8 @@ public class AuthServiceImpl implements AuthService {
         User user = mapToUser(request);
         log.debug("User entity created - id: {}, role: {}", user.getId(), user.getRole());
 
-        User savedUser = userRepository.save(user);
+        UserEntity savedEntity = userRepository.save(userPersistenceMapper.toEntity(user));
+        User savedUser = userPersistenceMapper.toModel(savedEntity);
         log.info("User registered successfully with id: {}", savedUser.getId());
         log.debug("User persisted to database with created timestamp: {}", savedUser.getCreatedAt());
 
@@ -72,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
                 .expiresAt(LocalDateTime.now().plusHours(24)) // Válido por 24 horas
                 .verified(false)
                 .build();
-        verificationTokenRepository.save(token);
+        verificationTokenRepository.save(userPersistenceMapper.toEntity(token));
         log.debug("Verification token created for user: {}", savedUser.getId());
 
         // Enviar email de verificación
@@ -99,6 +104,7 @@ public class AuthServiceImpl implements AuthService {
         log.debug("Login request validation initiated");
 
         User user = userRepository.findByEmail(request.getEmail())
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Login failed: user with email {} not found", request.getEmail());
                     return new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND);
@@ -138,6 +144,7 @@ public class AuthServiceImpl implements AuthService {
         log.info("Verifying email using token: {}", token);
 
         VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Email verification failed: invalid or expired token");
                     return new ResourceNotFoundException("Invalid or expired verification token");
@@ -159,19 +166,21 @@ public class AuthServiceImpl implements AuthService {
         Long userId = verificationToken.getUserId();
         @SuppressWarnings("null")
         User user = userRepository.findById(userId)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Email verification failed: user not found");
                     return new ResourceNotFoundException("User not found");
                 });
 
         user.setActive(true);
-        User updatedUser = userRepository.save(user);
+        User updatedUser = userPersistenceMapper.toModel(
+                userRepository.save(userPersistenceMapper.toEntity(user)));
         log.debug("User activated: {}", updatedUser.getId());
 
         // Marcar token como verificado
         verificationToken.setVerified(true);
         verificationToken.setVerifiedAt(LocalDateTime.now());
-        verificationTokenRepository.save(verificationToken);
+        verificationTokenRepository.save(userPersistenceMapper.toEntity(verificationToken));
         log.info("Email verified successfully for user id: {}", updatedUser.getId());
 
         // Enviar email de bienvenida
@@ -190,6 +199,7 @@ public class AuthServiceImpl implements AuthService {
         log.info("Resending verification email for: {}", email);
 
         User user = userRepository.findByEmail(email)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Resend verification failed: user with email {} not found", email);
                     return new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND);
@@ -202,11 +212,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Invalidar token antiguo si existe
-        Optional<VerificationToken> existingToken = verificationTokenRepository
+        Optional<VerificationTokenEntity> existingToken = verificationTokenRepository
                 .findByUserIdAndVerifiedFalse(user.getId());
-        existingToken.ifPresent(token -> {
-            token.setVerified(true); // Marcar como usado para invalidarlo
-            verificationTokenRepository.save(token);
+        existingToken.ifPresent(tokenEntity -> {
+            tokenEntity.setVerified(true); // Marcar como usado para invalidarlo
+            verificationTokenRepository.save(tokenEntity);
             log.debug("Previous verification token invalidated for user: {}", user.getId());
         });
 
@@ -219,7 +229,7 @@ public class AuthServiceImpl implements AuthService {
                 .expiresAt(LocalDateTime.now().plusHours(24))
                 .verified(false)
                 .build();
-        verificationTokenRepository.save(verificationToken);
+        verificationTokenRepository.save(userPersistenceMapper.toEntity(verificationToken));
         log.debug("New verification token created for user: {}", user.getId());
 
         // Enviar email
@@ -251,6 +261,7 @@ public class AuthServiceImpl implements AuthService {
 
         String email = jwtService.extractEmail(refreshToken);
         User user = userRepository.findByEmail(email)
+                .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Refresh token failed: user {} not found", email);
                     return new ResourceNotFoundException("User not found");

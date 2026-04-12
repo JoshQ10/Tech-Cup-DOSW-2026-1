@@ -6,13 +6,13 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -21,6 +21,7 @@ import java.util.UUID;
 public class GoogleOAuth2Service {
 
     private final UserRepository userRepository;
+    private final UserPersistenceMapper userPersistenceMapper;
 
     public User validateAndGetGoogleUser(String idToken) {
         try {
@@ -48,7 +49,8 @@ public class GoogleOAuth2Service {
             log.debug("Google token decoded successfully for email: {}", email);
 
             // Buscar usuario existente o crear uno nuevo
-            Optional<User> existingUser = userRepository.findByEmail(email);
+            var existingUser = userRepository.findByEmail(email)
+                    .map(userPersistenceMapper::toModel);
 
             if (existingUser.isPresent()) {
                 log.info("User found in database for Google email: {}", email);
@@ -72,7 +74,8 @@ public class GoogleOAuth2Service {
                     .build();
 
             @SuppressWarnings("null")
-            User savedUser = userRepository.save(newUser);
+            User savedUser = userPersistenceMapper.toModel(
+                    userRepository.save(userPersistenceMapper.toEntity(newUser)));
             log.info("New user created from Google authentication with id: {}", savedUser.getId());
 
             return savedUser;

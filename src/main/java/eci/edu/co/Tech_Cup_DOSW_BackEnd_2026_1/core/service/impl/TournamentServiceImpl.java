@@ -19,6 +19,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.ChangeStatusReques
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentConfigRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentSetupRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.TournamentPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.CourtRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentDateRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentRepository;
@@ -44,6 +45,7 @@ public class TournamentServiceImpl implements TournamentService {
     private final TournamentConfigRequestValidator tournamentConfigRequestValidator;
     private final TournamentSetupRequestValidator tournamentSetupRequestValidator;
     private final ChangeStatusRequestValidator changeStatusRequestValidator;
+    private final TournamentPersistenceMapper tournamentPersistenceMapper;
 
     @Override
     public TournamentResponse create(TournamentRequest request) {
@@ -59,7 +61,8 @@ public class TournamentServiceImpl implements TournamentService {
                 .status(TournamentStatus.DRAFT)
                 .build();
 
-        Tournament savedTournament = tournamentRepository.save(tournament);
+        Tournament savedTournament = tournamentPersistenceMapper.toModel(
+                tournamentRepository.save(tournamentPersistenceMapper.toEntity(tournament)));
         log.info("Tournament created successfully with id: {}", savedTournament.getId());
 
         return mapToTournamentResponse(savedTournament);
@@ -70,6 +73,7 @@ public class TournamentServiceImpl implements TournamentService {
         log.info("Fetching tournament: {}", id);
 
         Tournament tournament = tournamentRepository.findById(id)
+                .map(tournamentPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
@@ -86,6 +90,7 @@ public class TournamentServiceImpl implements TournamentService {
                 request.getStartDate(), request.getEndDate(), request.getTeamCount(), request.getCostPerTeam());
 
         Tournament tournament = tournamentRepository.findById(id)
+                .map(tournamentPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
@@ -98,7 +103,8 @@ public class TournamentServiceImpl implements TournamentService {
         tournament.setCostPerTeam(request.getCostPerTeam());
         log.debug("Tournament configuration updated in memory");
 
-        Tournament updatedTournament = tournamentRepository.save(tournament);
+        Tournament updatedTournament = tournamentPersistenceMapper.toModel(
+                tournamentRepository.save(tournamentPersistenceMapper.toEntity(tournament)));
         log.info("Tournament configured successfully for id: {}", id);
         log.debug("Tournament persisted to database");
 
@@ -110,6 +116,7 @@ public class TournamentServiceImpl implements TournamentService {
         log.info("Changing status for tournament: {} to {}", id, request.getStatus());
 
         Tournament tournament = tournamentRepository.findById(id)
+                .map(tournamentPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
@@ -122,7 +129,8 @@ public class TournamentServiceImpl implements TournamentService {
         tournament.setStatus(request.getStatus());
         log.debug("Tournament status updated in memory");
 
-        Tournament updatedTournament = tournamentRepository.save(tournament);
+        Tournament updatedTournament = tournamentPersistenceMapper.toModel(
+                tournamentRepository.save(tournamentPersistenceMapper.toEntity(tournament)));
         log.info("Tournament status updated successfully for id: {}", id);
         log.debug("Status transition persisted to database");
 
@@ -136,6 +144,7 @@ public class TournamentServiceImpl implements TournamentService {
         log.info("Setting up tournament: {}", id);
 
         Tournament tournament = tournamentRepository.findById(id)
+                .map(tournamentPersistenceMapper::toModel)
                 .orElseThrow(() -> {
                     log.warn("Tournament {} not found", id);
                     return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
@@ -146,7 +155,7 @@ public class TournamentServiceImpl implements TournamentService {
         if (request.getInscriptionCloseDate() != null) {
             tournament.setInscriptionCloseDate(request.getInscriptionCloseDate());
         }
-        tournamentRepository.save(tournament);
+        tournamentRepository.save(tournamentPersistenceMapper.toEntity(tournament));
         log.debug("Tournament rules and sanction config updated");
 
         courtRepository.deleteAll(courtRepository.findByTournamentId(id));
@@ -157,7 +166,9 @@ public class TournamentServiceImpl implements TournamentService {
                         .tournament(tournament)
                         .build())
                 .toList();
-        List<Court> savedCourts = courtRepository.saveAll(courts);
+        List<Court> savedCourts = courtRepository.saveAll(
+                courts.stream().map(tournamentPersistenceMapper::toEntity).toList())
+                .stream().map(tournamentPersistenceMapper::toModel).toList();
         log.debug("Saved {} courts for tournament {}", savedCourts.size(), id);
 
         tournamentDateRepository.deleteAll(tournamentDateRepository.findByTournamentId(id));
@@ -168,7 +179,9 @@ public class TournamentServiceImpl implements TournamentService {
                         .tournament(tournament)
                         .build())
                 .toList();
-        List<TournamentDate> savedDates = tournamentDateRepository.saveAll(dates);
+        List<TournamentDate> savedDates = tournamentDateRepository.saveAll(
+                dates.stream().map(tournamentPersistenceMapper::toEntity).toList())
+                .stream().map(tournamentPersistenceMapper::toModel).toList();
         log.debug("Saved {} dates for tournament {}", savedDates.size(), id);
 
         log.info("Tournament {} setup completed successfully", id);
