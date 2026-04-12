@@ -9,7 +9,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
 COPY src ./src
-RUN mvn clean package -Dmaven.test.skip=true -B
+RUN mvn clean package -DskipTests -B
 
 # =============================================================
 # Stage 2: Runtime

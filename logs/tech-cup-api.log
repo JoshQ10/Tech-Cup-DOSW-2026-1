@@ -2015,3 +2015,260 @@ ts=2026-04-12T01:47:38.681-05:00 level=INFO  thread=main logger=e.e.c.T.controll
 ts=2026-04-12T01:47:38.863-05:00 level=INFO  thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=eafba426-057d-4536-bf83-aa4052b34e19 method=GET path=/api/players/1/profile msg=request_completed status=200 durationMs=435 
 ts=2026-04-12T01:47:38.911-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.JwtAuthenticationFilter requestId=N/A method=N/A path=N/A msg=Error validating JWT token: Malformed JWT token 
 ts=2026-04-12T01:47:38.934-05:00 level=WARN  thread=main logger=e.e.c.T.c.s.JwtAuthenticationFilter requestId=N/A method=N/A path=N/A msg=Error validating JWT token: JWT expired 
+ts=2026-04-12T12:28:11.962-05:00 level=INFO  thread=background-preinit logger=o.h.validator.internal.util.Version requestId=N/A method=N/A path=N/A msg=HV000001: Hibernate Validator 8.0.1.Final 
+ts=2026-04-12T12:28:12.013-05:00 level=INFO  thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=Starting TechCupDoswBackEnd20261Application using Java 21.0.10 with PID 39276 (C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1\target\classes started by juanv in C:\Users\juanv\OneDrive\Documentos\DOSW\Tech-Cup-DOSW-2026-1) 
+ts=2026-04-12T12:28:12.013-05:00 level=DEBUG thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=Running with Spring Boot v3.3.0, Spring v6.1.8 
+ts=2026-04-12T12:28:12.014-05:00 level=INFO  thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=The following 1 profile is active: "ssl-test" 
+ts=2026-04-12T12:28:12.843-05:00 level=INFO  thread=main logger=o.s.d.r.c.RepositoryConfigurationDelegate requestId=N/A method=N/A path=N/A msg=Bootstrapping Spring Data JPA repositories in DEFAULT mode. 
+ts=2026-04-12T12:28:12.959-05:00 level=INFO  thread=main logger=o.s.d.r.c.RepositoryConfigurationDelegate requestId=N/A method=N/A path=N/A msg=Finished Spring Data repository scanning in 107 ms. Found 16 JPA repository interfaces. 
+ts=2026-04-12T12:28:13.789-05:00 level=INFO  thread=main logger=o.s.b.w.embedded.tomcat.TomcatWebServer requestId=N/A method=N/A path=N/A msg=Tomcat initialized with ports 8443 (https), 8080 (http) 
+ts=2026-04-12T12:28:13.809-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=The ["https-jsse-nio-0.0.0.0-8443"] connector has been configured to support negotiation to [h2] via ALPN 
+ts=2026-04-12T12:28:13.810-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Initializing ProtocolHandler ["https-jsse-nio-0.0.0.0-8443"] 
+ts=2026-04-12T12:28:13.819-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Initializing ProtocolHandler ["http-nio-8080"] 
+ts=2026-04-12T12:28:13.822-05:00 level=INFO  thread=main logger=o.apache.catalina.core.StandardService requestId=N/A method=N/A path=N/A msg=Starting service [Tomcat] 
+ts=2026-04-12T12:28:13.823-05:00 level=INFO  thread=main logger=org.apache.catalina.core.StandardEngine requestId=N/A method=N/A path=N/A msg=Starting Servlet engine: [Apache Tomcat/10.1.24] 
+ts=2026-04-12T12:28:13.899-05:00 level=INFO  thread=main logger=o.a.c.c.C.[Tomcat].[localhost].[/] requestId=N/A method=N/A path=N/A msg=Initializing Spring embedded WebApplicationContext 
+ts=2026-04-12T12:28:13.900-05:00 level=INFO  thread=main logger=o.s.b.w.s.c.ServletWebServerApplicationContext requestId=N/A method=N/A path=N/A msg=Root WebApplicationContext: initialization completed in 1841 ms 
+ts=2026-04-12T12:28:13.981-05:00 level=DEBUG thread=main logger=e.e.c.T.c.s.JwtAuthenticationFilter requestId=N/A method=N/A path=N/A msg=Filter 'jwtAuthenticationFilter' configured for use 
+ts=2026-04-12T12:28:13.981-05:00 level=DEBUG thread=main logger=e.e.c.T.c.logging.RequestTracingFilter requestId=N/A method=N/A path=N/A msg=Filter 'requestTracingFilter' configured for use 
+ts=2026-04-12T12:28:14.113-05:00 level=INFO  thread=main logger=o.hibernate.jpa.internal.util.LogHelper requestId=N/A method=N/A path=N/A msg=HHH000204: Processing PersistenceUnitInfo [name: default] 
+ts=2026-04-12T12:28:14.190-05:00 level=INFO  thread=main logger=org.hibernate.Version requestId=N/A method=N/A path=N/A msg=HHH000412: Hibernate ORM core version 6.5.2.Final 
+ts=2026-04-12T12:28:14.236-05:00 level=INFO  thread=main logger=o.h.c.internal.RegionFactoryInitiator requestId=N/A method=N/A path=N/A msg=HHH000026: Second-level cache disabled 
+ts=2026-04-12T12:28:14.528-05:00 level=INFO  thread=main logger=o.s.o.j.p.SpringPersistenceUnitInfo requestId=N/A method=N/A path=N/A msg=No LoadTimeWeaver setup: ignoring JPA class transformer 
+ts=2026-04-12T12:28:14.558-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Starting... 
+ts=2026-04-12T12:28:14.730-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.pool.HikariPool requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7e94de5f 
+ts=2026-04-12T12:28:14.732-05:00 level=INFO  thread=main logger=com.zaxxer.hikari.HikariDataSource requestId=N/A method=N/A path=N/A msg=HikariPool-1 - Start completed. 
+ts=2026-04-12T12:28:14.776-05:00 level=WARN  thread=main logger=org.hibernate.orm.deprecation requestId=N/A method=N/A path=N/A msg=HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default) 
+ts=2026-04-12T12:28:15.845-05:00 level=INFO  thread=main logger=o.h.e.t.j.p.i.JtaPlatformInitiator requestId=N/A method=N/A path=N/A msg=HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration) 
+ts=2026-04-12T12:28:15.918-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists tournaments 
+       alter column rules set data type TEXT 
+ts=2026-04-12T12:28:15.933-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists tournaments 
+       add column sanction_rules TEXT 
+ts=2026-04-12T12:28:15.937-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists users 
+       add column first_name varchar(255) not null 
+ts=2026-04-12T12:28:15.943-05:00 level=WARN  thread=main logger=o.h.t.s.i.ExceptionHandlerLoggedImpl requestId=N/A method=N/A path=N/A msg=GenerationTarget encountered exception accepting command : Error executing DDL "
+    alter table if exists users 
+       add column first_name varchar(255) not null" via JDBC [ERROR: column "first_name" of relation "users" contains null values] org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
+    alter table if exists users 
+       add column first_name varchar(255) not null" via JDBC [ERROR: column "first_name" of relation "users" contains null values]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:575)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:515)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.migrateTable(AbstractSchemaMigrator.java:333)
+	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:84)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:232)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:117)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:322)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:457)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1835)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1784)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:952)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.TechCupDoswBackEnd20261Application.main(TechCupDoswBackEnd20261Application.java:10)
+Caused by: org.postgresql.util.PSQLException: ERROR: column "first_name" of relation "users" contains null values
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:341)
+	at org.postgresql.jdbc.PgStatement.executeCachedSql(PgStatement.java:326)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:302)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:297)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
+	... 37 common frames omitted
+
+ts=2026-04-12T12:28:15.948-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists users 
+       add column last_name varchar(255) not null 
+ts=2026-04-12T12:28:15.950-05:00 level=WARN  thread=main logger=o.h.t.s.i.ExceptionHandlerLoggedImpl requestId=N/A method=N/A path=N/A msg=GenerationTarget encountered exception accepting command : Error executing DDL "
+    alter table if exists users 
+       add column last_name varchar(255) not null" via JDBC [ERROR: column "last_name" of relation "users" contains null values] org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
+    alter table if exists users 
+       add column last_name varchar(255) not null" via JDBC [ERROR: column "last_name" of relation "users" contains null values]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:575)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:515)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.migrateTable(AbstractSchemaMigrator.java:333)
+	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:84)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:232)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:117)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:322)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:457)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1835)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1784)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:952)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.TechCupDoswBackEnd20261Application.main(TechCupDoswBackEnd20261Application.java:10)
+Caused by: org.postgresql.util.PSQLException: ERROR: column "last_name" of relation "users" contains null values
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:341)
+	at org.postgresql.jdbc.PgStatement.executeCachedSql(PgStatement.java:326)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:302)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:297)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
+	... 37 common frames omitted
+
+ts=2026-04-12T12:28:15.952-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists users 
+       add column relationship_description varchar(500) 
+ts=2026-04-12T12:28:15.956-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists users 
+       add column relationship_type varchar(255) 
+ts=2026-04-12T12:28:15.959-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists users 
+       add column username varchar(255) not null 
+ts=2026-04-12T12:28:15.962-05:00 level=WARN  thread=main logger=o.h.t.s.i.ExceptionHandlerLoggedImpl requestId=N/A method=N/A path=N/A msg=GenerationTarget encountered exception accepting command : Error executing DDL "
+    alter table if exists users 
+       add column username varchar(255) not null" via JDBC [ERROR: column "username" of relation "users" contains null values] org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
+    alter table if exists users 
+       add column username varchar(255) not null" via JDBC [ERROR: column "username" of relation "users" contains null values]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:575)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:515)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.migrateTable(AbstractSchemaMigrator.java:333)
+	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:84)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:232)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:117)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1429)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:322)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:457)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1506)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1835)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1784)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:952)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.TechCupDoswBackEnd20261Application.main(TechCupDoswBackEnd20261Application.java:10)
+Caused by: org.postgresql.util.PSQLException: ERROR: column "username" of relation "users" contains null values
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2725)
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2412)
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:371)
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:502)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:419)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:341)
+	at org.postgresql.jdbc.PgStatement.executeCachedSql(PgStatement.java:326)
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:302)
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:297)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
+	... 37 common frames omitted
+
+ts=2026-04-12T12:28:15.966-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    create table verification_tokens (
+        id bigint generated by default as identity,
+        created_at timestamp(6) not null,
+        expires_at timestamp(6) not null,
+        token varchar(255) not null,
+        user_id bigint not null,
+        verified boolean not null,
+        verified_at timestamp(6),
+        primary key (id)
+    ) 
+ts=2026-04-12T12:28:15.994-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists users 
+       drop constraint if exists UKr43af9ap4edm43mmtq01oddj6 
+ts=2026-04-12T12:28:15.996-05:00 level=WARN  thread=main logger=o.h.engine.jdbc.spi.SqlExceptionHelper requestId=N/A method=N/A path=N/A msg=SQL Warning Code: 0, SQLState: 00000 
+ts=2026-04-12T12:28:15.997-05:00 level=WARN  thread=main logger=o.h.engine.jdbc.spi.SqlExceptionHelper requestId=N/A method=N/A path=N/A msg=constraint "ukr43af9ap4edm43mmtq01oddj6" of relation "users" does not exist, skipping 
+ts=2026-04-12T12:28:15.998-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists users 
+       add constraint UKr43af9ap4edm43mmtq01oddj6 unique (username) 
+ts=2026-04-12T12:28:16.001-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists verification_tokens 
+       drop constraint if exists UK6q9nsb665s9f8qajm3j07kd1e 
+ts=2026-04-12T12:28:16.004-05:00 level=WARN  thread=main logger=o.h.engine.jdbc.spi.SqlExceptionHelper requestId=N/A method=N/A path=N/A msg=SQL Warning Code: 0, SQLState: 00000 
+ts=2026-04-12T12:28:16.005-05:00 level=WARN  thread=main logger=o.h.engine.jdbc.spi.SqlExceptionHelper requestId=N/A method=N/A path=N/A msg=constraint "uk6q9nsb665s9f8qajm3j07kd1e" of relation "verification_tokens" does not exist, skipping 
+ts=2026-04-12T12:28:16.005-05:00 level=DEBUG thread=main logger=org.hibernate.SQL requestId=N/A method=N/A path=N/A msg=
+    alter table if exists verification_tokens 
+       add constraint UK6q9nsb665s9f8qajm3j07kd1e unique (token) 
+ts=2026-04-12T12:28:16.237-05:00 level=INFO  thread=main logger=o.s.o.j.LocalContainerEntityManagerFactoryBean requestId=N/A method=N/A path=N/A msg=Initialized JPA EntityManagerFactory for persistence unit 'default' 
+ts=2026-04-12T12:28:16.808-05:00 level=INFO  thread=main logger=o.s.d.j.r.query.QueryEnhancerFactory requestId=N/A method=N/A path=N/A msg=Hibernate is in classpath; If applicable, HQL parser will be used. 
+ts=2026-04-12T12:28:17.654-05:00 level=WARN  thread=main logger=o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration requestId=N/A method=N/A path=N/A msg=spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning 
+ts=2026-04-12T12:28:18.116-05:00 level=INFO  thread=main logger=o.s.s.w.a.c.ChannelProcessingFilter requestId=N/A method=N/A path=N/A msg=Validated configuration attributes 
+ts=2026-04-12T12:28:18.142-05:00 level=INFO  thread=main logger=o.s.s.web.DefaultSecurityFilterChain requestId=N/A method=N/A path=N/A msg=Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@c1bed9e, org.springframework.security.web.access.channel.ChannelProcessingFilter@4f401aac, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@715c680a, org.springframework.security.web.context.SecurityContextHolderFilter@c129b51, org.springframework.security.web.header.HeaderWriterFilter@2d7956fb, org.springframework.web.filter.CorsFilter@1a8bbf04, org.springframework.security.web.authentication.logout.LogoutFilter@27e93770, org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter@51f39482, org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter@5c16f550, eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthenticationFilter@d84b3a2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@574e1381, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@24277327, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@52777e0b, org.springframework.security.web.session.SessionManagementFilter@597880b1, org.springframework.security.web.access.ExceptionTranslationFilter@6dbd38e8, org.springframework.security.web.access.intercept.AuthorizationFilter@1b9bb6e6] 
+ts=2026-04-12T12:28:18.678-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Starting ProtocolHandler ["https-jsse-nio-0.0.0.0-8443"] 
+ts=2026-04-12T12:28:18.854-05:00 level=INFO  thread=main logger=o.a.t.util.net.NioEndpoint.certificate requestId=N/A method=N/A path=N/A msg=Connector [https-jsse-nio-0.0.0.0-8443], TLS virtual host [_default_], certificate type [UNDEFINED] configured from keystore [C:\Users\juanv\.keystore] using alias [techcup] with trust store [null] 
+ts=2026-04-12T12:28:18.866-05:00 level=INFO  thread=main logger=o.apache.coyote.http11.Http11NioProtocol requestId=N/A method=N/A path=N/A msg=Starting ProtocolHandler ["http-nio-8080"] 
+ts=2026-04-12T12:28:18.871-05:00 level=INFO  thread=main logger=o.s.b.w.embedded.tomcat.TomcatWebServer requestId=N/A method=N/A path=N/A msg=Tomcat started on ports 8443 (https), 8080 (http) with context path '/' 
+ts=2026-04-12T12:28:18.878-05:00 level=INFO  thread=main logger=e.e.c.T.TechCupDoswBackEnd20261Application requestId=N/A method=N/A path=N/A msg=Started TechCupDoswBackEnd20261Application in 7.406 seconds (process running for 7.736) 
