@@ -11,10 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -24,78 +24,78 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PlayerController.class)
-@AutoConfigureMockMvc(addFilters = false)
 @Import(SecurityTestConfig.class)
+@TestPropertySource(properties = {"spring.profiles.active=test"})
 @DisplayName("JWT Token Flow Tests")
 class JwtTokenFlowTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @MockBean
-    private PlayerService playerService;
+        @MockBean
+        private PlayerService playerService;
 
-    @MockBean
-    private JwtService jwtService;
+        @MockBean
+        private JwtService jwtService;
 
-    @MockBean
-    private CustomOAuth2UserService customOAuth2UserService;
+        @MockBean
+        private CustomOAuth2UserService customOAuth2UserService;
 
-    @MockBean
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+        @MockBean
+        private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    @Test
-    @DisplayName("Flujo correcto JWT: token válido permite acceso a endpoint protegido")
-    void validTokenGrantsAccess() throws Exception {
-        ProfileResponse profileResponse = ProfileResponse.builder()
-                .id(1L).userId(1L).position(Position.FORWARD).jerseyNumber(10).available(true).build();
-        when(jwtService.isTokenValid(anyString())).thenReturn(true);
-        when(jwtService.isAccessToken(anyString())).thenReturn(true);
-        when(jwtService.extractEmail(anyString())).thenReturn("player@test.com");
-        when(jwtService.extractRole(anyString())).thenReturn("PLAYER");
-        when(playerService.getProfile(anyLong())).thenReturn(profileResponse);
+        @Test
+        @DisplayName("Flujo correcto JWT: token válido permite acceso a endpoint protegido")
+        void validTokenGrantsAccess() throws Exception {
+                ProfileResponse profileResponse = ProfileResponse.builder()
+                                .id(1L).userId(1L).position(Position.FORWARD).jerseyNumber(10).available(true).build();
+                when(jwtService.isTokenValid(anyString())).thenReturn(true);
+                when(jwtService.isAccessToken(anyString())).thenReturn(true);
+                when(jwtService.extractEmail(anyString())).thenReturn("player@test.com");
+                when(jwtService.extractRole(anyString())).thenReturn("PLAYER");
+                when(playerService.getProfile(anyLong())).thenReturn(profileResponse);
 
-        mockMvc.perform(get("/api/players/1/profile")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer valid-token"))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(get("/api/players/1/profile")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer valid-token"))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @DisplayName("Flujo token expirado JWT: token expirado retorna 401")
-    void expiredTokenReturnsUnauthorized() throws Exception {
-        when(jwtService.isTokenValid(anyString()))
-                .thenThrow(new io.jsonwebtoken.ExpiredJwtException(null, null, "JWT expired"));
+        @Test
+        @DisplayName("Flujo token expirado JWT: token expirado retorna 401")
+        void expiredTokenReturnsUnauthorized() throws Exception {
+                when(jwtService.isTokenValid(anyString()))
+                                .thenThrow(new io.jsonwebtoken.ExpiredJwtException(null, null, "JWT expired"));
 
-        mockMvc.perform(get("/api/players/1/profile")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer expired-token"))
-                .andExpect(status().isUnauthorized());
-    }
+                mockMvc.perform(get("/api/players/1/profile")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer expired-token"))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @DisplayName("Flujo token inválido JWT: token con firma incorrecta retorna 401")
-    void invalidTokenReturnsUnauthorized() throws Exception {
-        when(jwtService.isTokenValid(anyString())).thenReturn(false);
+        @Test
+        @DisplayName("Flujo token inválido JWT: token con firma incorrecta retorna 401")
+        void invalidTokenReturnsUnauthorized() throws Exception {
+                when(jwtService.isTokenValid(anyString())).thenReturn(false);
 
-        mockMvc.perform(get("/api/players/1/profile")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer invalid-token"))
-                .andExpect(status().isUnauthorized());
-    }
+                mockMvc.perform(get("/api/players/1/profile")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer invalid-token"))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @DisplayName("Flujo sin token JWT: sin cabecera Authorization retorna 401")
-    void noTokenReturnsUnauthorized() throws Exception {
-        mockMvc.perform(get("/api/players/1/profile"))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        @DisplayName("Flujo sin token JWT: sin cabecera Authorization retorna 401")
+        void noTokenReturnsUnauthorized() throws Exception {
+                mockMvc.perform(get("/api/players/1/profile"))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @DisplayName("Flujo token inválido JWT: token mal formado lanza excepción y retorna 401")
-    void malformedTokenReturnsUnauthorized() throws Exception {
-        when(jwtService.isTokenValid(anyString()))
-                .thenThrow(new io.jsonwebtoken.MalformedJwtException("Malformed JWT token"));
+        @Test
+        @DisplayName("Flujo token inválido JWT: token mal formado lanza excepción y retorna 401")
+        void malformedTokenReturnsUnauthorized() throws Exception {
+                when(jwtService.isTokenValid(anyString()))
+                                .thenThrow(new io.jsonwebtoken.MalformedJwtException("Malformed JWT token"));
 
-        mockMvc.perform(get("/api/players/1/profile")
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer malformed.token"))
-                .andExpect(status().isUnauthorized());
-    }
+                mockMvc.perform(get("/api/players/1/profile")
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer malformed.token"))
+                                .andExpect(status().isUnauthorized());
+        }
 }
