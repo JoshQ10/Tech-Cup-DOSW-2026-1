@@ -21,6 +21,10 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.ChangeStatusReques
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentConfigRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TournamentSetupRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.tournament.CourtEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.tournament.TournamentDateEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.tournament.TournamentEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.TournamentPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.CourtRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentDateRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentRepository;
@@ -40,6 +44,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,6 +57,9 @@ class TournamentServiceImplTest {
 
         @Mock
         private TournamentMapper tournamentMapper;
+
+        @Mock
+        private TournamentPersistenceMapper tournamentPersistenceMapper;
 
         @Mock
         private TournamentRequestValidator tournamentRequestValidator;
@@ -78,6 +86,7 @@ class TournamentServiceImplTest {
         private TournamentConfigRequest configRequest;
         private ChangeStatusRequest changeStatusRequest;
         private Tournament testTournament;
+        private TournamentEntity testTournamentEntity;
         private TournamentResponse expectedResponse;
 
         @BeforeEach
@@ -111,6 +120,16 @@ class TournamentServiceImplTest {
                                 .status(TournamentStatus.DRAFT)
                                 .build();
 
+                testTournamentEntity = TournamentEntity.builder()
+                                .id(1L)
+                                .name("Football Tournament 2026-1")
+                                .startDate(LocalDate.of(2026, 3, 1))
+                                .endDate(LocalDate.of(2026, 5, 31))
+                                .teamCount(16)
+                                .costPerTeam(500000.0)
+                                .status(TournamentStatus.DRAFT)
+                                .build();
+
                 expectedResponse = TournamentResponse.builder()
                                 .id(1L)
                                 .name("Football Tournament 2026-1")
@@ -129,7 +148,18 @@ class TournamentServiceImplTest {
                 @Test
                 @DisplayName("Debe crear torneo exitosamente con datos validos")
                 void testCreateTournamentSuccess() {
-                        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+                        TournamentEntity draftEntity = TournamentEntity.builder()
+                                        .name("Football Tournament 2026-1")
+                                        .startDate(LocalDate.of(2026, 3, 1))
+                                        .endDate(LocalDate.of(2026, 5, 31))
+                                        .teamCount(16)
+                                        .costPerTeam(500000.0)
+                                        .status(TournamentStatus.DRAFT)
+                                        .build();
+
+                        when(tournamentPersistenceMapper.toEntity(any(Tournament.class))).thenReturn(draftEntity);
+                        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(testTournamentEntity);
+                        when(tournamentPersistenceMapper.toModel(any(TournamentEntity.class))).thenReturn(testTournament);
                         when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
 
                         TournamentResponse response = tournamentService.create(tournamentRequest);
@@ -141,14 +171,25 @@ class TournamentServiceImplTest {
                         assertEquals(500000.0, response.getCostPerTeam());
                         assertEquals(TournamentStatus.DRAFT, response.getStatus());
                         verify(tournamentRequestValidator).validate(tournamentRequest);
-                        verify(tournamentRepository).save(any(Tournament.class));
-                        verify(tournamentMapper).toResponse(any(Tournament.class));
+                        verify(tournamentRepository).save(any(TournamentEntity.class));
+                        verify(tournamentMapper).toResponse(testTournament);
                 }
 
                 @Test
                 @DisplayName("Debe asignar estado DRAFT al crear un torneo")
                 void testCreateTournamentSetsStatusDraft() {
-                        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+                        TournamentEntity draftEntity = TournamentEntity.builder()
+                                        .name("Football Tournament 2026-1")
+                                        .startDate(LocalDate.of(2026, 3, 1))
+                                        .endDate(LocalDate.of(2026, 5, 31))
+                                        .teamCount(16)
+                                        .costPerTeam(500000.0)
+                                        .status(TournamentStatus.DRAFT)
+                                        .build();
+
+                        when(tournamentPersistenceMapper.toEntity(any(Tournament.class))).thenReturn(draftEntity);
+                        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(testTournamentEntity);
+                        when(tournamentPersistenceMapper.toModel(any(TournamentEntity.class))).thenReturn(testTournament);
                         when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
 
                         TournamentResponse response = tournamentService.create(tournamentRequest);
@@ -174,8 +215,9 @@ class TournamentServiceImplTest {
                 @Test
                 @DisplayName("Debe obtener torneo por ID exitosamente")
                 void testGetTournamentByIdSuccess() {
-                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-                        when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(expectedResponse);
+                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournamentEntity));
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
+                        when(tournamentMapper.toResponse(testTournament)).thenReturn(expectedResponse);
 
                         TournamentResponse response = tournamentService.getById(1L);
 
@@ -209,8 +251,11 @@ class TournamentServiceImplTest {
                                         .teamCount(8).costPerTeam(300000.0)
                                         .status(TournamentStatus.DRAFT).build();
 
-                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-                        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournamentEntity));
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
+                        when(tournamentPersistenceMapper.toEntity(any(Tournament.class))).thenReturn(testTournamentEntity);
+                        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(testTournamentEntity);
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
                         when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(configuredResponse);
 
                         TournamentResponse response = tournamentService.configure(1L, configRequest);
@@ -220,7 +265,7 @@ class TournamentServiceImplTest {
                         assertEquals(300000.0, response.getCostPerTeam());
                         verify(tournamentConfigRequestValidator).validate(configRequest);
                         verify(tournamentRepository).findById(1L);
-                        verify(tournamentRepository).save(any(Tournament.class));
+                        verify(tournamentRepository).save(any(TournamentEntity.class));
                 }
 
                 @Test
@@ -255,8 +300,10 @@ class TournamentServiceImplTest {
                                         .id(1L).name("Football Tournament 2026-1")
                                         .status(TournamentStatus.ACTIVE).build();
 
-                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-                        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournamentEntity));
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
+                        when(tournamentPersistenceMapper.toEntity(any(Tournament.class))).thenReturn(testTournamentEntity);
+                        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(testTournamentEntity);
                         when(tournamentMapper.toResponse(any(Tournament.class))).thenReturn(activeResponse);
 
                         TournamentResponse response = tournamentService.changeStatus(1L, changeStatusRequest);
@@ -265,7 +312,7 @@ class TournamentServiceImplTest {
                         assertEquals(TournamentStatus.ACTIVE, response.getStatus());
                         verify(changeStatusRequestValidator).validate(TournamentStatus.DRAFT, TournamentStatus.ACTIVE);
                         verify(tournamentRepository).findById(1L);
-                        verify(tournamentRepository).save(any(Tournament.class));
+                        verify(tournamentRepository).save(any(TournamentEntity.class));
                 }
 
                 @Test
@@ -280,7 +327,8 @@ class TournamentServiceImplTest {
                 @Test
                 @DisplayName("Debe lanzar BusinessRuleException en transicion invalida")
                 void testChangeStatusInvalidTransition() {
-                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
+                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournamentEntity));
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
                         doThrow(new BusinessRuleException("Transicion de estado no permitida: DRAFT -> FINISHED"))
                                         .when(changeStatusRequestValidator)
                                         .validate(TournamentStatus.DRAFT, TournamentStatus.FINISHED);
@@ -319,25 +367,85 @@ class TournamentServiceImplTest {
                                         .build();
                 }
 
+                private void stubCourtPersistenceChain() {
+                        when(tournamentPersistenceMapper.toEntity(any(Court.class))).thenAnswer(inv -> {
+                                Court c = inv.getArgument(0);
+                                return CourtEntity.builder()
+                                                .name(c.getName())
+                                                .location(c.getLocation())
+                                                .tournament(testTournamentEntity)
+                                                .build();
+                        });
+                        when(courtRepository.saveAll(anyList())).thenAnswer(inv -> {
+                                @SuppressWarnings("unchecked")
+                                List<CourtEntity> in = inv.getArgument(0);
+                                return in.stream()
+                                                .map(e -> CourtEntity.builder()
+                                                                .id("Cancha Principal".equals(e.getName()) ? 1L : 2L)
+                                                                .name(e.getName())
+                                                                .location(e.getLocation())
+                                                                .tournament(e.getTournament())
+                                                                .build())
+                                                .toList();
+                        });
+                        when(tournamentPersistenceMapper.toModel(any(CourtEntity.class))).thenAnswer(inv -> {
+                                CourtEntity e = inv.getArgument(0);
+                                return Court.builder()
+                                                .id(e.getId())
+                                                .name(e.getName())
+                                                .location(e.getLocation())
+                                                .tournament(testTournament)
+                                                .build();
+                        });
+                }
+
+                private void stubTournamentDatePersistenceChain() {
+                        when(tournamentPersistenceMapper.toEntity(any(TournamentDate.class))).thenAnswer(inv -> {
+                                TournamentDate d = inv.getArgument(0);
+                                return TournamentDateEntity.builder()
+                                                .description(d.getDescription())
+                                                .eventDate(d.getEventDate())
+                                                .tournament(testTournamentEntity)
+                                                .build();
+                        });
+                        when(tournamentDateRepository.saveAll(anyList())).thenAnswer(inv -> {
+                                @SuppressWarnings("unchecked")
+                                List<TournamentDateEntity> in = inv.getArgument(0);
+                                return in.stream()
+                                                .map(e -> TournamentDateEntity.builder()
+                                                                .id(1L)
+                                                                .description(e.getDescription())
+                                                                .eventDate(e.getEventDate())
+                                                                .tournament(e.getTournament())
+                                                                .build())
+                                                .toList();
+                        });
+                        when(tournamentPersistenceMapper.toModel(any(TournamentDateEntity.class))).thenAnswer(inv -> {
+                                TournamentDateEntity e = inv.getArgument(0);
+                                return TournamentDate.builder()
+                                                .id(e.getId())
+                                                .description(e.getDescription())
+                                                .eventDate(e.getEventDate())
+                                                .tournament(testTournament)
+                                                .build();
+                        });
+                }
+
+                private void stubPersistenceForCourtsAndDates() {
+                        stubCourtPersistenceChain();
+                        stubTournamentDatePersistenceChain();
+                }
+
                 @Test
                 @DisplayName("Debe configurar torneo exitosamente con canchas, horarios y reglamento")
                 void testSetupSuccess() {
-                        List<Court> savedCourts = List.of(
-                                        Court.builder().id(1L).name("Cancha Principal").location("Bloque B")
-                                                        .tournament(testTournament).build(),
-                                        Court.builder().id(2L).name("Cancha Auxiliar").location("Bloque C")
-                                                        .tournament(testTournament).build());
-                        List<TournamentDate> savedDates = List.of(
-                                        TournamentDate.builder().id(1L).description("Jornada 1")
-                                                        .eventDate(LocalDate.of(2026, 4, 15)).tournament(testTournament)
-                                                        .build());
-
-                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-                        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournamentEntity));
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
+                        when(tournamentPersistenceMapper.toEntity(any(Tournament.class))).thenReturn(testTournamentEntity);
+                        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(testTournamentEntity);
                         when(courtRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
-                        when(courtRepository.saveAll(anyList())).thenReturn(savedCourts);
                         when(tournamentDateRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
-                        when(tournamentDateRepository.saveAll(anyList())).thenReturn(savedDates);
+                        stubPersistenceForCourtsAndDates();
 
                         TournamentSetupResponse response = tournamentService.setup(1L, setupRequest);
 
@@ -377,37 +485,60 @@ class TournamentServiceImplTest {
                 @Test
                 @DisplayName("Debe reemplazar canchas existentes al reconfigurar")
                 void testSetupReplacesCourts() {
-                        List<Court> existingCourts = List.of(
-                                        Court.builder().id(10L).name("Vieja").location("Vieja")
-                                                        .tournament(testTournament).build());
-                        List<Court> newCourts = List.of(
-                                        Court.builder().id(1L).name("Cancha Principal").location("Bloque B")
-                                                        .tournament(testTournament).build(),
-                                        Court.builder().id(2L).name("Cancha Auxiliar").location("Bloque C")
-                                                        .tournament(testTournament).build());
+                        CourtEntity existingEntity = CourtEntity.builder()
+                                        .id(10L).name("Vieja").location("Vieja")
+                                        .tournament(testTournamentEntity).build();
 
-                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-                        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
-                        when(courtRepository.findByTournamentId(1L)).thenReturn(existingCourts);
-                        when(courtRepository.saveAll(anyList())).thenReturn(newCourts);
+                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournamentEntity));
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
+                        when(tournamentPersistenceMapper.toEntity(any(Tournament.class))).thenReturn(testTournamentEntity);
+                        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(testTournamentEntity);
+                        when(courtRepository.findByTournamentId(1L)).thenReturn(List.of(existingEntity));
                         when(tournamentDateRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
+                        stubCourtPersistenceChain();
+                        when(tournamentPersistenceMapper.toEntity(any(TournamentDate.class))).thenAnswer(inv -> {
+                                TournamentDate d = inv.getArgument(0);
+                                return TournamentDateEntity.builder()
+                                                .description(d.getDescription())
+                                                .eventDate(d.getEventDate())
+                                                .tournament(testTournamentEntity)
+                                                .build();
+                        });
                         when(tournamentDateRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
 
                         tournamentService.setup(1L, setupRequest);
 
-                        verify(courtRepository).deleteAll(existingCourts);
+                        verify(courtRepository).deleteAll(List.of(existingEntity));
                         verify(courtRepository).saveAll(anyList());
                 }
 
                 @Test
                 @DisplayName("Debe guardar inscriptionCloseDate cuando se proporciona")
                 void testSetupWithInscriptionCloseDate() {
-                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournament));
-                        when(tournamentRepository.save(any(Tournament.class))).thenReturn(testTournament);
+                        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(testTournamentEntity));
+                        when(tournamentPersistenceMapper.toModel(testTournamentEntity)).thenReturn(testTournament);
+                        when(tournamentPersistenceMapper.toEntity(any(Tournament.class))).thenReturn(testTournamentEntity);
+                        when(tournamentRepository.save(any(TournamentEntity.class))).thenReturn(testTournamentEntity);
                         when(courtRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
                         when(courtRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
                         when(tournamentDateRepository.findByTournamentId(1L)).thenReturn(Collections.emptyList());
                         when(tournamentDateRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
+                        when(tournamentPersistenceMapper.toEntity(any(Court.class))).thenAnswer(inv -> {
+                                Court c = inv.getArgument(0);
+                                return CourtEntity.builder()
+                                                .name(c.getName())
+                                                .location(c.getLocation())
+                                                .tournament(testTournamentEntity)
+                                                .build();
+                        });
+                        when(tournamentPersistenceMapper.toEntity(any(TournamentDate.class))).thenAnswer(inv -> {
+                                TournamentDate d = inv.getArgument(0);
+                                return TournamentDateEntity.builder()
+                                                .description(d.getDescription())
+                                                .eventDate(d.getEventDate())
+                                                .tournament(testTournamentEntity)
+                                                .build();
+                        });
 
                         tournamentService.setup(1L, setupRequest);
 
