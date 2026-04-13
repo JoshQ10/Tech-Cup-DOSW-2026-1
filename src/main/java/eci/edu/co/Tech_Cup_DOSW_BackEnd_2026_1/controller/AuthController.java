@@ -1,11 +1,9 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ForgotPasswordRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RefreshTokenRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ResetPasswordRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ResendVerificationRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.GoogleLoginRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
@@ -14,11 +12,13 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthServi
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -101,32 +101,6 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/forgot-password")
-    @Operation(summary = "Solicitar recuperacion de contrasena", description = "Genera y envia un enlace de recuperacion al correo del usuario")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Solicitud procesada"),
-            @ApiResponse(responseCode = "400", description = "Datos invalidos")
-    })
-    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        log.info("REST forgot-password endpoint called for email: {}", request.getEmail());
-        String response = authService.forgotPassword(request.getEmail());
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/reset-password")
-    @Operation(summary = "Restablecer contrasena", description = "Restablece la contrasena usando un token de recuperacion")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Contrasena restablecida"),
-            @ApiResponse(responseCode = "400", description = "Token invalido o datos invalidos"),
-            @ApiResponse(responseCode = "404", description = "Token no encontrado")
-    })
-    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        log.info("REST reset-password endpoint called");
-        String response = authService.resetPassword(request.getToken(), request.getNewPassword(),
-                request.getConfirmPassword());
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/google-login")
     @Operation(summary = "Login con Google OAuth2", description = "Autentica un usuario usando Google ID Token")
     @ApiResponses(value = {
@@ -138,5 +112,19 @@ public class AuthController {
         log.info("REST google-login endpoint called");
         LoginResponse response = authService.loginWithGoogle(request.getIdToken());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Cerrar sesión", description = "Cierra la sesión del usuario autenticado. El cliente debe eliminar el token JWT localmente.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Sesión cerrada exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    public ResponseEntity<String> logout() {
+        log.info("REST logout endpoint called");
+        authService.logout();
+        return ResponseEntity.ok("Sesión cerrada exitosamente");
     }
 }

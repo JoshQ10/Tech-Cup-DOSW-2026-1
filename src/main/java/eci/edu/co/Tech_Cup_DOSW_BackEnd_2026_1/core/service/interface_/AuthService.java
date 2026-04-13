@@ -14,11 +14,9 @@ public interface AuthService {
 
     String resendVerification(String email);
 
-    String forgotPassword(String email);
-
-    String resetPassword(String token, String newPassword, String confirmPassword);
-
     LoginResponse refreshToken(String refreshToken);
 
     LoginResponse loginWithGoogle(String idToken);
+
+    void logout();
 }
