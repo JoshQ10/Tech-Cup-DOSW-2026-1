@@ -31,4 +31,55 @@ public class SportProfile {
     private Integer age;
     private LocalDateTime lastAvailabilityChange;
     private String availabilityChangeReason;
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public Integer getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Integer semester) {
+        this.semester = semester;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public int getJerseyNumber() {
+        return jerseyNumber;
+    }
+
+    public void setJerseyNumber(int jerseyNumber) {
+        this.jerseyNumber = jerseyNumber;
+    }
+
+    public static class SportProfileBuilder {
+        public SportProfileBuilder available(boolean available) {
+            this.available = available;
+            return this;
+        }
+    }
 }

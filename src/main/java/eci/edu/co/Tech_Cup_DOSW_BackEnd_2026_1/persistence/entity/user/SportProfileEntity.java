@@ -61,4 +61,16 @@ public class SportProfileEntity {
 
     @Column(name = "availability_change_reason")
     private String availabilityChangeReason;
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 }
