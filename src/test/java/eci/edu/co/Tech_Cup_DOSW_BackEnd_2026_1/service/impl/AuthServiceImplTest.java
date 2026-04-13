@@ -133,37 +133,38 @@ class AuthServiceImplTest {
 
         doNothing().when(registerRequestValidator).validate(any(RegisterRequest.class));
         when(userRepository.findByEmail(registerRequest.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.empty());
         when(userMapper.toEntity(any(RegisterRequest.class))).thenAnswer(inv -> {
-                RegisterRequest r = inv.getArgument(0);
-                return User.builder()
-                                .firstName(r.getFirstName())
-                                .lastName(r.getLastName())
-                                .username(r.getUsername())
-                                .email(r.getEmail())
-                                .password("")
-                                .role(r.getRole())
-                                .userType(r.getUserType())
-                                .build();
+            RegisterRequest r = inv.getArgument(0);
+            return User.builder()
+                    .firstName(r.getFirstName())
+                    .lastName(r.getLastName())
+                    .username(r.getUsername())
+                    .email(r.getEmail())
+                    .password("")
+                    .role(r.getRole())
+                    .userType(r.getUserType())
+                    .build();
         });
         when(passwordEncoder.encode(anyString())).thenReturn("encoded-password");
         when(userPersistenceMapper.toEntity(any(User.class))).thenReturn(UserEntity.builder().build());
         when(userRepository.save(any(UserEntity.class))).thenReturn(testUserEntity);
         when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(
-                        User.builder()
-                                        .id(1L)
-                                        .firstName("Test")
-                                        .lastName("User")
-                                        .username("testuser")
-                                        .email("test@example.com")
-                                        .password("encoded-password")
-                                        .role(Role.PLAYER)
-                                        .active(false)
-                                        .createdAt(LocalDateTime.now())
-                                        .build());
+                User.builder()
+                        .id(1L)
+                        .firstName("Test")
+                        .lastName("User")
+                        .username("testuser")
+                        .email("test@example.com")
+                        .password("encoded-password")
+                        .role(Role.PLAYER)
+                        .active(false)
+                        .createdAt(LocalDateTime.now())
+                        .build());
         when(userPersistenceMapper.toEntity(any(VerificationToken.class)))
-                        .thenReturn(VerificationTokenEntity.builder().build());
+                .thenReturn(VerificationTokenEntity.builder().build());
         when(verificationTokenRepository.save(any(VerificationTokenEntity.class)))
-                        .thenAnswer(inv -> inv.getArgument(0));
+                .thenAnswer(inv -> inv.getArgument(0));
         when(userMapper.toResponse(any(User.class))).thenReturn(expectedResponse);
 
         UserResponse response = authService.register(registerRequest);
@@ -199,6 +200,7 @@ class AuthServiceImplTest {
 
         doNothing().when(loginRequestValidator).validate(any(LoginRequest.class));
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(testUserEntity));
+        when(userRepository.findByUsername(loginRequest.getEmail())).thenReturn(Optional.empty());
         when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(testUser);
         when(passwordEncoder.matches("password123", testUser.getPassword())).thenReturn(true);
         when(jwtService.generateAccessToken(testUser)).thenReturn("access-token");
@@ -221,6 +223,7 @@ class AuthServiceImplTest {
     void testLoginUserNotFound() {
         doNothing().when(loginRequestValidator).validate(any(LoginRequest.class));
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(loginRequest.getEmail())).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> authService.login(loginRequest));
         verify(userRepository, times(1)).findByEmail(loginRequest.getEmail());
@@ -232,6 +235,7 @@ class AuthServiceImplTest {
         doNothing().when(loginRequestValidator).validate(any(LoginRequest.class));
         loginRequest.setPassword("wrongpassword");
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(testUserEntity));
+        when(userRepository.findByUsername(loginRequest.getEmail())).thenReturn(Optional.empty());
         when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(testUser);
         when(passwordEncoder.matches("wrongpassword", testUser.getPassword())).thenReturn(false);
 
@@ -245,6 +249,7 @@ class AuthServiceImplTest {
         doNothing().when(loginRequestValidator).validate(any(LoginRequest.class));
         testUser.setActive(false);
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.of(testUserEntity));
+        when(userRepository.findByUsername(loginRequest.getEmail())).thenReturn(Optional.empty());
         when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(testUser);
         when(passwordEncoder.matches("password123", testUser.getPassword())).thenReturn(true);
 

@@ -3,11 +3,13 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.PhotoUploadRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.SportsProfileUpdateRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.PlayerSearchResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.SportProfileMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.FileStorageService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -34,6 +37,7 @@ public class PlayerServiceImpl implements PlayerService {
     private final SportProfileMapper sportProfileMapper;
     private final PhotoValidationUtil photoValidationUtil;
     private final UserPersistenceMapper userPersistenceMapper;
+    private final FileStorageService fileStorageService;
 
     @Override
     @SuppressWarnings("null")
@@ -51,6 +55,14 @@ public class PlayerServiceImpl implements PlayerService {
         if (request.getPosition() != null) {
             profile.setPosition(request.getPosition());
             log.debug("Posición actualizada a: {}", request.getPosition());
+        }
+
+        if (request.getSecondaryPosition() != null) {
+            profile.setSecondaryPosition(request.getSecondaryPosition());
+        }
+
+        if (request.getDominantFoot() != null) {
+            profile.setDominantFoot(request.getDominantFoot());
         }
 
         // Validar y actualizar dorsal
@@ -177,6 +189,55 @@ public class PlayerServiceImpl implements PlayerService {
                 });
 
         return mapToProfileResponse(profile);
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public ProfileResponse upsertSportsProfileByUserId(Long userId, SportsProfileUpdateRequest request) {
+        log.info("Upserting sports profile for user: {}", userId);
+
+        User user = userRepository.findById(userId)
+                .map(userPersistenceMapper::toModel)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
+
+        SportProfile profile = sportProfileRepository.findByUserId(userId)
+                .map(userPersistenceMapper::toModel)
+                .orElseGet(() -> SportProfile.builder().userId(userId).program(user.getProgram()).build());
+
+        profile.setPosition(request.getPrimaryPosition());
+        profile.setSecondaryPosition(request.getSecondaryPosition());
+        profile.setJerseyNumber(request.getJerseyNumber());
+        profile.setDominantFoot(request.getDominantFoot());
+        profile.setAvailable(request.getAvailable());
+
+        if (profile.getProgram() == null) {
+            profile.setProgram(user.getProgram());
+        }
+
+        SportProfile updatedProfile = userPersistenceMapper.toModel(
+                sportProfileRepository.save(userPersistenceMapper.toEntity(profile)));
+        return mapToProfileResponse(updatedProfile);
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public ProfileResponse uploadFullPhotoByUserId(Long userId, MultipartFile file) {
+        log.info("Uploading full photo for user: {}", userId);
+
+        User user = userRepository.findById(userId)
+                .map(userPersistenceMapper::toModel)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
+
+        SportProfile profile = sportProfileRepository.findByUserId(userId)
+                .map(userPersistenceMapper::toModel)
+                .orElseGet(() -> SportProfile.builder().userId(userId).program(user.getProgram()).build());
+
+        String fullPhotoUrl = fileStorageService.storeFullPhoto(file, userId);
+        profile.setFullPhotoUrl(fullPhotoUrl);
+
+        SportProfile updatedProfile = userPersistenceMapper.toModel(
+                sportProfileRepository.save(userPersistenceMapper.toEntity(profile)));
+        return mapToProfileResponse(updatedProfile);
     }
 
     private ProfileResponse mapToProfileResponse(SportProfile profile) {

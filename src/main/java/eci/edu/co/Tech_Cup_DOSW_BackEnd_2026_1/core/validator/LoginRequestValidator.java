@@ -13,8 +13,11 @@ public class LoginRequestValidator {
     public void validate(LoginRequest request) {
         Map<String, String> errors = new HashMap<>();
 
-        if (request.getEmail() == null || request.getEmail().isBlank()) {
-            errors.put("email", "El email es requerido");
+        boolean hasEmail = request.getEmail() != null && !request.getEmail().isBlank();
+        boolean hasUsername = request.getUsername() != null && !request.getUsername().isBlank();
+
+        if (!hasEmail && !hasUsername) {
+            errors.put("identifier", "Debe enviar email o username");
         }
 
         if (request.getPassword() == null || request.getPassword().isBlank()) {

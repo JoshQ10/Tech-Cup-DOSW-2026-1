@@ -28,6 +28,7 @@ public class User {
     private String identification;
     private String relationshipType;
     private String relationshipDescription;
+    private String avatarUrl;
     private boolean active;
     private LocalDateTime createdAt;
 }

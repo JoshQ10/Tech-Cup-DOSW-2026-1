@@ -64,6 +64,7 @@ public class SecurityTestConfig {
                                                                 "/oauth2/**",
                                                                 "/login/oauth2/**")
                                                 .permitAll()
+                                                .requestMatchers("/api/auth/logout").authenticated()
                                                 // Endpoints públicos de autenticación
                                                 .requestMatchers("/api/auth/**").permitAll()
                                                 // Requerir autenticación para todo lo demás
