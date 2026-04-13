@@ -8,6 +8,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.UserMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.PasswordResetToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
@@ -17,6 +18,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestVal
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.VerificationTokenEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.VerificationTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
@@ -38,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final JwtService jwtService;
     private final UserMapper userMapper;
     private final RegisterRequestValidator registerRequestValidator;
@@ -90,7 +93,8 @@ public class AuthServiceImpl implements AuthService {
                     savedUser.getFirstName(),
                     savedUser.getLastName(),
                     verificationToken,
-                    savedUser.getUserType());
+                    savedUser.getUserType(),
+                    savedUser.getRole());
         } catch (Exception e) {
             log.warn("Error sending verification email to {}: {}", savedUser.getEmail(), e.getMessage());
             // No lanzar excepción, el usuario se registró correctamente
@@ -244,7 +248,8 @@ public class AuthServiceImpl implements AuthService {
                     user.getFirstName(),
                     user.getLastName(),
                     newToken,
-                    user.getUserType());
+                    user.getUserType(),
+                    user.getRole());
             log.info("Verification email resent successfully for user: {}", user.getId());
             return "Verification email resent successfully. Please check your inbox.";
         } catch (Exception e) {
@@ -282,6 +287,83 @@ public class AuthServiceImpl implements AuthService {
                 .tokenType("Bearer")
                 .user(mapToUserResponse(user))
                 .build();
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public String forgotPassword(String email) {
+        log.info("Forgot password request for email: {}", email);
+
+        Optional<UserEntity> userEntityOpt = userRepository.findByEmail(email);
+        if (userEntityOpt.isEmpty()) {
+            log.info("Forgot password requested for non-existing email: {}", email);
+            return "Si el correo existe, te enviaremos un enlace de recuperacion.";
+        }
+
+        User user = userPersistenceMapper.toModel(userEntityOpt.get());
+
+        passwordResetTokenRepository.findByUserIdAndUsedFalse(user.getId()).ifPresent(existingToken -> {
+            existingToken.setUsed(true);
+            existingToken.setUsedAt(LocalDateTime.now());
+            passwordResetTokenRepository.save(existingToken);
+        });
+
+        String resetToken = UUID.randomUUID().toString();
+        PasswordResetToken token = PasswordResetToken.builder()
+                .token(resetToken)
+                .userId(user.getId())
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusHours(1))
+                .used(false)
+                .build();
+        passwordResetTokenRepository.save(userPersistenceMapper.toEntity(token));
+
+        try {
+            emailService.sendPasswordResetEmail(user.getEmail(), user.getFirstName(), user.getLastName(), resetToken);
+        } catch (Exception e) {
+            log.warn("Error sending password reset email to {}: {}", user.getEmail(), e.getMessage());
+        }
+
+        return "Si el correo existe, te enviaremos un enlace de recuperacion.";
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public String resetPassword(String token, String newPassword, String confirmPassword) {
+        log.info("Reset password attempt with token");
+
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new BusinessRuleException("La nueva contrasena debe tener minimo 8 caracteres");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new BusinessRuleException("La confirmacion de contrasena no coincide");
+        }
+
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
+                .map(userPersistenceMapper::toModel)
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid password reset token"));
+
+        if (resetToken.isUsed()) {
+            throw new BusinessRuleException("Este token de recuperacion ya fue utilizado");
+        }
+
+        if (LocalDateTime.now().isAfter(resetToken.getExpiresAt())) {
+            throw new BusinessRuleException("El token de recuperacion expiro");
+        }
+
+        User user = userRepository.findById(resetToken.getUserId())
+                .map(userPersistenceMapper::toModel)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userPersistenceMapper.toEntity(user));
+
+        resetToken.setUsed(true);
+        resetToken.setUsedAt(LocalDateTime.now());
+        passwordResetTokenRepository.save(userPersistenceMapper.toEntity(resetToken));
+
+        return "Contrasena restablecida exitosamente";
     }
 
     private User mapToUser(RegisterRequest request) {

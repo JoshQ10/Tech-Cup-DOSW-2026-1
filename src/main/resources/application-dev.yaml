@@ -53,6 +53,8 @@ springdoc:
 app:
   security:
     require-ssl: true
+  email:
+    reset-password-url: ${EMAIL_RESET_PASSWORD_URL:http://localhost:3000/reset-password}
 
 logging:
   level:

@@ -1,9 +1,11 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ForgotPasswordRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RefreshTokenRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ResetPasswordRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ResendVerificationRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.GoogleLoginRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
@@ -96,6 +98,32 @@ public class AuthController {
     public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         log.info("REST refresh-token endpoint called");
         LoginResponse response = authService.refreshToken(request.getRefreshToken());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Solicitar recuperacion de contrasena", description = "Genera y envia un enlace de recuperacion al correo del usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Solicitud procesada"),
+            @ApiResponse(responseCode = "400", description = "Datos invalidos")
+    })
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        log.info("REST forgot-password endpoint called for email: {}", request.getEmail());
+        String response = authService.forgotPassword(request.getEmail());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Restablecer contrasena", description = "Restablece la contrasena usando un token de recuperacion")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contrasena restablecida"),
+            @ApiResponse(responseCode = "400", description = "Token invalido o datos invalidos"),
+            @ApiResponse(responseCode = "404", description = "Token no encontrado")
+    })
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        log.info("REST reset-password endpoint called");
+        String response = authService.resetPassword(request.getToken(), request.getNewPassword(),
+                request.getConfirmPassword());
         return ResponseEntity.ok(response);
     }
 
