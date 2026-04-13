@@ -12,11 +12,13 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthServi
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -110,5 +112,19 @@ public class AuthController {
         log.info("REST google-login endpoint called");
         LoginResponse response = authService.loginWithGoogle(request.getIdToken());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Cerrar sesión", description = "Cierra la sesión del usuario autenticado. El cliente debe eliminar el token JWT localmente.")
+    @SecurityRequirement(name = "bearerAuth")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Sesión cerrada exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    public ResponseEntity<String> logout() {
+        log.info("REST logout endpoint called");
+        authService.logout();
+        return ResponseEntity.ok("Sesión cerrada exitosamente");
     }
 }

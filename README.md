@@ -21,6 +21,23 @@ Programa de Ingenieria de Sistemas, Ingenieria de Inteligencia Artificial, Ingen
 
 ---
 
+## 📑 Indice de Contenidos
+
+- [Descripcion](#descripcion)
+- [Objetivo del Proyecto](#objetivo-del-proyecto)
+- [Funcionalidades Principales](#funcionalidades-principales)
+- [Arquitectura Tecnologica](#arquitectura-tecnologica)
+- [Integrantes del Equipo](#integrantes-del-equipo)
+- [Diagramas de Arquitectura](#diagramas-de-arquitectura)
+- [Enlaces del Proyecto](#enlaces-del-proyecto)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Estructura de Paquetes (Backend)](#estructura-de-paquetes-backend)
+- [Endpoints de la API](#endpoints-de-la-api)
+- [Sprint-4](#sprint-4)
+- [Conteo del Proyecto](#conteo-del-proyecto)
+
+---
+
 ## Descripcion
 
 **TechCup Futbol** es una aplicacion web que centraliza toda la gestion del torneo interno de futbol, reemplazando los procesos manuales actuales (WhatsApp, formularios aislados y hojas de calculo) por un sistema organizado y transparente.
@@ -2100,7 +2117,141 @@ Si todos están marcados ✅, ¡tu aplicación está lista para producción!
 
 ---
 
-## 🆘 Centro de Soporte Rápido
+## � Sprint-4
+
+### 📋 SPRINT REVIEW
+
+Al finalizar el sprint se realizó una presentación del trabajo realizado, la cual fue expuesta en la sesión de laboratorio por cada líder técnico.
+
+####  Miembros del Equipo y Roles
+
+| Miembro | Rol | Contribución |
+|---------|-----|--------------|
+| **Carlos Andres Uribe Vargas** | Líder Técnico  | Organizó el equipo, coordinó integración Front-Back, facilitó comunicación entre frontend y backend |
+| **Juan Carlos Bohorquez Monroy** | Verificador de Endpoints & Seguridad | Verificó que los endpoints estén debidamente configurados, validó seguridad OAuth2, asesoramiento técnico del proyecto |
+| **Joshua David Quiroga Landazabal** | Desarrollador Fullstack | Completó funcionalidades faltantes en el backend |
+| **Juan David Valero Abril** | Coordinador Infraestructura & BD | Coordinó trabajos presenciales del equipo, aseguró que la base de datos esté funcional en Azure |
+| **Andres Felipe Savogal Wilches** | QA/Testing | A pesar de situaciones familiares, intentó apoyar en el desarrollo y testing |
+
+#### 🎯 Objetivo del Sprint
+
+**Terminar el backend e iniciar el frontend** de la aplicación TechCup, asegurando que la arquitectura sea sólida y que los endpoints estén listos para conectarse con el frontend.
+
+#### 📊 Distribución de Tareas
+
+El trabajo se distribuyó en **tres áreas principales**, priorizando funcionalidades más específicas:
+
+**Responsables principales:**
+- **Juan David Valero**: Infraestructura y Base de Datos en Azure
+- **Juan Carlos Bohorquez**: Validación de Endpoints y Seguridad (OAuth2)
+- **Joshua David Quiroga**: Funcionalidades y Lógica de Negocio
+
+#### 🔐 Matriz de Permisos por Rol y Módulo
+
+| Módulo | Administrador | Organizador | Capitán | Árbitro | Jugador |
+|--------|---------------|-------------|---------|---------|---------|
+| **Usuarios y Perfiles** | R, C, E, D | R, C, E | R, E | R | R, E |
+| **Torneos** | R, C, E, D | R, C, E, D | R | R | R |
+| **Equipos** | R, C, E, D | R, C, E, D | R, C, E | R | R |
+| **Invitaciones** | R, E, D | R, E, D | R, C, E | R | R, E |
+| **Plantilla Equipo** | R, E, D | R, E, D | R, E | R | R |
+| **Partidos** | R, C, E, D | R, C, E, D | R | R, E | R |
+| **Alineaciones** | R, E, D | R, E | R, C, E | R | R |
+| **Resultados** | R, E, D | R, E, D | R | R, C, E | R |
+| **Standings/Clasificación** | R | R | R | R | R |
+| **Pagos** | R, E, D | R, C, E, D | R | R | R, C |
+| **Sanciones** | R, C, E, D | R, C, E | R | R, C | R |
+| **Eventos de Partido** | R, E, D | R, E, D | R | R, C, E | R |
+| **Reportes y Estadísticas** | R | R | R | R | R |
+| **Administración General** | R, C, E, D | R, E | R | R | R |
+| **Auditoría y Logs** | R, D | R | - | - | - |
+
+**Leyenda:**
+- **R**: Read (Ver/Leer)
+- **C**: Create (Crear)
+- **E**: Edit (Editar)
+- **D**: Delete (Eliminar)
+
+#### 📈 Métricas del Sprint
+
+**Puntos Asignados y Logrados por Integrante (Backend):**
+
+![Métricas del Sprint](output/MATRIZ_PERMISOS.md)
+
+El trabajo se dividió principalmente entre Valero, Juan Carlos y Josh, concentrándose en funcionalidades específicas del backend que requieren mayor complejidad.
+
+**Avance Frontend (Asignado a Carlos):**
+
+- Pantalla de Login/Registro ✅
+- Pantalla de Inicio (Dashboard) ✅
+- Componentes de Navegación ✅
+- Integración inicial con Backend
+
+*Nota: Las funcionalidades frontend serán desglosadas en detalle en futuras iteraciones.*
+
+#### 🎮 Demo Funcional
+
+**Avance General:** 75% del backend completado
+
+**Demo Presentada:**
+- ✅ Pantalla de Inicio de Sesión (Login)
+- ✅ Integración Frontend-Backend
+- ✅ Configuración de Seguridad OAuth2
+- ✅ Endpoints de Autenticación funcionando
+- ✅ Base de datos operativa en Azure
+
+**Acceso a la Demo:**
+1. Ejecutar: `mvn spring-boot:run`
+2. Abrir: `https://localhost:8443/swagger-ui.html`
+3. Ver endpoints documentados y funcionales
+
+**Funcionalidades Pendientes (Muy Internas):**
+- Refinamientos de validaciones internas
+- Optimizaciones de rendimiento
+- Ajustes menores para alinearse con requisitos del frontend
+
+**Logros de este Sprint:**
+- ✅ Completado 75% del backend
+- ✅ Seguridad y autenticación funcional
+- ✅ Base de datos en Azure lista
+- ✅ Endpoints integrados y documentados
+- ✅ Conexión Frontend-Backend iniciada
+
+---
+
+### 🔍 SPRINT RETROSPECTIVE
+
+#### ✅ ¿Qué hicimos bien?
+
+- **Identificación temprana de funcionalidades clave** - Priorizamos correctamente qué era esencial para el frontend
+- **Verificación rigurosa de seguridad** - OAuth2 fue testeado exhaustivamente
+- **Trabajo colaborativo en equipo** - Reuniones frecuentes mantenían alineado al grupo
+- **Integración Frontend-Backend** - Logramos comunicación fluida entre brigadas
+- **Implementación de Azure** - Base de datos funcional en cloud desde el inicio
+- **Autenticación y Registro** - Funcionalidades de login robustas
+
+#### ❌ ¿Qué hicimos mal?
+
+- **Acumulación de trabajo en poco tiempo** - La semana de parciales comprimió demasiadas tareas
+- **Planeación de timeline poco realista** - Subestimamos lo que podía completarse en una semana
+
+#### 🔧 ¿Qué mejoraremos en el siguiente sprint?
+
+- **Mejor distribución de carga de trabajo** - Planificación más estratégica
+- **Trabajo bajo presión** - Desarrollar mejor manejo del estrés en sprints intensos
+- **Validación externa de requisitos** - Consultar con terceros sobre funcionalidades como registro/login antes de implementar
+- **Documentación en tiempo real** - No dejar la documentación para el final
+
+#### 🤝 ¿A qué se comprometen para el próximo sprint?
+
+- **Presentación de calidad** - Demostración profesional con backend completado
+- **Integración completa** - Frontend y Backend unidos y funcionando en conjunto
+- **Cobertura de testes** - Aumentar cobertura de pruebas unitarias
+- **Documentación clara** - Todos los cambios documentados en tiempo real
+
+---
+
+## �🆘 Centro de Soporte Rápido
 
 | Problema | Solución Rápida | Comando |
 |----------|-----------------|---------|

@@ -1,8 +1,10 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.PasswordResetToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.PasswordResetTokenEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.SportProfileEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.VerificationTokenEntity;
@@ -23,4 +25,8 @@ public interface UserPersistenceMapper {
     VerificationTokenEntity toEntity(VerificationToken model);
 
     VerificationToken toModel(VerificationTokenEntity entity);
+
+    PasswordResetTokenEntity toEntity(PasswordResetToken model);
+
+    PasswordResetToken toModel(PasswordResetTokenEntity entity);
 }
