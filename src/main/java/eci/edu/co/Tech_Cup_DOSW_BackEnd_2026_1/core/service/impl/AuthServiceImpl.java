@@ -27,6 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -282,6 +285,13 @@ public class AuthServiceImpl implements AuthService {
                 .tokenType("Bearer")
                 .user(mapToUserResponse(user))
                 .build();
+    }
+
+    @Override
+    public void logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = (authentication != null) ? authentication.getName() : "unknown";
+        log.info("User logged out: {}", email);
     }
 
     private User mapToUser(RegisterRequest request) {

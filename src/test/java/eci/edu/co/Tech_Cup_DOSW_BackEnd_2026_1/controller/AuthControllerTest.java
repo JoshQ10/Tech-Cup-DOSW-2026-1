@@ -22,8 +22,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -157,5 +160,30 @@ class AuthControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(loginRequest)))
                                 .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("Should logout successfully")
+        void testLogoutSuccess() throws Exception {
+                // Arrange
+                doNothing().when(authService).logout();
+
+                // Act & Assert
+                mockMvc.perform(post("/api/auth/logout")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isOk())
+                                .andExpect(content().string("Sesión cerrada exitosamente"));
+        }
+
+        @Test
+        @DisplayName("Should return 500 when logout fails unexpectedly")
+        void testLogoutUnexpectedError() throws Exception {
+                // Arrange
+                doThrow(new RuntimeException("Unexpected error")).when(authService).logout();
+
+                // Act & Assert
+                mockMvc.perform(post("/api/auth/logout")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isInternalServerError());
         }
 }
