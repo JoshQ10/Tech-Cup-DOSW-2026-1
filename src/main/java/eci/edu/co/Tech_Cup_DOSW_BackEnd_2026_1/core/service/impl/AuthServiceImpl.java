@@ -93,7 +93,8 @@ public class AuthServiceImpl implements AuthService {
                     savedUser.getFirstName(),
                     savedUser.getLastName(),
                     verificationToken,
-                    savedUser.getUserType());
+                    savedUser.getUserType(),
+                    savedUser.getRole());
         } catch (Exception e) {
             log.warn("Error sending verification email to {}: {}", savedUser.getEmail(), e.getMessage());
             // No lanzar excepción, el usuario se registró correctamente
@@ -147,6 +148,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @SuppressWarnings("null")
     public UserResponse verifyEmail(String token) {
         log.info("Verifying email using token: {}", token);
 
@@ -247,7 +249,8 @@ public class AuthServiceImpl implements AuthService {
                     user.getFirstName(),
                     user.getLastName(),
                     newToken,
-                    user.getUserType());
+                    user.getUserType(),
+                    user.getRole());
             log.info("Verification email resent successfully for user: {}", user.getId());
             return "Verification email resent successfully. Please check your inbox.";
         } catch (Exception e) {
