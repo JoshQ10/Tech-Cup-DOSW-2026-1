@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Request para autenticar un usuario con email y contraseña")
+@Schema(description = "Request para autenticar un usuario con email o username y contrasena")
 public class LoginRequest {
 
-    @Schema(description = "Correo electrónico del usuario", example = "juan.perez@mail.eci.edu.co", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Correo electronico del usuario", example = "juan.perez@mail.eci.edu.co")
     private String email;
 
-    @Schema(description = "Contraseña del usuario", example = "P@ssw0rd123", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Nombre de usuario alternativo para login", example = "juan.perez")
+    private String username;
+
+    @Schema(description = "Contrasena del usuario", example = "P@ssw0rd123", requiredMode = Schema.RequiredMode.REQUIRED)
     private String password;
 }

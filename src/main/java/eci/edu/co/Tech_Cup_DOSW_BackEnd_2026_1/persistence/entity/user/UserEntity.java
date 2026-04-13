@@ -62,6 +62,9 @@ public class UserEntity {
     @Column(name = "relationship_description", length = 500)
     private String relationshipDescription;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     private boolean active;
 
     private LocalDateTime createdAt;

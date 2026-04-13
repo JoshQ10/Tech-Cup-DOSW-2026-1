@@ -1,5 +1,6 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.DominantFoot;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
@@ -21,6 +22,12 @@ public class ProfileRequest {
     @NotNull(message = "La posición es requerida")
     @Schema(description = "Posición del jugador en el campo", example = "FORWARD", requiredMode = Schema.RequiredMode.REQUIRED)
     private Position position;
+
+    @Schema(description = "Posición secundaria del jugador en el campo", example = "MIDFIELDER")
+    private Position secondaryPosition;
+
+    @Schema(description = "Pie dominante del jugador", example = "RIGHT")
+    private DominantFoot dominantFoot;
 
     @NotNull(message = "El dorsal es requerido")
     @Min(value = 1, message = "El dorsal debe ser mayor a 0")

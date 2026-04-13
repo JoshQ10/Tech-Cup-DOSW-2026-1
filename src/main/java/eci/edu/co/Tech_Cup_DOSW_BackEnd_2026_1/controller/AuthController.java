@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ForgotPasswordRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LogoutRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RefreshTokenRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ResetPasswordRequest;
@@ -51,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "User login", description = "Authenticates a user and returns a JWT token")
+    @Operation(summary = "User login", description = "Authenticates a user with email or username and returns JWT tokens")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Authentication successful"),
             @ApiResponse(responseCode = "400", description = "Invalid credentials"),
@@ -98,6 +99,19 @@ public class AuthController {
     public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest request) {
         log.info("REST refresh-token endpoint called");
         LoginResponse response = authService.refreshToken(request.getRefreshToken());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Cerrar sesion", description = "Invalida el refresh token del usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Sesion cerrada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Refresh token invalido"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    public ResponseEntity<String> logout(@Valid @RequestBody LogoutRequest request) {
+        log.info("REST logout endpoint called");
+        String response = authService.logout(request.getRefreshToken());
         return ResponseEntity.ok(response);
     }
 

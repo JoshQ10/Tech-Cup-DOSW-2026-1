@@ -1,5 +1,6 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.DominantFoot;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -28,11 +29,20 @@ public class ProfileResponse {
     @Schema(description = "Posición del jugador en el campo", example = "FORWARD")
     private Position position;
 
+    @Schema(description = "Posición secundaria del jugador en el campo", example = "MIDFIELDER")
+    private Position secondaryPosition;
+
+    @Schema(description = "Pie dominante del jugador", example = "RIGHT")
+    private DominantFoot dominantFoot;
+
     @Schema(description = "Número de camiseta del jugador", example = "10")
     private int jerseyNumber;
 
     @Schema(description = "URL de la foto del jugador", example = "https://example.com/photo.jpg")
     private String photoUrl;
+
+    @Schema(description = "URL de la foto de cuerpo completo del jugador", example = "https://example.com/photos/full-body.jpg")
+    private String fullPhotoUrl;
 
     @Schema(description = "Indica si el jugador está disponible para jugar", example = "true")
     private boolean available;

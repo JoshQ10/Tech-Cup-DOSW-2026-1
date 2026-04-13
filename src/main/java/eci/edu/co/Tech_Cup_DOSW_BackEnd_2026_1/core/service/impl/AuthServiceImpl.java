@@ -17,8 +17,10 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.LoginRequestValida
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.VerificationTokenEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.RevokedRefreshTokenEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.VerificationTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
@@ -41,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final RevokedRefreshTokenRepository revokedRefreshTokenRepository;
     private final JwtService jwtService;
     private final UserMapper userMapper;
     private final RegisterRequestValidator registerRequestValidator;
@@ -62,6 +65,12 @@ public class AuthServiceImpl implements AuthService {
         if (existingUser.isPresent()) {
             log.warn("Registration failed: email {} already exists", request.getEmail());
             throw new BusinessRuleException("Email already registered");
+        }
+
+        Optional<UserEntity> existingUsername = userRepository.findByUsername(request.getUsername());
+        if (existingUsername.isPresent()) {
+            log.warn("Registration failed: username {} already exists", request.getUsername());
+            throw new BusinessRuleException("Username already registered");
         }
         log.debug("Email validation passed for: {}", request.getEmail());
 
@@ -106,25 +115,29 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
         loginRequestValidator.validate(request);
-        log.info("Login attempt for email: {}", request.getEmail());
+        String identifier = request.getEmail() != null && !request.getEmail().isBlank()
+                ? request.getEmail()
+                : request.getUsername();
+        log.info("Login attempt for identifier: {}", identifier);
         log.debug("Login request validation initiated");
 
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(identifier)
+                .or(() -> userRepository.findByUsername(identifier))
                 .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
-                    log.warn("Login failed: user with email {} not found", request.getEmail());
+                    log.warn("Login failed: user with identifier {} not found", identifier);
                     return new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND);
                 });
         log.debug("User found in database with id: {}, role: {}", user.getId(), user.getRole());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            log.warn("Login failed: invalid password for email {}", request.getEmail());
+            log.warn("Login failed: invalid password for identifier {}", identifier);
             throw new BusinessRuleException("Invalid password");
         }
         log.debug("Password validation passed for user: {}", user.getId());
 
         if (!user.isActive()) {
-            log.warn("Login failed: user {} is inactive", request.getEmail());
+            log.warn("Login failed: user {} is inactive", identifier);
             throw new BusinessRuleException("User account is inactive");
         }
         log.debug("User active status verified: true");
@@ -268,6 +281,11 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessRuleException("Invalid refresh token");
         }
 
+        if (revokedRefreshTokenRepository.existsByToken(refreshToken)) {
+            log.warn("Refresh token failed: token was revoked");
+            throw new BusinessRuleException("Invalid refresh token");
+        }
+
         String email = jwtService.extractEmail(refreshToken);
         User user = userRepository.findByEmail(email)
                 .map(userPersistenceMapper::toModel)
@@ -287,6 +305,26 @@ public class AuthServiceImpl implements AuthService {
                 .tokenType("Bearer")
                 .user(mapToUserResponse(user))
                 .build();
+    }
+
+    @Override
+    public String logout(String refreshToken) {
+        log.info("Logout request received");
+
+        if (refreshToken == null || !jwtService.isTokenValid(refreshToken)
+                || !jwtService.isRefreshToken(refreshToken)) {
+            log.warn("Logout failed: invalid refresh token");
+            throw new BusinessRuleException("Invalid refresh token");
+        }
+
+        if (!revokedRefreshTokenRepository.existsByToken(refreshToken)) {
+            revokedRefreshTokenRepository.save(RevokedRefreshTokenEntity.builder()
+                    .token(refreshToken)
+                    .revokedAt(LocalDateTime.now())
+                    .build());
+        }
+
+        return "Sesion cerrada correctamente";
     }
 
     @Override

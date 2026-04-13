@@ -18,6 +18,8 @@ public interface AuthService {
 
     String resetPassword(String token, String newPassword, String confirmPassword);
 
+    String logout(String refreshToken);
+
     LoginResponse refreshToken(String refreshToken);
 
     LoginResponse loginWithGoogle(String idToken);
