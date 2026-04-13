@@ -54,4 +54,40 @@ public class ProfileRequest {
     @Max(value = 60, message = "La edad máxima es 60 años")
     @Schema(description = "Edad del jugador en años", example = "20")
     private Integer age;
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public Position getSecondaryPosition() {
+        return secondaryPosition;
+    }
+
+    public DominantFoot getDominantFoot() {
+        return dominantFoot;
+    }
+
+    public int getJerseyNumber() {
+        return jerseyNumber;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public Integer getSemester() {
+        return semester;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
 }

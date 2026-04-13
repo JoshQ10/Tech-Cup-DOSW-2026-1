@@ -54,6 +54,7 @@ import java.util.Map;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "User management and profiles")
+@SuppressWarnings("null")
 public class UserManagementController {
 
     private final UserRepository userRepository;
@@ -161,9 +162,10 @@ public class UserManagementController {
                 .identification(request.identification())
                 .relationshipType(request.relationshipType())
                 .relationshipDescription(request.relationshipDescription())
-                .active(request.active() == null || request.active())
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        user.setActive(request.active() == null || request.active());
 
         UserEntity saved = userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(toUserSummary(saved));
