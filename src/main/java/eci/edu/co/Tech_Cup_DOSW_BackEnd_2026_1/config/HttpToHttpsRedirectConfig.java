@@ -6,12 +6,17 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile({ "dev", "ssl-test" })
 public class HttpToHttpsRedirectConfig {
 
     @Value("${server.port:8443}")
     private int httpsPort;
+
+    @Value("${server.http.redirect-port:8080}")
+    private int httpRedirectPort;
 
     @Bean
     public ServletWebServerFactory servletContainer() {
@@ -23,7 +28,7 @@ public class HttpToHttpsRedirectConfig {
     private Connector createHttpConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
-        connector.setPort(8080);
+        connector.setPort(httpRedirectPort);
         connector.setSecure(false);
         connector.setRedirectPort(httpsPort);
         return connector;

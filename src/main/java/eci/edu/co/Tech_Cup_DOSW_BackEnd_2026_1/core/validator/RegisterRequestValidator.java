@@ -1,8 +1,10 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.InstitutionEmailUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -13,7 +15,6 @@ public class RegisterRequestValidator {
 
     private static final int MIN_PASSWORD_LENGTH = 8;
     private static final String EMAIL_REGEX = "^[\\w.+-]+@[\\w-]+\\.[\\w.]+$";
-    private static final String INTERNAL_EMAIL_DOMAIN = "@escuelaing.edu.co";
     private static final String USERNAME_REGEX = "^[a-zA-Z0-9._-]{3,30}$";
 
     public void validate(RegisterRequest request) {
@@ -78,6 +79,11 @@ public class RegisterRequestValidator {
         // Validar rol
         if (request.getRole() == null) {
             errors.put("role", "El rol es requerido");
+        } else if (request.getRole() == Role.CAPTAIN
+                && !InstitutionEmailUtils.isValidCaptainInstitutionalEmailFormat(request.getEmail())) {
+            errors.put("email",
+                    "Para CAPTAIN el correo debe ser institucional con formato valido, por ejemplo: "
+                            + "XXX.XXX-X@escuelaing.edu.co, XXX.XXX-X@mail.escuelaing.edu.co o XXX.XXX@escuelaing.edu.co");
         }
 
         if (!errors.isEmpty()) {
@@ -86,19 +92,19 @@ public class RegisterRequestValidator {
     }
 
     private void validateUserTypeByEmail(RegisterRequest request, Map<String, String> errors) {
-        boolean isInternalEmail = request.getEmail().endsWith(INTERNAL_EMAIL_DOMAIN);
+        boolean isInternalEmail = InstitutionEmailUtils.isEscuelaingEmail(request.getEmail());
 
         // Si el email es de la escuela pero dice que es EXTERNAL, advertir
         if (isInternalEmail && request.getUserType() == UserType.EXTERNAL) {
             errors.put("userType",
-                "Los correos @escuelaing.edu.co deben registrarse como INTERNO");
+                    "Los correos institucionales @escuelaing.edu.co o @mail.escuelaing.edu.co deben registrarse como INTERNO");
         }
 
-        // Si el email NO es de la escuela pero dice que es INTERNAL sin tener email @escuelaing
+        // Si el email NO es de la escuela pero dice que es INTERNAL sin tener email
+        // @escuelaing
         if (!isInternalEmail && request.getUserType() == UserType.INTERNAL) {
             errors.put("userType",
-                "Los usuarios INTERNOS deben usar correo @escuelaing.edu.co");
+                    "Los usuarios INTERNOS deben usar correo institucional @escuelaing.edu.co o @mail.escuelaing.edu.co");
         }
     }
 }
-

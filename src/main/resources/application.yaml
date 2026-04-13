@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: ssl-test
+    active: dev-http
   security:
     oauth2:
       client:
@@ -13,7 +13,7 @@ spring:
 
 app:
   oauth2:
-    success-redirect-uri: ${OAUTH2_SUCCESS_REDIRECT_URI:https://localhost:8443/api/auth/oauth2/success}
+    success-redirect-uri: ${OAUTH2_SUCCESS_REDIRECT_URI:http://localhost:8080/api/auth/oauth2/success}
     jwt:
       access-token-ttl-ms: ${OAUTH2_ACCESS_TOKEN_TTL_MS:3600000}
       refresh-token-ttl-ms: ${OAUTH2_REFRESH_TOKEN_TTL_MS:86400000}

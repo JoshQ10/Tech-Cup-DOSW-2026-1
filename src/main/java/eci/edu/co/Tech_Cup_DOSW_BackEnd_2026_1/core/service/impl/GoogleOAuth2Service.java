@@ -6,6 +6,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.InstitutionEmailUtils;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,12 +55,14 @@ public class GoogleOAuth2Service {
 
             if (existingUser.isPresent()) {
                 log.info("User found in database for Google email: {}", email);
-                return existingUser.get();
+                User user = existingUser.get();
+                validatePlayerCaptainLoginPolicy(user);
+                return user;
             }
 
             // Crear nuevo usuario
             log.info("Creating new user from Google authentication for email: {}", email);
-            UserType userType = email.endsWith("@escuelaing.edu.co") ? UserType.INTERNAL : UserType.EXTERNAL;
+            UserType userType = InstitutionEmailUtils.isEscuelaingEmail(email) ? UserType.INTERNAL : UserType.EXTERNAL;
 
             User newUser = User.builder()
                     .firstName(firstName)
@@ -73,6 +76,8 @@ public class GoogleOAuth2Service {
                     .createdAt(LocalDateTime.now())
                     .build();
 
+            validatePlayerCaptainLoginPolicy(newUser);
+
             @SuppressWarnings("null")
             User savedUser = userPersistenceMapper.toModel(
                     userRepository.save(userPersistenceMapper.toEntity(newUser)));
@@ -85,6 +90,15 @@ public class GoogleOAuth2Service {
         } catch (Exception e) {
             log.error("Error validating Google token: {}", e.getMessage(), e);
             throw new BusinessRuleException("Error validating Google authentication: " + e.getMessage());
+        }
+    }
+
+    private void validatePlayerCaptainLoginPolicy(User user) {
+        if ((user.getRole() == Role.CAPTAIN || user.getRole() == Role.PLAYER)
+                && !InstitutionEmailUtils.isValidCaptainInstitutionalEmailFormat(user.getEmail())) {
+            throw new BusinessRuleException(
+                    "El usuario PLAYER/CAPTAIN solo puede iniciar sesion con correo institucional valido: "
+                            + "XXX.XXX-X@escuelaing.edu.co, XXX.XXX-X@mail.escuelaing.edu.co o XXX.XXX@escuelaing.edu.co");
         }
     }
 }
