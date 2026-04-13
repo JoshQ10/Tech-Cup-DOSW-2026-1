@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CustomOAuth2UserService Tests")
-class CustomOAuth2UserServiceTest {
+class CustomOAuth2UserServiceUnitTest {
 
     @Mock
     private UserRepository userRepository;
@@ -93,14 +94,13 @@ class CustomOAuth2UserServiceTest {
     @DisplayName("UserRepository interaction during OAuth2 flow")
     void testUserRepositoryInteraction() {
         // Arrange
-        User mockUser = User.builder()
-                .id(1L)
-                .email("test@oauth.com")
-                .build();
+        UserEntity mockUser = new UserEntity();
+        mockUser.setId(1L);
+        mockUser.setEmail("test@oauth.com");
         when(userRepository.findByEmail("test@oauth.com")).thenReturn(Optional.of(mockUser));
 
         // Act
-        Optional<User> result = userRepository.findByEmail("test@oauth.com");
+        Optional<UserEntity> result = userRepository.findByEmail("test@oauth.com");
 
         // Assert
         assertTrue(result.isPresent());
@@ -112,19 +112,13 @@ class CustomOAuth2UserServiceTest {
     @DisplayName("OAuth2 user can be saved to database")
     void testOAuth2UserSaveToDB() {
         // Arrange
-        User newUser = User.builder()
-                .firstName("New")
-                .lastName("OAuth User")
-                .username("newoauthuser")
-                .email("newuser@oauth.com")
-                .userType(UserType.STUDENT)
-                .role(Role.PLAYER)
-                .build();
+        UserEntity newUser = new UserEntity();
+        newUser.setEmail("newuser@oauth.com");
 
-        when(userRepository.save(any(User.class))).thenReturn(newUser);
+        when(userRepository.save(any(UserEntity.class))).thenReturn(newUser);
 
         // Act
-        User savedUser = userRepository.save(newUser);
+        UserEntity savedUser = userRepository.save(newUser);
 
         // Assert
         assertNotNull(savedUser);
