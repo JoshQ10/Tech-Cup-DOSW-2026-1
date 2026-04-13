@@ -17,4 +17,6 @@ public interface AuthService {
     LoginResponse refreshToken(String refreshToken);
 
     LoginResponse loginWithGoogle(String idToken);
+
+    void logout();
 }
