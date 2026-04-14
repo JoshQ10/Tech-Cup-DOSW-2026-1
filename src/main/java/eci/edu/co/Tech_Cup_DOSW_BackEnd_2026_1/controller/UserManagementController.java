@@ -4,6 +4,8 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.SchoolRela
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.SportsProfileUpdateRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserCompleteProfileResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserTeamResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.InvitationStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.MatchEventType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Program;
@@ -72,6 +74,7 @@ public class UserManagementController {
     private final TournamentRulesConfirmationRepository tournamentRulesConfirmationRepository;
     private final PlayerService playerService;
     private final FileStorageService fileStorageService;
+    private final TeamService teamService;
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
@@ -194,6 +197,24 @@ public class UserManagementController {
                                 .build())
                 .build();
 
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/team")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(
+        summary = "Obtener equipo actual del jugador",
+        description = "Retorna los datos del equipo al que pertenece actualmente el usuario (nombre, escudo, capitán, jugadores) o estado 'sin equipo'."
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Datos del equipo o estado sin equipo retornados exitosamente"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autenticado"),
+        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    public ResponseEntity<UserTeamResponse> getUserTeam(
+            @Parameter(description = "ID del usuario", required = true) @PathVariable Long id) {
+        log.info("REST get user team endpoint called for user: {}", id);
+        UserTeamResponse response = teamService.getUserTeam(id);
         return ResponseEntity.ok(response);
     }
 

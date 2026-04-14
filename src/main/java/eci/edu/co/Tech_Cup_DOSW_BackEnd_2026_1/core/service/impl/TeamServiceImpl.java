@@ -2,20 +2,26 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentTeamSummaryResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserTeamResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.TeamMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.team.Team;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.TeamRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.team.TeamEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.TeamPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TeamRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -26,6 +32,8 @@ public class TeamServiceImpl implements TeamService {
     private final TeamMapper teamMapper;
     private final TeamRequestValidator teamRequestValidator;
     private final TeamPersistenceMapper teamPersistenceMapper;
+    private final UserRepository userRepository;
+    private final TournamentRepository tournamentRepository;
 
     @Override
     public TeamResponse create(TeamRequest request) {
@@ -144,6 +152,68 @@ public class TeamServiceImpl implements TeamService {
             log.warn("Could not delete team {} due to linked data", id);
             throw new BusinessRuleException("No se puede eliminar el equipo porque tiene datos asociados");
         }
+    }
+
+    @Override
+    public List<TournamentTeamSummaryResponse> getTeamsByTournament(Long tournamentId) {
+        log.info("Fetching teams for tournament: {}", tournamentId);
+
+        tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> {
+                    log.warn("Tournament {} not found", tournamentId);
+                    return new ResourceNotFoundException(AppConstants.ERROR_TOURNAMENT_NOT_FOUND);
+                });
+
+        return teamRepository.findByTournamentId(tournamentId).stream()
+                .map(this::toTournamentTeamSummary)
+                .toList();
+    }
+
+    @Override
+    public UserTeamResponse getUserTeam(Long userId) {
+        log.info("Fetching current team for user: {}", userId);
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.warn("User {} not found", userId);
+                    return new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND);
+                });
+
+        return teamRepository.findCurrentTeamByPlayerId(userId)
+                .map(team -> {
+                    String captainName = resolveCaptainName(team);
+                    return UserTeamResponse.builder()
+                            .hasTeam(true)
+                            .id(team.getId())
+                            .name(team.getName())
+                            .shieldUrl(team.getShieldUrl())
+                            .captainId(team.getCaptainId())
+                            .captainName(captainName)
+                            .players(team.getPlayers() != null ? team.getPlayers() : new ArrayList<>())
+                            .build();
+                })
+                .orElseGet(() -> UserTeamResponse.builder().hasTeam(false).build());
+    }
+
+    private TournamentTeamSummaryResponse toTournamentTeamSummary(TeamEntity team) {
+        String captainName = resolveCaptainName(team);
+        return TournamentTeamSummaryResponse.builder()
+                .id(team.getId())
+                .name(team.getName())
+                .shieldUrl(team.getShieldUrl())
+                .captainId(team.getCaptainId())
+                .captainName(captainName)
+                .playerCount(team.getPlayers() != null ? team.getPlayers().size() : 0)
+                .build();
+    }
+
+    private String resolveCaptainName(TeamEntity team) {
+        if (team.getCaptainId() == null) {
+            return null;
+        }
+        return userRepository.findById(team.getCaptainId())
+                .map(u -> u.getFirstName() + " " + u.getLastName())
+                .orElse(null);
     }
 
     private TeamResponse mapToTeamResponse(Team team) {

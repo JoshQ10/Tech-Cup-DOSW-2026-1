@@ -14,6 +14,8 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.Tournamen
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentMonthlyPerformanceResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentSetupResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentTeamSummaryResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,6 +49,7 @@ import java.util.List;
 public class TournamentController {
 
         private final TournamentService tournamentService;
+        private final TeamService teamService;
 
         @PostMapping
         @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
@@ -265,5 +268,23 @@ public class TournamentController {
                 log.info("REST delete tournament endpoint called for id: {}", id);
                 tournamentService.delete(id);
                 return ResponseEntity.noContent().build();
+        }
+
+        @GetMapping("/{id}/teams")
+        @PreAuthorize("isAuthenticated()")
+        @Operation(
+                summary = "Listar equipos inscritos en el torneo",
+                description = "Retorna todos los equipos con escudo, nombre, capitán y número de jugadores. Utilizado en el carrusel de la ficha del torneo y en el bracket."
+        )
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Lista de equipos retornada exitosamente"),
+                        @ApiResponse(responseCode = "401", description = "No autenticado"),
+                        @ApiResponse(responseCode = "404", description = "Torneo no encontrado")
+        })
+        public ResponseEntity<List<TournamentTeamSummaryResponse>> getTeams(
+                        @Parameter(description = "ID del torneo", required = true) @PathVariable Long id) {
+                log.info("REST get tournament teams endpoint called for tournament: {}", id);
+                List<TournamentTeamSummaryResponse> response = teamService.getTeamsByTournament(id);
+                return ResponseEntity.ok(response);
         }
 }
