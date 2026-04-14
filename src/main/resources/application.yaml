@@ -1,13 +1,62 @@
-logging:
-  level:
-    root: INFO
-    org.springframework.web: DEBUG
-    edu.dosw.proyecto.Tech_Cup_Football_2026_1: WARN
+spring:
+  profiles:
+    active: dev-http
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:google-client-secret}
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
-  file:
-    name: logs/aplicacion.log
+app:
+  oauth2:
+    success-redirect-uri: ${OAUTH2_SUCCESS_REDIRECT_URI:http://localhost:8080/api/auth/oauth2/success}
+    jwt:
+      access-token-ttl-ms: ${OAUTH2_ACCESS_TOKEN_TTL_MS:3600000}
+      refresh-token-ttl-ms: ${OAUTH2_REFRESH_TOKEN_TTL_MS:86400000}
+  email:
+    from: ${EMAIL_FROM:noreply@techcup.edu.co}
+    verification-url: ${EMAIL_VERIFICATION_URL:http://localhost:3000/verify-email}
+    reset-password-url: ${EMAIL_RESET_PASSWORD_URL:http://localhost:3000/reset-password}
 
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: password
+    key-store-type: PKCS12
+    key-alias: techcup
+  http2:
+    enabled: true
 
+---
+spring:
+  config:
+    activate:
+      on-profile: ssl-test
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:tu-email@gmail.com}
+    password: ${MAIL_PASSWORD:tu-contraseña}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000

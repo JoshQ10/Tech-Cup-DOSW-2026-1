@@ -1,0 +1,168 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+permissions:
+  contents: read
+
+# ─────────────────────────────────────────────────────────
+# SECRETS REQUERIDOS EN GITHUB (Settings > Secrets):
+#
+# Comunes:      ACR_LOGIN_SERVER, ACR_USERNAME, ACR_PASSWORD
+#               JWT_SECRET, SSL_KEY_STORE_PASSWORD
+#               MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
+#
+# QA:           AZURE_CREDENTIALS_QA, AZURE_APP_NAME_QA
+#               QA_DB_HOST, QA_DB_NAME, QA_DB_USER, QA_DB_PASSWORD
+#               QA_ALLOWED_ORIGINS
+#
+# PROD:         AZURE_CREDENTIALS_PROD, AZURE_APP_NAME_PROD
+#               PROD_DB_HOST, PROD_DB_NAME, PROD_DB_USER, PROD_DB_PASSWORD
+#               PROD_ALLOWED_ORIGINS
+# ─────────────────────────────────────────────────────────
+
+jobs:
+  # ── 1. BUILD: compile JAR and push Docker image ────────
+  build:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: meta
+        run: echo "tag=${{ secrets.ACR_LOGIN_SERVER }}/techcup-app:${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Log in to Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.ACR_LOGIN_SERVER }}/techcup-app:${{ github.sha }}
+            ${{ secrets.ACR_LOGIN_SERVER }}/techcup-app:${{ github.ref_name }}-latest
+
+  # ── 2. DEPLOY QA: triggered on push to develop ─────────
+  deploy-qa:
+    name: Deploy to QA
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: QA
+
+    steps:
+      - name: Azure Login (QA)
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_QA }}
+
+      - name: Deploy to Azure App Service (QA)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME_QA }}
+          images: ${{ needs.build.outputs.image-tag }}
+
+      - name: Configure App Settings (QA)
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az webapp config appsettings set \
+              --name ${{ secrets.AZURE_APP_NAME_QA }} \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP_QA }} \
+              --settings \
+                SPRING_PROFILES_ACTIVE=qa \
+                QA_DB_HOST="${{ secrets.QA_DB_HOST }}" \
+                QA_DB_NAME="${{ secrets.QA_DB_NAME }}" \
+                QA_DB_USER="${{ secrets.QA_DB_USER }}" \
+                QA_DB_PASSWORD="${{ secrets.QA_DB_PASSWORD }}" \
+                JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+                SSL_KEY_STORE_PASSWORD="${{ secrets.SSL_KEY_STORE_PASSWORD }}" \
+                MAIL_HOST="${{ secrets.MAIL_HOST }}" \
+                MAIL_PORT="${{ secrets.MAIL_PORT }}" \
+                MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
+                MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+                QA_ALLOWED_ORIGINS="${{ secrets.QA_ALLOWED_ORIGINS }}"
+
+      - name: Health check (QA)
+        run: |
+          echo "Waiting for app to start..."
+          sleep 45
+          STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
+            https://${{ secrets.AZURE_APP_NAME_QA }}.azurewebsites.net/actuator/health || echo "000")
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then exit 1; fi
+
+  # ── 3. DEPLOY PROD: triggered on push to main ──────────
+  #    Requires manual approval via GitHub Environment protection
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+
+    steps:
+      - name: Azure Login (PROD)
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
+
+      - name: Deploy to Azure App Service (PROD)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ secrets.AZURE_APP_NAME_PROD }}
+          images: ${{ needs.build.outputs.image-tag }}
+
+      - name: Configure App Settings (PROD)
+        uses: azure/CLI@v2
+        with:
+          inlineScript: |
+            az webapp config appsettings set \
+              --name ${{ secrets.AZURE_APP_NAME_PROD }} \
+              --resource-group ${{ secrets.AZURE_RESOURCE_GROUP_PROD }} \
+              --settings \
+                SPRING_PROFILES_ACTIVE=prod \
+                PROD_DB_HOST="${{ secrets.PROD_DB_HOST }}" \
+                PROD_DB_NAME="${{ secrets.PROD_DB_NAME }}" \
+                PROD_DB_USER="${{ secrets.PROD_DB_USER }}" \
+                PROD_DB_PASSWORD="${{ secrets.PROD_DB_PASSWORD }}" \
+                JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+                SSL_KEY_STORE_PASSWORD="${{ secrets.SSL_KEY_STORE_PASSWORD }}" \
+                MAIL_HOST="${{ secrets.MAIL_HOST }}" \
+                MAIL_PORT="${{ secrets.MAIL_PORT }}" \
+                MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
+                MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
+                PROD_ALLOWED_ORIGINS="${{ secrets.PROD_ALLOWED_ORIGINS }}"
+
+      - name: Health check (PROD)
+        run: |
+          echo "Waiting for app to start..."
+          sleep 60
+          STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
+            https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/actuator/health || echo "000")
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then exit 1; fi
+
+      - name: Verify DB connectivity (PROD)
+        run: |
+          STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
+            https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/actuator/health/db || echo "000")
+          echo "DB health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then exit 1; fi

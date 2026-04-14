@@ -1,0 +1,41 @@
+spring:
+  mail:
+    host: 127.0.0.1
+    port: 3025
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            scope: openid,profile,email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+
+app:
+  oauth2:
+    success-redirect-uri: https://localhost:8443/api/auth/oauth2/success
+    jwt:
+      access-token-ttl-ms: 3600000
+      refresh-token-ttl-ms: 86400000
+
+server:
+  port: 0  # Puerto aleatorio para pruebas
+  shutdown: graceful
+
+logging:
+  level:
+    root: WARN
+    eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1: DEBUG

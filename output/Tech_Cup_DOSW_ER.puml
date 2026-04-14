@@ -1,0 +1,237 @@
+@startuml Tech_Cup_DOSW_ER
+!define ABSTRACT abstract
+skinparam backgroundColor #FEFEFE
+skinparam ArrowFontSize 10
+
+entity users {
+  * id : Long <<generated>>
+  --
+  name : String
+  email : String <<unique, not null>>
+  password : String <<not null>>
+  identification : String
+  role : Role
+  userType : UserType
+  program : Program
+  active : boolean
+  createdAt : LocalDateTime
+}
+
+entity teams {
+  * id : Long <<generated>>
+  --
+  name : String
+  shieldUrl : String
+  uniformColors : String
+  tournamentId : Long <<FK>>
+  captainId : Long <<FK>>
+  players : List<Long>
+}
+
+entity tournaments {
+  * id : Long <<generated>>
+  --
+  name : String
+  startDate : LocalDate
+  endDate : LocalDate
+  teamCount : int
+  costPerTeam : double
+  rules : String
+  inscriptionCloseDate : LocalDate
+  createdBy : Long <<FK>>
+  status : TournamentStatus
+}
+
+entity matches {
+  * id : Long <<generated>>
+  --
+  tournamentId : Long <<FK>>
+  homeTeamId : Long <<FK>>
+  awayTeamId : Long <<FK>>
+  refereeId : Long <<FK>>
+  courtId : Long <<FK>>
+  matchDate : LocalDate
+  matchTime : LocalTime
+  phase : MatchPhase
+  homeScore : Integer
+  awayScore : Integer
+  played : boolean
+}
+
+entity team_invitations {
+  * id : Long <<generated>>
+  --
+  teamId : Long <<FK>>
+  playerId : Long <<FK>>
+  status : InvitationStatus
+  sentAt : LocalDateTime
+  respondedAt : LocalDateTime
+}
+
+entity lineups {
+  * id : Long <<generated>>
+  --
+  matchId : Long <<FK>>
+  teamId : Long <<FK>>
+  formation : String
+}
+
+entity lineup_players {
+  * id : Long <<generated>>
+  --
+  lineupId : Long <<FK>>
+  playerId : Long <<FK>>
+  positionX : Integer
+  positionY : Integer
+  starter : boolean
+}
+
+entity match_events {
+  * id : Long <<generated>>
+  --
+  matchId : Long <<FK>>
+  playerId : Long <<FK>>
+  teamId : Long <<FK>>
+  eventType : MatchEventType
+  minute : int
+}
+
+entity elimination_brackets {
+  * id : Long <<generated>>
+  --
+  tournamentId : Long <<FK>>
+  matchId : Long <<FK>>
+  round : String
+  matchPosition : int
+}
+
+entity courts {
+  * id : Long <<generated>>
+  --
+  tournamentId : Long <<FK>>
+  name : String
+  location : String
+}
+
+entity standings {
+  * id : Long <<generated>>
+  --
+  tournamentId : Long <<FK>>
+  teamId : Long <<FK>>
+  played : int
+  won : int
+  drawn : int
+  lost : int
+  goalsFor : int
+  goalsAgainst : int
+  goalDifference : int
+  points : int
+}
+
+entity payments {
+  * id : Long <<generated>>
+  --
+  teamId : Long <<FK>>
+  reviewedById : Long <<FK>>
+  receiptUrl : String
+  status : PaymentStatus
+  comments : String
+  createdAt : LocalDateTime
+  updatedAt : LocalDateTime
+}
+
+entity sanctions {
+  * id : Long <<generated>>
+  --
+  tournamentId : Long <<FK>>
+  playerId : Long <<FK>>
+  matchId : Long <<FK>>
+  description : String
+  sanctionDate : LocalDate
+  suspendedMatches : int
+}
+
+entity sport_profiles {
+  * id : Long <<generated>>
+  --
+  userId : Long <<FK>>
+  position : Position
+  program : Program
+  jerseyNumber : int
+  photoUrl : String
+  available : boolean
+  semester : Integer
+  gender : String
+  age : Integer
+  lastAvailabilityChange : LocalDateTime
+  availabilityChangeReason : String
+}
+
+entity tournament_dates {
+  * id : Long <<generated>>
+  --
+  tournamentId : Long <<FK>>
+  description : String
+  eventDate : LocalDate
+}
+
+'---- Relationships ----
+
+users ||--o{ matches : "referees (referee_id)"
+users ||--o{ team_invitations : "receives (player_id)"
+users ||--o{ lineup_players : "plays in (player_id)"
+users ||--o{ match_events : "performs (player_id)"
+users ||--o{ sanctions : "receives (player_id)"
+users ||--o{ payments : "reviews (reviewed_by)"
+users ||--o{ sport_profiles : "has profile"
+
+tournaments ||--o{ teams : "contains"
+tournaments ||--o{ matches : "organizes"
+tournaments ||--o{ courts : "uses"
+tournaments ||--o{ standings : "tracks"
+tournaments ||--o{ tournament_dates : "has dates"
+tournaments ||--o{ elimination_brackets : "has brackets"
+tournaments ||--o{ sanctions : "records"
+
+teams ||--o{ matches : "plays as home (home_team_id)"
+teams ||--o{ matches : "plays as away (away_team_id)"
+teams ||--o{ team_invitations : "invites"
+teams ||--o{ lineups : "has teamlineup"
+teams ||--o{ match_events : "involved in event"
+teams ||--o{ payments : "makes payment"
+teams ||--o{ standings : "appears in"
+
+matches ||--o{ lineups : "has lineups"
+matches ||--o{ match_events : "generates events"
+matches ||--|| elimination_brackets : "belongs to bracket"
+
+lineup_players }o--|| lineups : "part of"
+lineup_players }o--|| users : "is player"
+
+lineups }o--|| teams : "belongs to"
+lineups }o--|| matches : "created for"
+
+match_events }o--|| matches : "occurs in"
+match_events }o--|| teams : "team involved"
+
+courts }o--|| tournaments : "belongs to"
+courts ||--o{ matches : "hosts"
+
+standings }o--|| tournaments : "tracks in"
+standings }o--|| teams : "for team"
+
+payments }o--|| teams : "for team"
+payments }o--|| users : "reviewed by"
+
+sanctions }o--|| tournaments : "in tournament"
+sanctions }o--|| users : "against player"
+sanctions }o--|| matches : "during match"
+
+tournament_dates }o--|| tournaments : "scheduled in"
+
+sport_profiles }o--|| users : "profile of"
+
+elimination_brackets }o--|| tournaments : "part of"
+elimination_brackets }o--|| matches : "defines match"
+
+@enduml
