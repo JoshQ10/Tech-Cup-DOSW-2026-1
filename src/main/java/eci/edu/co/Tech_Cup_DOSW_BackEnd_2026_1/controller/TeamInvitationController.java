@@ -1,7 +1,9 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.InvitationPageResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.InvitationStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.InvitationService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.team.TeamEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.team.TeamInvitationEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
@@ -10,6 +12,8 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TeamReposi
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,41 +34,112 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/invitations")
 @RequiredArgsConstructor
-@Tag(name = "Invitations", description = "Team invitation management")
+@Tag(name = "Invitations", description = "Gestión de invitaciones a equipos")
 public class TeamInvitationController {
 
     private final TeamInvitationRepository invitationRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final InvitationService invitationService;
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "List invitations", description = "Allowed roles: all authenticated")
-    public ResponseEntity<List<Map<String, Object>>> list(
-            @RequestParam(required = false) Long teamId,
-            @RequestParam(required = false) Long playerId) {
-        List<TeamInvitationEntity> invitations;
-        if (teamId != null) {
-            invitations = invitationRepository.findByTeamId(teamId);
-        } else if (playerId != null) {
-            invitations = invitationRepository.findByPlayerId(playerId);
-        } else {
-            invitations = invitationRepository.findAll();
+    @Operation(
+        summary = "Listar invitaciones recibidas por el jugador",
+        description = "Retorna las invitaciones pendientes del jugador autenticado con datos del equipo. Paginación incluida."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de invitaciones obtenida exitosamente"),
+        @ApiResponse(responseCode = "401", description = "No autenticado")
+    })
+    public ResponseEntity<InvitationPageResponse> list(
+            @Parameter(description = "ID del jugador para filtrar invitaciones") @RequestParam(required = false) Long userId,
+            @Parameter(description = "ID del jugador (alias de userId)") @RequestParam(required = false) Long playerId,
+            @Parameter(description = "Número de página (0-indexed)", example = "0") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Cantidad de elementos por página", example = "10") @RequestParam(defaultValue = "10") int limit) {
+
+        Long filterUserId = userId != null ? userId : playerId;
+
+        if (filterUserId != null) {
+            log.info("REST list pending invitations endpoint called for user: {}, page: {}, limit: {}", filterUserId, page, limit);
+            return ResponseEntity.ok(invitationService.listPendingByUser(filterUserId, page, limit));
         }
-        return ResponseEntity.ok(invitations.stream().map(this::toMap).toList());
+
+        log.info("REST list all invitations endpoint called");
+        java.util.List<TeamInvitationEntity> all = invitationRepository.findAll();
+        java.util.List<eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.InvitationDetailResponse> items =
+                all.stream().map(this::toDetailResponse).toList();
+
+        InvitationPageResponse response = InvitationPageResponse.builder()
+                .invitations(items)
+                .currentPage(0)
+                .totalElements(items.size())
+                .totalPages(1)
+                .pageSize(items.size())
+                .hasNextPage(false)
+                .isFirstPage(true)
+                .isLastPage(true)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/accept")
+    @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
+    @Operation(
+        summary = "Aceptar invitación a un equipo",
+        description = "Valida que el jugador no tenga equipo activo y que el equipo tenga cupo. Asigna el jugador al equipo y cancela las demás invitaciones pendientes."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Invitación aceptada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "El jugador ya tiene equipo o el equipo no tiene cupo"),
+        @ApiResponse(responseCode = "403", description = "Solo puedes aceptar tus propias invitaciones"),
+        @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
+    })
+    public ResponseEntity<Void> accept(
+            @Parameter(description = "ID de la invitación", required = true) @PathVariable Long id,
+            Authentication authentication) {
+        log.info("REST accept invitation endpoint called for invitation: {}", id);
+        UserEntity currentUser = getCurrentUser(authentication);
+        invitationService.acceptInvitation(id, currentUser.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/reject")
+    @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
+    @Operation(
+        summary = "Rechazar invitación a un equipo",
+        description = "Marca la invitación como rechazada. El jugador permanece sin equipo."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Invitación rechazada exitosamente"),
+        @ApiResponse(responseCode = "400", description = "La invitación ya fue procesada"),
+        @ApiResponse(responseCode = "403", description = "Solo puedes rechazar tus propias invitaciones"),
+        @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
+    })
+    public ResponseEntity<Void> reject(
+            @Parameter(description = "ID de la invitación", required = true) @PathVariable Long id,
+            Authentication authentication) {
+        log.info("REST reject invitation endpoint called for invitation: {}", id);
+        UserEntity currentUser = getCurrentUser(authentication);
+        invitationService.rejectInvitation(id, currentUser.getId());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get invitation", description = "Allowed roles: all authenticated")
-    public ResponseEntity<Map<String, Object>> getById(@Parameter(required = true) @PathVariable Long id) {
+    @Operation(summary = "Obtener invitación por ID", description = "Retorna el detalle de una invitación")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Invitación encontrada"),
+        @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
+    })
+    public ResponseEntity<Map<String, Object>> getById(
+            @Parameter(required = true) @PathVariable Long id) {
         TeamInvitationEntity invitation = invitationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Invitation not found"));
         return ResponseEntity.ok(toMap(invitation));
@@ -72,8 +147,9 @@ public class TeamInvitationController {
 
     @PostMapping
     @PreAuthorize("hasRole('CAPTAIN')")
-    @Operation(summary = "Create invitation", description = "Allowed roles: CAPTAIN")
-    public ResponseEntity<Map<String, Object>> create(@RequestBody InvitationCreateRequest request,
+    @Operation(summary = "Crear invitación (uso interno)", description = "Allowed roles: CAPTAIN")
+    public ResponseEntity<Map<String, Object>> create(
+            @RequestBody InvitationCreateRequest request,
             Authentication authentication) {
         TeamEntity team = teamRepository.findById(request.teamId())
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found"));
@@ -94,7 +170,7 @@ public class TeamInvitationController {
 
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','CAPTAIN','PLAYER')")
-    @Operation(summary = "Update invitation status", description = "Allowed roles: ADMINISTRATOR, ORGANIZER, CAPTAIN, PLAYER")
+    @Operation(summary = "Actualizar estado de invitación", description = "Allowed roles: ADMINISTRATOR, ORGANIZER, CAPTAIN, PLAYER")
     public ResponseEntity<Map<String, Object>> updateStatus(
             @Parameter(required = true) @PathVariable Long id,
             @RequestBody InvitationStatusRequest request,
@@ -111,13 +187,36 @@ public class TeamInvitationController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER')")
-    @Operation(summary = "Delete invitation", description = "Allowed roles: ADMINISTRATOR, ORGANIZER")
+    @Operation(summary = "Eliminar invitación", description = "Allowed roles: ADMINISTRATOR, ORGANIZER")
     public ResponseEntity<Void> delete(@Parameter(required = true) @PathVariable Long id) {
         if (!invitationRepository.existsById(id)) {
             throw new ResourceNotFoundException("Invitation not found");
         }
         invitationRepository.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.InvitationDetailResponse toDetailResponse(
+            TeamInvitationEntity invitation) {
+        TeamEntity team = invitation.getTeam();
+        String captainName = null;
+        if (team != null && team.getCaptainId() != null) {
+            captainName = userRepository.findById(team.getCaptainId())
+                    .map(u -> u.getFirstName() + " " + u.getLastName())
+                    .orElse(null);
+        }
+        return eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.InvitationDetailResponse.builder()
+                .id(invitation.getId())
+                .teamId(team != null ? team.getId() : null)
+                .teamName(team != null ? team.getName() : null)
+                .teamShieldUrl(team != null ? team.getShieldUrl() : null)
+                .captainId(team != null ? team.getCaptainId() : null)
+                .captainName(captainName)
+                .playersEnrolled(team != null && team.getPlayers() != null ? team.getPlayers().size() : 0)
+                .totalCapacity(eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants.MAX_TEAM_PLAYERS)
+                .sentAt(invitation.getSentAt())
+                .status(invitation.getStatus())
+                .build();
     }
 
     private Map<String, Object> toMap(TeamInvitationEntity invitation) {
@@ -131,11 +230,9 @@ public class TeamInvitationController {
         return data;
     }
 
-    public record InvitationCreateRequest(Long teamId, Long playerId) {
-    }
+    public record InvitationCreateRequest(Long teamId, Long playerId) {}
 
-    public record InvitationStatusRequest(String status) {
-    }
+    public record InvitationStatusRequest(String status) {}
 
     private void assertCaptainOwnsTeam(Authentication authentication, TeamEntity team) {
         UserEntity currentUser = getCurrentUser(authentication);

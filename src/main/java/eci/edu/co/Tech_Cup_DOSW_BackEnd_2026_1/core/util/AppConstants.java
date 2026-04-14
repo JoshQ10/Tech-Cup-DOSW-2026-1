@@ -12,6 +12,10 @@ public class AppConstants {
     public static final String ERROR_TEAM_NOT_FOUND = "Team not found";
     public static final String ERROR_TOURNAMENT_NOT_FOUND = "Tournament not found";
     public static final String ERROR_MATCH_NOT_FOUND = "Match not found";
+    public static final String ERROR_INVITATION_NOT_FOUND = "Invitation not found";
+
+    // Team configuration
+    public static final int MAX_TEAM_PLAYERS = 15;
 
     // Success messages
     public static final String MSG_SUCCESS = "success";
