@@ -67,7 +67,7 @@ class CorsFunctionalTest {
                 .header("Access-Control-Request-Headers", "Content-Type, Authorization")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(header().string("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS"));
+                .andExpect(header().string("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS,PATCH,HEAD"));
     }
 
     @Test

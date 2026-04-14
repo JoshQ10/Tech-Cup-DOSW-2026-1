@@ -137,12 +137,14 @@ class PlayerControllerSecurityTest {
 
         @Test
         @WithMockUser(roles = "ORGANIZER")
-        @DisplayName("ORGANIZER no puede actualizar perfil deportivo - 403")
-        void organizerCannotUpdateProfile() throws Exception {
+        @DisplayName("ORGANIZER puede actualizar perfil deportivo")
+        void organizerCanUpdateProfile() throws Exception {
+                when(playerService.updateProfile(anyLong(), any())).thenReturn(profileResponse);
+
                 mockMvc.perform(put("/api/players/1/profile")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(profileRequest)))
-                                .andExpect(status().isForbidden());
+                                .andExpect(status().isOk());
         }
 
         @Test

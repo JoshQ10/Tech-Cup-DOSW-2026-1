@@ -4,6 +4,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.SchoolRela
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.SportsProfileUpdateRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserCompleteProfileResponse;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.InvitationStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.MatchEventType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Program;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
@@ -19,6 +20,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.LineupPlay
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.MatchEventRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.SportProfileRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TeamRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TeamInvitationRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentDateRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TournamentRulesConfirmationRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -62,6 +67,9 @@ public class UserManagementController {
     private final MatchEventRepository matchEventRepository;
     private final LineupPlayerRepository lineupPlayerRepository;
     private final TeamRepository teamRepository;
+    private final TeamInvitationRepository teamInvitationRepository;
+    private final TournamentDateRepository tournamentDateRepository;
+    private final TournamentRulesConfirmationRepository tournamentRulesConfirmationRepository;
     private final PlayerService playerService;
     private final FileStorageService fileStorageService;
 
@@ -88,6 +96,49 @@ public class UserManagementController {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
         return ResponseEntity.ok(toUserSummary(user));
+    }
+
+    @GetMapping("/{id}/notifications/count")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get pending notifications count", description = "Returns pending invitations count, pending calendar events count and rules confirmation status")
+    public ResponseEntity<NotificationCountResponse> getNotificationsCount(
+            @Parameter(required = true) @PathVariable Long id,
+            Authentication authentication) {
+        assertOwnUserForPlayerOrCaptain(authentication, id);
+
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
+
+        long pendingInvitations = teamInvitationRepository.findByPlayerIdAndStatus(id, InvitationStatus.PENDING).size();
+
+        TeamEntity currentTeam = teamRepository.findCurrentTeamByPlayerId(id).orElse(null);
+        long pendingCalendarEvents = 0L;
+        boolean rulesConfirmed = true;
+
+        if (currentTeam != null && currentTeam.getTournamentId() != null) {
+            Long tournamentId = currentTeam.getTournamentId();
+            LocalDate today = LocalDate.now();
+
+            pendingCalendarEvents = tournamentDateRepository.findByTournamentId(tournamentId).stream()
+                    .filter(date -> date.getEventDate() != null && !date.getEventDate().isBefore(today))
+                    .count();
+
+            rulesConfirmed = tournamentRulesConfirmationRepository
+                    .findByTournamentIdAndUserId(tournamentId, user.getId())
+                    .isPresent();
+        }
+
+        long totalPending = pendingInvitations + pendingCalendarEvents + (rulesConfirmed ? 0 : 1);
+
+        NotificationCountResponse response = new NotificationCountResponse(
+                user.getId(),
+                pendingInvitations,
+                pendingCalendarEvents,
+                rulesConfirmed,
+                !rulesConfirmed,
+                totalPending);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/profile")
@@ -361,6 +412,15 @@ public class UserManagementController {
     }
 
     public record RoleUpdateRequest(@NotNull(message = "El rol es requerido") Role role) {
+    }
+
+    public record NotificationCountResponse(
+            Long userId,
+            long pendingInvitations,
+            long pendingCalendarEvents,
+            boolean rulesConfirmed,
+            boolean rulesAlert,
+            long totalPending) {
     }
 
     private void assertOwnUserForPlayerOrCaptain(Authentication authentication, Long targetUserId) {
