@@ -47,4 +47,7 @@ public class MatchEventEntity {
 
     @Column(name = "event_minute")
     private int minute;
+
+    @Builder.Default
+    private int additionalMinutes = 0;
 }
