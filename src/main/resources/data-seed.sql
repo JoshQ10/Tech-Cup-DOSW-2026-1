@@ -47,12 +47,12 @@ INSERT INTO users (id, name, email, password, identification, role, user_type, p
 (1, 'Juan Admin Lopez', 'admin@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1001234567', 'ADMINISTRATOR', 'PROFESSOR', 'SYSTEMS_ENGINEERING', true, '2026-01-15 08:00:00'),
 
 -- ARBITROS (2)
-(2, 'Carlos Arbitro Perez', 'arbitro1@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1009876543', 'REFEREE', 'PROFESSOR', 'OTHER', true, '2026-01-20 10:00:00'),
-(3, 'Ana Arbitro Rodriguez', 'arbitro2@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1005551234', 'REFEREE', 'ADMINISTRATIVE', 'OTHER', true, '2026-01-20 10:30:00'),
+(2, 'Carlos Arbitro Perez', 'arbitro1@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1009876543', 'REFEREE', 'PROFESSOR', 'ECONOMICS', true, '2026-01-20 10:00:00'),
+(3, 'Ana Arbitro Rodriguez', 'arbitro2@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1005551234', 'REFEREE', 'ADMINISTRATIVE', 'BUSINESS_ADMINISTRATION', true, '2026-01-20 10:30:00'),
 
 -- CAPITANES (2) - tambien son jugadores
 (4, 'Pedro Capitan Garcia', 'capitan.ingenieros@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134001', 'CAPTAIN', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-01 09:00:00'),
-(5, 'Maria Capitan Torres', 'capitan.byte@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134002', 'CAPTAIN', 'STUDENT', 'AI_ENGINEERING', true, '2026-02-01 09:30:00'),
+(5, 'Maria Capitan Torres', 'capitan.byte@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134002', 'CAPTAIN', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-01 09:30:00'),
 
 -- JUGADORES Equipo 1: Ingenieros FC (4 jugadores)
 (6, 'Andres Delantero Ruiz', 'andres.ruiz@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134001', 'PLAYER', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-05 14:00:00'),
@@ -61,10 +61,10 @@ INSERT INTO users (id, name, email, password, identification, role, user_type, p
 (9, 'Diego Portero Gomez', 'diego.gomez@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134002', 'PLAYER', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-06 08:30:00'),
 
 -- JUGADORES Equipo 2: Byte United (4 jugadores)
-(10, 'Valentina Goleadora Rios', 'valentina.rios@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134003', 'PLAYER', 'STUDENT', 'AI_ENGINEERING', true, '2026-02-07 10:00:00'),
+(10, 'Valentina Goleadora Rios', 'valentina.rios@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134003', 'PLAYER', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 10:00:00'),
 (11, 'Sebastian Volante Castro', 'sebastian.castro@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134003', 'PLAYER', 'STUDENT', 'CYBERSECURITY_ENGINEERING', true, '2026-02-07 10:30:00'),
 (12, 'Camila Central Herrera', 'camila.herrera@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134003', 'PLAYER', 'STUDENT', 'STATISTICS_ENGINEERING', true, '2026-02-07 11:00:00'),
-(13, 'Felipe Arquero Mora', 'felipe.mora@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2023134001', 'PLAYER', 'STUDENT', 'AI_ENGINEERING', true, '2026-02-07 11:30:00');
+(13, 'Felipe Arquero Mora', 'felipe.mora@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2023134001', 'PLAYER', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 11:30:00');
 
 SELECT setval('users_id_seq', 13);
 
@@ -75,17 +75,17 @@ INSERT INTO sport_profiles (id, user_id, position, program, jersey_number, photo
 -- Capitan Ingenieros FC
 (1, 4, 'MIDFIELDER', 'SYSTEMS_ENGINEERING', 10, 'https://storage.techcup.co/photos/pedro_garcia.jpg', true, 6, 'M', 22),
 -- Capitan Byte United
-(2, 5, 'FORWARD', 'AI_ENGINEERING', 9, 'https://storage.techcup.co/photos/maria_torres.jpg', true, 5, 'F', 21),
+(2, 5, 'FORWARD', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', 9, 'https://storage.techcup.co/photos/maria_torres.jpg', true, 5, 'F', 21),
 -- Jugadores Ingenieros FC
 (3, 6, 'FORWARD', 'SYSTEMS_ENGINEERING', 11, 'https://storage.techcup.co/photos/andres_ruiz.jpg', true, 4, 'M', 20),
 (4, 7, 'MIDFIELDER', 'CYBERSECURITY_ENGINEERING', 8, 'https://storage.techcup.co/photos/luis_diaz.jpg', true, 5, 'M', 21),
 (5, 8, 'DEFENDER', 'STATISTICS_ENGINEERING', 3, 'https://storage.techcup.co/photos/sofia_martinez.jpg', true, 3, 'F', 19),
 (6, 9, 'GOALKEEPER', 'SYSTEMS_ENGINEERING', 1, 'https://storage.techcup.co/photos/diego_gomez.jpg', true, 4, 'M', 20),
 -- Jugadores Byte United
-(7, 10, 'FORWARD', 'AI_ENGINEERING', 7, 'https://storage.techcup.co/photos/valentina_rios.jpg', true, 6, 'F', 22),
+(7, 10, 'FORWARD', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', 7, 'https://storage.techcup.co/photos/valentina_rios.jpg', true, 6, 'F', 22),
 (8, 11, 'MIDFIELDER', 'CYBERSECURITY_ENGINEERING', 6, 'https://storage.techcup.co/photos/sebastian_castro.jpg', true, 4, 'M', 20),
 (9, 12, 'DEFENDER', 'STATISTICS_ENGINEERING', 4, 'https://storage.techcup.co/photos/camila_herrera.jpg', true, 3, 'F', 19),
-(10, 13, 'GOALKEEPER', 'AI_ENGINEERING', 1, 'https://storage.techcup.co/photos/felipe_mora.jpg', true, 2, 'M', 18);
+(10, 13, 'GOALKEEPER', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', 1, 'https://storage.techcup.co/photos/felipe_mora.jpg', true, 2, 'M', 18);
 
 SELECT setval('sport_profiles_id_seq', 10);
 
