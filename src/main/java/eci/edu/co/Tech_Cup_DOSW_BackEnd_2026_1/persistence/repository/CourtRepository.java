@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CourtRepository extends JpaRepository<CourtEntity, Long> {
     List<CourtEntity> findByTournamentId(Long tournamentId);
+
+    long countByTournamentId(Long tournamentId);
 }

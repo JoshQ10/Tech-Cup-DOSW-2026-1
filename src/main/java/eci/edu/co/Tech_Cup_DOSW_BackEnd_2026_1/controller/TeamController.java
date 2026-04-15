@@ -1,8 +1,12 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.InvitePlayerRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.MatchPageResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.InvitationService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.MatchService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.team.TeamEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
@@ -38,6 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamController {
 
         private final TeamService teamService;
+        private final InvitationService invitationService;
+        private final MatchService matchService;
         private final TeamRepository teamRepository;
         private final UserRepository userRepository;
 
@@ -136,6 +142,43 @@ public class TeamController {
                 log.info("REST delete team endpoint called for id: {}", id);
                 teamService.delete(id);
                 return ResponseEntity.noContent().build();
+        }
+
+        @PostMapping("/{teamId}/invite")
+        @PreAuthorize("hasAnyRole('CAPTAIN', 'ORGANIZER', 'ADMINISTRATOR')")
+        @Operation(summary = "Enviar invitación a un jugador", description = "El capitán busca jugadores y les envía invitaciones. Verifica cupo, que el jugador no tenga equipo y que no exista invitación pendiente. Allowed roles: CAPTAIN, ORGANIZER, ADMINISTRATOR")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "204", description = "Invitación enviada exitosamente"),
+                        @ApiResponse(responseCode = "400", description = "El equipo no tiene cupo, el jugador ya tiene equipo o ya existe invitación pendiente"),
+                        @ApiResponse(responseCode = "403", description = "Sin permisos para esta operación"),
+                        @ApiResponse(responseCode = "404", description = "Equipo o jugador no encontrado")
+        })
+        public ResponseEntity<Void> invitePlayer(
+                        @Parameter(description = "ID del equipo", required = true) @PathVariable Long teamId,
+                        @RequestBody InvitePlayerRequest request,
+                        Authentication authentication) {
+                log.info("REST invite player endpoint called for team: {}, player: {}", teamId, request.getPlayerId());
+                assertCaptainOwnsTeam(authentication, teamId);
+                invitationService.sendInvitation(teamId, request.getPlayerId());
+                return ResponseEntity.noContent().build();
+        }
+
+        @GetMapping("/{teamId}/matches")
+        @PreAuthorize("isAuthenticated()")
+        @Operation(
+                summary = "Obtener partidos del equipo",
+                description = "Lista todos los partidos del equipo con estado, equipos involucrados, cancha, fecha, hora y resultado. Con paginación.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Lista de partidos retornada exitosamente"),
+                        @ApiResponse(responseCode = "401", description = "No autenticado"),
+                        @ApiResponse(responseCode = "404", description = "Equipo no encontrado")
+        })
+        public ResponseEntity<MatchPageResponse> getTeamMatches(
+                        @Parameter(description = "ID del equipo", required = true) @PathVariable Long teamId,
+                        @Parameter(description = "Número de página (0-indexed)", example = "0") @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int page,
+                        @Parameter(description = "Cantidad de elementos por página", example = "10") @org.springframework.web.bind.annotation.RequestParam(defaultValue = "10") int limit) {
+                log.info("REST get team matches endpoint called for team: {}, page: {}, limit: {}", teamId, page, limit);
+                return ResponseEntity.ok(matchService.getTeamMatches(teamId, page, limit));
         }
 
         private void assertCaptainOwnsRequestedTeamOnCreate(Authentication authentication, Long captainId) {

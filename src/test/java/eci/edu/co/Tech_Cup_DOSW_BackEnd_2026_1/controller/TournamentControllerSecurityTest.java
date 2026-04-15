@@ -46,250 +46,250 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings("null")
 class TournamentControllerSecurityTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockBean
-    private TournamentService tournamentService;
+        @MockBean
+        private TournamentService tournamentService;
 
-    @MockBean
-    private JwtService jwtService;
+        @MockBean
+        private JwtService jwtService;
 
-    @MockBean
-    private CustomOAuth2UserService customOAuth2UserService;
+        @MockBean
+        private CustomOAuth2UserService customOAuth2UserService;
 
-    @MockBean
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+        @MockBean
+        private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    private TournamentRequest tournamentRequest;
-    private TournamentConfigRequest configRequest;
-    private ChangeStatusRequest changeStatusRequest;
-    private TournamentSetupRequest setupRequest;
-    private TournamentResponse tournamentResponse;
-    private TournamentSetupResponse setupResponse;
+        private TournamentRequest tournamentRequest;
+        private TournamentConfigRequest configRequest;
+        private ChangeStatusRequest changeStatusRequest;
+        private TournamentSetupRequest setupRequest;
+        private TournamentResponse tournamentResponse;
+        private TournamentSetupResponse setupResponse;
 
-    @BeforeEach
-    void setUp() {
-        tournamentRequest = TournamentRequest.builder()
-                .name("Copa DOSW 2026")
-                .startDate(LocalDate.of(2026, 4, 1))
-                .endDate(LocalDate.of(2026, 6, 30))
-                .teamCount(8)
-                .costPerTeam(300000.0)
-                .build();
+        @BeforeEach
+        void setUp() {
+                tournamentRequest = TournamentRequest.builder()
+                                .name("Copa DOSW 2026")
+                                .startDate(LocalDate.of(2026, 4, 1))
+                                .endDate(LocalDate.of(2026, 6, 30))
+                                .teamCount(8)
+                                .costPerTeam(300000.0)
+                                .build();
 
-        configRequest = TournamentConfigRequest.builder()
-                .startDate(LocalDate.of(2026, 4, 1))
-                .endDate(LocalDate.of(2026, 6, 30))
-                .teamCount(8)
-                .costPerTeam(300000.0)
-                .build();
+                configRequest = TournamentConfigRequest.builder()
+                                .startDate(LocalDate.of(2026, 4, 1))
+                                .endDate(LocalDate.of(2026, 6, 30))
+                                .teamCount(8)
+                                .costPerTeam(300000.0)
+                                .build();
 
-        changeStatusRequest = ChangeStatusRequest.builder()
-                .status(TournamentStatus.ACTIVE)
-                .build();
+                changeStatusRequest = ChangeStatusRequest.builder()
+                                .status(TournamentStatus.ACTIVE)
+                                .build();
 
-        tournamentResponse = TournamentResponse.builder()
-                .id(1L)
-                .name("Copa DOSW 2026")
-                .startDate(LocalDate.of(2026, 4, 1))
-                .endDate(LocalDate.of(2026, 6, 30))
-                .teamCount(8)
-                .costPerTeam(300000.0)
-                .status(TournamentStatus.DRAFT)
-                .build();
+                tournamentResponse = TournamentResponse.builder()
+                                .id(1L)
+                                .name("Copa DOSW 2026")
+                                .startDate(LocalDate.of(2026, 4, 1))
+                                .endDate(LocalDate.of(2026, 6, 30))
+                                .teamCount(8)
+                                .costPerTeam(300000.0)
+                                .status(TournamentStatus.DRAFT)
+                                .build();
 
-        setupRequest = TournamentSetupRequest.builder()
-                .rules("Partidos de 2 tiempos de 25 minutos.")
-                .sanctionRules("Tarjeta roja = 2 partidos")
-                .courts(List.of(CourtRequest.builder().name("Cancha 1").location("Bloque B").build()))
-                .schedule(List.of(TournamentDateRequest.builder()
-                        .description("Jornada 1").eventDate(LocalDate.of(2026, 4, 15)).build()))
-                .build();
+                setupRequest = TournamentSetupRequest.builder()
+                                .rules("Partidos de 2 tiempos de 25 minutos.")
+                                .sanctionRules("Tarjeta roja = 2 partidos")
+                                .courts(List.of(CourtRequest.builder().name("Cancha 1").location("Bloque B").build()))
+                                .schedule(List.of(TournamentDateRequest.builder()
+                                                .description("Jornada 1").eventDate(LocalDate.of(2026, 4, 15)).build()))
+                                .build();
 
-        setupResponse = TournamentSetupResponse.builder()
-                .tournamentId(1L)
-                .tournamentName("Copa DOSW 2026")
-                .rules("Partidos de 2 tiempos de 25 minutos.")
-                .build();
-    }
+                setupResponse = TournamentSetupResponse.builder()
+                                .tournamentId(1L)
+                                .tournamentName("Copa DOSW 2026")
+                                .rules("Partidos de 2 tiempos de 25 minutos.")
+                                .build();
+        }
 
-    // ---- Operaciones permitidas por rol ----
+        // ---- Operaciones permitidas por rol ----
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER puede crear un torneo")
-    void organizerCanCreateTournament() throws Exception {
-        when(tournamentService.create(any(TournamentRequest.class))).thenReturn(tournamentResponse);
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("ORGANIZER puede crear un torneo")
+        void organizerCanCreateTournament() throws Exception {
+                when(tournamentService.create(any(TournamentRequest.class))).thenReturn(tournamentResponse);
 
-        mockMvc.perform(post("/api/tournaments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tournamentRequest)))
-                .andExpect(status().isCreated());
-    }
+                mockMvc.perform(post("/api/tournaments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(tournamentRequest)))
+                                .andExpect(status().isCreated());
+        }
 
-    @Test
-    @WithMockUser(roles = "ADMINISTRATOR")
-    @DisplayName("ADMINISTRATOR puede crear un torneo")
-    void administratorCanCreateTournament() throws Exception {
-        when(tournamentService.create(any(TournamentRequest.class))).thenReturn(tournamentResponse);
+        @Test
+        @WithMockUser(roles = "ADMINISTRATOR")
+        @DisplayName("ADMINISTRATOR puede crear un torneo")
+        void administratorCanCreateTournament() throws Exception {
+                when(tournamentService.create(any(TournamentRequest.class))).thenReturn(tournamentResponse);
 
-        mockMvc.perform(post("/api/tournaments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tournamentRequest)))
-                .andExpect(status().isCreated());
-    }
+                mockMvc.perform(post("/api/tournaments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(tournamentRequest)))
+                                .andExpect(status().isCreated());
+        }
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER puede configurar un torneo")
-    void organizerCanConfigureTournament() throws Exception {
-        when(tournamentService.configure(anyLong(), any(TournamentConfigRequest.class))).thenReturn(tournamentResponse);
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("ORGANIZER puede configurar un torneo")
+        void organizerCanConfigureTournament() throws Exception {
+                when(tournamentService.configure(anyLong(), any(TournamentConfigRequest.class)))
+                                .thenReturn(tournamentResponse);
 
-        mockMvc.perform(put("/api/tournaments/1/config")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(configRequest)))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(put("/api/tournaments/1/config")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(configRequest)))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER puede cambiar el estado de un torneo")
-    void organizerCanChangeStatus() throws Exception {
-        tournamentResponse.setStatus(TournamentStatus.ACTIVE);
-        when(tournamentService.changeStatus(anyLong(), any(ChangeStatusRequest.class))).thenReturn(tournamentResponse);
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("ORGANIZER puede cambiar el estado de un torneo")
+        void organizerCanChangeStatus() throws Exception {
+                tournamentResponse.setStatus(TournamentStatus.ACTIVE);
+                when(tournamentService.changeStatus(anyLong(), any(ChangeStatusRequest.class)))
+                                .thenReturn(tournamentResponse);
 
-        mockMvc.perform(patch("/api/tournaments/1/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(changeStatusRequest)))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(patch("/api/tournaments/1/status")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(changeStatusRequest)))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @WithMockUser(roles = "REFEREE")
-    @DisplayName("REFEREE puede cambiar el estado de un torneo")
-    void refereeCanChangeStatus() throws Exception {
-        when(tournamentService.changeStatus(anyLong(), any(ChangeStatusRequest.class))).thenReturn(tournamentResponse);
+        @Test
+        @WithMockUser(roles = "REFEREE")
+        @DisplayName("REFEREE no puede cambiar el estado de un torneo - 403")
+        void refereeCannotChangeStatus() throws Exception {
+                mockMvc.perform(patch("/api/tournaments/1/status")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(changeStatusRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-        mockMvc.perform(patch("/api/tournaments/1/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(changeStatusRequest)))
-                .andExpect(status().isOk());
-    }
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("Cualquier usuario autenticado puede consultar un torneo")
+        void anyAuthenticatedUserCanGetTournament() throws Exception {
+                when(tournamentService.getById(anyLong())).thenReturn(tournamentResponse);
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("Cualquier usuario autenticado puede consultar un torneo")
-    void anyAuthenticatedUserCanGetTournament() throws Exception {
-        when(tournamentService.getById(anyLong())).thenReturn(tournamentResponse);
+                mockMvc.perform(get("/api/tournaments/1"))
+                                .andExpect(status().isOk());
+        }
 
-        mockMvc.perform(get("/api/tournaments/1"))
-                .andExpect(status().isOk());
-    }
+        // ---- Acceso denegado a operaciones sin permisos ----
 
-    // ---- Acceso denegado a operaciones sin permisos ----
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER no puede crear un torneo - 403")
+        void playerCannotCreateTournament() throws Exception {
+                mockMvc.perform(post("/api/tournaments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(tournamentRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER no puede crear un torneo - 403")
-    void playerCannotCreateTournament() throws Exception {
-        mockMvc.perform(post("/api/tournaments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tournamentRequest)))
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockUser(roles = "CAPTAIN")
+        @DisplayName("CAPTAIN no puede crear un torneo - 403")
+        void captainCannotCreateTournament() throws Exception {
+                mockMvc.perform(post("/api/tournaments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(tournamentRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockUser(roles = "CAPTAIN")
-    @DisplayName("CAPTAIN no puede crear un torneo - 403")
-    void captainCannotCreateTournament() throws Exception {
-        mockMvc.perform(post("/api/tournaments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tournamentRequest)))
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER no puede configurar un torneo - 403")
+        void playerCannotConfigureTournament() throws Exception {
+                mockMvc.perform(put("/api/tournaments/1/config")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(configRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER no puede configurar un torneo - 403")
-    void playerCannotConfigureTournament() throws Exception {
-        mockMvc.perform(put("/api/tournaments/1/config")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(configRequest)))
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @WithMockUser(roles = "CAPTAIN")
+        @DisplayName("CAPTAIN no puede cambiar el estado de un torneo - 403")
+        void captainCannotChangeStatus() throws Exception {
+                mockMvc.perform(patch("/api/tournaments/1/status")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(changeStatusRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockUser(roles = "CAPTAIN")
-    @DisplayName("CAPTAIN no puede cambiar el estado de un torneo - 403")
-    void captainCannotChangeStatus() throws Exception {
-        mockMvc.perform(patch("/api/tournaments/1/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(changeStatusRequest)))
-                .andExpect(status().isForbidden());
-    }
+        @Test
+        @DisplayName("Usuario no autenticado no puede consultar un torneo - 401")
+        void unauthenticatedCannotGetTournament() throws Exception {
+                mockMvc.perform(get("/api/tournaments/1"))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @DisplayName("Usuario no autenticado no puede consultar un torneo - 401")
-    void unauthenticatedCannotGetTournament() throws Exception {
-        mockMvc.perform(get("/api/tournaments/1"))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        @DisplayName("Usuario no autenticado no puede crear un torneo - 401")
+        void unauthenticatedCannotCreateTournament() throws Exception {
+                mockMvc.perform(post("/api/tournaments")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(tournamentRequest)))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @DisplayName("Usuario no autenticado no puede crear un torneo - 401")
-    void unauthenticatedCannotCreateTournament() throws Exception {
-        mockMvc.perform(post("/api/tournaments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tournamentRequest)))
-                .andExpect(status().isUnauthorized());
-    }
+        // ---- Tests de seguridad para setup ----
 
-    // ---- Tests de seguridad para setup ----
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("ORGANIZER puede configurar (setup) un torneo")
+        void organizerCanSetupTournament() throws Exception {
+                when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class))).thenReturn(setupResponse);
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER puede configurar (setup) un torneo")
-    void organizerCanSetupTournament() throws Exception {
-        when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class))).thenReturn(setupResponse);
+                mockMvc.perform(put("/api/tournaments/1/setup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(setupRequest)))
+                                .andExpect(status().isOk());
+        }
 
-        mockMvc.perform(put("/api/tournaments/1/setup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(setupRequest)))
-                .andExpect(status().isOk());
-    }
+        @Test
+        @WithMockUser(roles = "ADMINISTRATOR")
+        @DisplayName("ADMINISTRATOR puede configurar (setup) un torneo")
+        void administratorCanSetupTournament() throws Exception {
+                when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class))).thenReturn(setupResponse);
 
-    @Test
-    @WithMockUser(roles = "ADMINISTRATOR")
-    @DisplayName("ADMINISTRATOR puede configurar (setup) un torneo")
-    void administratorCanSetupTournament() throws Exception {
-        when(tournamentService.setup(anyLong(), any(TournamentSetupRequest.class))).thenReturn(setupResponse);
+                mockMvc.perform(put("/api/tournaments/1/setup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(setupRequest)))
+                                .andExpect(status().isOk());
+        }
 
-        mockMvc.perform(put("/api/tournaments/1/setup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(setupRequest)))
-                .andExpect(status().isOk());
-    }
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER no puede configurar (setup) un torneo - 403")
+        void playerCannotSetupTournament() throws Exception {
+                mockMvc.perform(put("/api/tournaments/1/setup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(setupRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER no puede configurar (setup) un torneo - 403")
-    void playerCannotSetupTournament() throws Exception {
-        mockMvc.perform(put("/api/tournaments/1/setup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(setupRequest)))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @DisplayName("Usuario no autenticado no puede configurar (setup) un torneo - 401")
-    void unauthenticatedCannotSetupTournament() throws Exception {
-        mockMvc.perform(put("/api/tournaments/1/setup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(setupRequest)))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        @DisplayName("Usuario no autenticado no puede configurar (setup) un torneo - 401")
+        void unauthenticatedCannotSetupTournament() throws Exception {
+                mockMvc.perform(put("/api/tournaments/1/setup")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(setupRequest)))
+                                .andExpect(status().isUnauthorized());
+        }
 }

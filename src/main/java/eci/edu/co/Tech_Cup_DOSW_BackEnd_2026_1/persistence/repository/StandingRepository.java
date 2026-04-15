@@ -10,5 +10,8 @@ import java.util.Optional;
 @Repository
 public interface StandingRepository extends JpaRepository<StandingEntity, Long> {
     List<StandingEntity> findByTournamentIdOrderByPointsDescGoalDifferenceDesc(Long tournamentId);
+
+    List<StandingEntity> findByTournamentIdOrderByPointsDescGoalDifferenceDescGoalsForDesc(Long tournamentId);
+
     Optional<StandingEntity> findByTournamentIdAndTeamId(Long tournamentId, Long teamId);
 }

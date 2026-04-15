@@ -16,13 +16,15 @@ permissions:
 #               JWT_SECRET, SSL_KEY_STORE_PASSWORD
 #               MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD
 #
+# Supabase DB:  SUPABASE_DB_HOST, SUPABASE_DB_NAME,
+#               SUPABASE_DB_USER, SUPABASE_DB_PASSWORD,
+#               SUPABASE_DB_PORT
+#
 # QA:           AZURE_CREDENTIALS_QA, AZURE_APP_NAME_QA
-#               QA_DB_HOST, QA_DB_NAME, QA_DB_USER, QA_DB_PASSWORD
-#               QA_ALLOWED_ORIGINS
+#               AZURE_RESOURCE_GROUP_QA, QA_ALLOWED_ORIGINS
 #
 # PROD:         AZURE_CREDENTIALS_PROD, AZURE_APP_NAME_PROD
-#               PROD_DB_HOST, PROD_DB_NAME, PROD_DB_USER, PROD_DB_PASSWORD
-#               PROD_ALLOWED_ORIGINS
+#               AZURE_RESOURCE_GROUP_PROD, PROD_ALLOWED_ORIGINS
 # ─────────────────────────────────────────────────────────
 
 jobs:
@@ -87,10 +89,11 @@ jobs:
               --resource-group ${{ secrets.AZURE_RESOURCE_GROUP_QA }} \
               --settings \
                 SPRING_PROFILES_ACTIVE=qa \
-                QA_DB_HOST="${{ secrets.QA_DB_HOST }}" \
-                QA_DB_NAME="${{ secrets.QA_DB_NAME }}" \
-                QA_DB_USER="${{ secrets.QA_DB_USER }}" \
-                QA_DB_PASSWORD="${{ secrets.QA_DB_PASSWORD }}" \
+                SUPABASE_DB_HOST="${{ secrets.SUPABASE_DB_HOST }}" \
+                SUPABASE_DB_NAME="${{ secrets.SUPABASE_DB_NAME }}" \
+                SUPABASE_DB_USER="${{ secrets.SUPABASE_DB_USER }}" \
+                SUPABASE_DB_PASSWORD="${{ secrets.SUPABASE_DB_PASSWORD }}" \
+                SUPABASE_DB_PORT="${{ secrets.SUPABASE_DB_PORT }}" \
                 JWT_SECRET="${{ secrets.JWT_SECRET }}" \
                 SSL_KEY_STORE_PASSWORD="${{ secrets.SSL_KEY_STORE_PASSWORD }}" \
                 MAIL_HOST="${{ secrets.MAIL_HOST }}" \
@@ -139,10 +142,11 @@ jobs:
               --resource-group ${{ secrets.AZURE_RESOURCE_GROUP_PROD }} \
               --settings \
                 SPRING_PROFILES_ACTIVE=prod \
-                PROD_DB_HOST="${{ secrets.PROD_DB_HOST }}" \
-                PROD_DB_NAME="${{ secrets.PROD_DB_NAME }}" \
-                PROD_DB_USER="${{ secrets.PROD_DB_USER }}" \
-                PROD_DB_PASSWORD="${{ secrets.PROD_DB_PASSWORD }}" \
+                SUPABASE_DB_HOST="${{ secrets.SUPABASE_DB_HOST }}" \
+                SUPABASE_DB_NAME="${{ secrets.SUPABASE_DB_NAME }}" \
+                SUPABASE_DB_USER="${{ secrets.SUPABASE_DB_USER }}" \
+                SUPABASE_DB_PASSWORD="${{ secrets.SUPABASE_DB_PASSWORD }}" \
+                SUPABASE_DB_PORT="${{ secrets.SUPABASE_DB_PORT }}" \
                 JWT_SECRET="${{ secrets.JWT_SECRET }}" \
                 SSL_KEY_STORE_PASSWORD="${{ secrets.SSL_KEY_STORE_PASSWORD }}" \
                 MAIL_HOST="${{ secrets.MAIL_HOST }}" \

@@ -7,6 +7,10 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.team.TeamEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TeamRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +25,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -54,6 +59,12 @@ class TeamControllerSecurityTest {
     @MockBean
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
+    @MockBean
+    private TeamRepository teamRepository;
+
+    @MockBean
+    private UserRepository userRepository;
+
     private TeamRequest teamRequest;
     private TeamResponse teamResponse;
 
@@ -76,6 +87,15 @@ class TeamControllerSecurityTest {
                 .captainId(1L)
                 .players(List.of(1L, 2L))
                 .build();
+
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(UserEntity.builder()
+                .id(1L)
+                .email("user")
+                .build()));
+        when(teamRepository.findById(anyLong())).thenReturn(Optional.of(TeamEntity.builder()
+                .id(1L)
+                .captainId(1L)
+                .build()));
     }
 
     // ---- Operaciones permitidas por rol ----
@@ -87,8 +107,8 @@ class TeamControllerSecurityTest {
         when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
 
         mockMvc.perform(post("/api/teams")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(teamRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(teamRequest)))
                 .andExpect(status().isCreated());
     }
 
@@ -99,20 +119,17 @@ class TeamControllerSecurityTest {
         when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
 
         mockMvc.perform(post("/api/teams")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(teamRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(teamRequest)))
                 .andExpect(status().isCreated());
     }
 
     @Test
     @WithMockUser(roles = "CAPTAIN")
-    @DisplayName("CAPTAIN puede remover un jugador del equipo")
-    void captainCanRemovePlayer() throws Exception {
-        teamResponse.setPlayers(List.of(2L));
-        when(teamService.removePlayer(anyLong(), anyLong())).thenReturn(teamResponse);
-
+    @DisplayName("CAPTAIN no puede remover un jugador del equipo - 403")
+    void captainCannotRemovePlayer() throws Exception {
         mockMvc.perform(delete("/api/teams/1/players/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -142,19 +159,21 @@ class TeamControllerSecurityTest {
     @DisplayName("PLAYER no puede crear un equipo - 403")
     void playerCannotCreateTeam() throws Exception {
         mockMvc.perform(post("/api/teams")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(teamRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(teamRequest)))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER no puede crear un equipo - 403")
-    void organizerCannotCreateTeam() throws Exception {
+    @DisplayName("ORGANIZER puede crear un equipo")
+    void organizerCanCreateTeam() throws Exception {
+        when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
+
         mockMvc.perform(post("/api/teams")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(teamRequest)))
-                .andExpect(status().isForbidden());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(teamRequest)))
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -176,8 +195,8 @@ class TeamControllerSecurityTest {
     @DisplayName("Usuario no autenticado no puede crear un equipo - 401")
     void unauthenticatedCannotCreateTeam() throws Exception {
         mockMvc.perform(post("/api/teams")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(teamRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(teamRequest)))
                 .andExpect(status().isUnauthorized());
     }
 }

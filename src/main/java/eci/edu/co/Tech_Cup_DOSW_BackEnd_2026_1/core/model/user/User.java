@@ -28,6 +28,19 @@ public class User {
     private String identification;
     private String relationshipType;
     private String relationshipDescription;
+    private String avatarUrl;
     private boolean active;
     private LocalDateTime createdAt;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

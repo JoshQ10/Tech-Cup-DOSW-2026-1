@@ -16,6 +16,9 @@ public class RegisterRequestValidator {
     private static final int MIN_PASSWORD_LENGTH = 8;
     private static final String EMAIL_REGEX = "^[\\w.+-]+@[\\w-]+\\.[\\w.]+$";
     private static final String USERNAME_REGEX = "^[a-zA-Z0-9._-]{3,30}$";
+    private static final String PASSWORD_UPPERCASE_REGEX = ".*[A-Z].*";
+    private static final String PASSWORD_LOWERCASE_REGEX = ".*[a-z].*";
+    private static final String PASSWORD_DIGIT_REGEX = ".*[0-9].*";
 
     public void validate(RegisterRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -52,6 +55,12 @@ public class RegisterRequestValidator {
             errors.put("password", "La contraseña es requerida");
         } else if (request.getPassword().length() < MIN_PASSWORD_LENGTH) {
             errors.put("password", "La contraseña debe tener al menos " + MIN_PASSWORD_LENGTH + " caracteres");
+        } else if (!request.getPassword().matches(PASSWORD_UPPERCASE_REGEX)) {
+            errors.put("password", "La contraseña debe contener al menos una letra mayúscula");
+        } else if (!request.getPassword().matches(PASSWORD_LOWERCASE_REGEX)) {
+            errors.put("password", "La contraseña debe contener al menos una letra minúscula");
+        } else if (!request.getPassword().matches(PASSWORD_DIGIT_REGEX)) {
+            errors.put("password", "La contraseña debe contener al menos un número");
         }
 
         // Validar confirmación de contraseña

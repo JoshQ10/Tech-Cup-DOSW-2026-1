@@ -1,6 +1,7 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LoginRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.LogoutRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
@@ -22,8 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -50,6 +49,7 @@ class AuthControllerTest {
 
         private RegisterRequest registerRequest;
         private LoginRequest loginRequest;
+        private LogoutRequest logoutRequest;
         private UserResponse userResponse;
         private LoginResponse loginResponse;
 
@@ -69,6 +69,10 @@ class AuthControllerTest {
                 loginRequest = LoginRequest.builder()
                                 .email("test@example.com")
                                 .password("password123")
+                                .build();
+
+                logoutRequest = LogoutRequest.builder()
+                                .refreshToken("valid-refresh-token")
                                 .build();
 
                 userResponse = UserResponse.builder()
@@ -166,24 +170,26 @@ class AuthControllerTest {
         @DisplayName("Should logout successfully")
         void testLogoutSuccess() throws Exception {
                 // Arrange
-                doNothing().when(authService).logout();
+                when(authService.logout("valid-refresh-token")).thenReturn("Sesion cerrada correctamente");
 
                 // Act & Assert
                 mockMvc.perform(post("/api/auth/logout")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(logoutRequest)))
                                 .andExpect(status().isOk())
-                                .andExpect(content().string("Sesión cerrada exitosamente"));
+                                .andExpect(content().string("Sesion cerrada correctamente"));
         }
 
         @Test
         @DisplayName("Should return 500 when logout fails unexpectedly")
         void testLogoutUnexpectedError() throws Exception {
                 // Arrange
-                doThrow(new RuntimeException("Unexpected error")).when(authService).logout();
+                when(authService.logout("valid-refresh-token")).thenThrow(new RuntimeException("Unexpected error"));
 
                 // Act & Assert
                 mockMvc.perform(post("/api/auth/logout")
-                                .contentType(MediaType.APPLICATION_JSON))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(logoutRequest)))
                                 .andExpect(status().isInternalServerError());
         }
 }

@@ -7,7 +7,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserRespo
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.UserMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.PasswordResetToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
@@ -16,7 +18,10 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.LoginRequestValida
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.VerificationTokenEntity;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.RevokedRefreshTokenEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.VerificationTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
@@ -27,9 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,10 +39,13 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null")
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final RevokedRefreshTokenRepository revokedRefreshTokenRepository;
     private final JwtService jwtService;
     private final UserMapper userMapper;
     private final RegisterRequestValidator registerRequestValidator;
@@ -61,7 +66,15 @@ public class AuthServiceImpl implements AuthService {
         Optional<UserEntity> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             log.warn("Registration failed: email {} already exists", request.getEmail());
-            throw new BusinessRuleException("Email already registered");
+            throw new ValidationException("Conflicto de unicidad en el registro",
+                    java.util.Map.of("email", "El correo electrónico ya está registrado"));
+        }
+
+        Optional<UserEntity> existingUsername = userRepository.findByUsername(request.getUsername());
+        if (existingUsername.isPresent()) {
+            log.warn("Registration failed: username {} already exists", request.getUsername());
+            throw new ValidationException("Conflicto de unicidad en el registro",
+                    java.util.Map.of("username", "El nombre de usuario ya está en uso"));
         }
         log.debug("Email validation passed for: {}", request.getEmail());
 
@@ -93,7 +106,8 @@ public class AuthServiceImpl implements AuthService {
                     savedUser.getFirstName(),
                     savedUser.getLastName(),
                     verificationToken,
-                    savedUser.getUserType());
+                    savedUser.getUserType(),
+                    savedUser.getRole());
         } catch (Exception e) {
             log.warn("Error sending verification email to {}: {}", savedUser.getEmail(), e.getMessage());
             // No lanzar excepción, el usuario se registró correctamente
@@ -105,25 +119,29 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginResponse login(LoginRequest request) {
         loginRequestValidator.validate(request);
-        log.info("Login attempt for email: {}", request.getEmail());
+        String identifier = request.getEmail() != null && !request.getEmail().isBlank()
+                ? request.getEmail()
+                : request.getUsername();
+        log.info("Login attempt for identifier: {}", identifier);
         log.debug("Login request validation initiated");
 
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(identifier)
+                .or(() -> userRepository.findByUsername(identifier))
                 .map(userPersistenceMapper::toModel)
                 .orElseThrow(() -> {
-                    log.warn("Login failed: user with email {} not found", request.getEmail());
+                    log.warn("Login failed: user with identifier {} not found", identifier);
                     return new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND);
                 });
         log.debug("User found in database with id: {}, role: {}", user.getId(), user.getRole());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            log.warn("Login failed: invalid password for email {}", request.getEmail());
+            log.warn("Login failed: invalid password for identifier {}", identifier);
             throw new BusinessRuleException("Invalid password");
         }
         log.debug("Password validation passed for user: {}", user.getId());
 
         if (!user.isActive()) {
-            log.warn("Login failed: user {} is inactive", request.getEmail());
+            log.warn("Login failed: user {} is inactive", identifier);
             throw new BusinessRuleException("User account is inactive");
         }
         log.debug("User active status verified: true");
@@ -247,7 +265,8 @@ public class AuthServiceImpl implements AuthService {
                     user.getFirstName(),
                     user.getLastName(),
                     newToken,
-                    user.getUserType());
+                    user.getUserType(),
+                    user.getRole());
             log.info("Verification email resent successfully for user: {}", user.getId());
             return "Verification email resent successfully. Please check your inbox.";
         } catch (Exception e) {
@@ -263,6 +282,11 @@ public class AuthServiceImpl implements AuthService {
         if (refreshToken == null || !jwtService.isTokenValid(refreshToken)
                 || !jwtService.isRefreshToken(refreshToken)) {
             log.warn("Refresh token failed: invalid refresh token");
+            throw new BusinessRuleException("Invalid refresh token");
+        }
+
+        if (revokedRefreshTokenRepository.existsByToken(refreshToken)) {
+            log.warn("Refresh token failed: token was revoked");
             throw new BusinessRuleException("Invalid refresh token");
         }
 
@@ -288,16 +312,106 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = (authentication != null) ? authentication.getName() : "unknown";
-        log.info("User logged out: {}", email);
+    public String logout(String refreshToken) {
+        log.info("Logout request received");
+
+        if (refreshToken == null || !jwtService.isTokenValid(refreshToken)
+                || !jwtService.isRefreshToken(refreshToken)) {
+            log.warn("Logout failed: invalid refresh token");
+            throw new BusinessRuleException("Invalid refresh token");
+        }
+
+        if (!revokedRefreshTokenRepository.existsByToken(refreshToken)) {
+            revokedRefreshTokenRepository.save(RevokedRefreshTokenEntity.builder()
+                    .token(refreshToken)
+                    .revokedAt(LocalDateTime.now())
+                    .build());
+        }
+
+        return "Sesion cerrada correctamente";
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public String forgotPassword(String email) {
+        log.info("Forgot password request for email: {}", email);
+
+        Optional<UserEntity> userEntityOpt = userRepository.findByEmail(email);
+        if (userEntityOpt.isEmpty()) {
+            log.info("Forgot password requested for non-existing email: {}", email);
+            return "Si el correo existe, te enviaremos un enlace de recuperacion.";
+        }
+
+        User user = userPersistenceMapper.toModel(userEntityOpt.get());
+
+        passwordResetTokenRepository.findByUserIdAndUsedFalse(user.getId()).ifPresent(existingToken -> {
+            existingToken.setUsed(true);
+            existingToken.setUsedAt(LocalDateTime.now());
+            passwordResetTokenRepository.save(existingToken);
+        });
+
+        String resetToken = UUID.randomUUID().toString();
+        PasswordResetToken token = PasswordResetToken.builder()
+                .token(resetToken)
+                .userId(user.getId())
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusHours(1))
+                .used(false)
+                .build();
+        passwordResetTokenRepository.save(userPersistenceMapper.toEntity(token));
+
+        try {
+            emailService.sendPasswordResetEmail(user.getEmail(), user.getFirstName(), user.getLastName(), resetToken);
+        } catch (Exception e) {
+            log.warn("Error sending password reset email to {}: {}", user.getEmail(), e.getMessage());
+        }
+
+        return "Si el correo existe, te enviaremos un enlace de recuperacion.";
+    }
+
+    @Override
+    @SuppressWarnings("null")
+    public String resetPassword(String token, String newPassword, String confirmPassword) {
+        log.info("Reset password attempt with token");
+
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new BusinessRuleException("La nueva contrasena debe tener minimo 8 caracteres");
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            throw new BusinessRuleException("La confirmacion de contrasena no coincide");
+        }
+
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
+                .map(userPersistenceMapper::toModel)
+                .orElseThrow(() -> new ResourceNotFoundException("Invalid password reset token"));
+
+        if (resetToken.isUsed()) {
+            throw new BusinessRuleException("Este token de recuperacion ya fue utilizado");
+        }
+
+        if (LocalDateTime.now().isAfter(resetToken.getExpiresAt())) {
+            throw new BusinessRuleException("El token de recuperacion expiro");
+        }
+
+        User user = userRepository.findById(resetToken.getUserId())
+                .map(userPersistenceMapper::toModel)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(userPersistenceMapper.toEntity(user));
+
+        resetToken.setUsed(true);
+        resetToken.setUsedAt(LocalDateTime.now());
+        passwordResetTokenRepository.save(userPersistenceMapper.toEntity(resetToken));
+
+        return "Contrasena restablecida exitosamente";
     }
 
     private User mapToUser(RegisterRequest request) {
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setActive(false); // Por defecto inactivo hasta verificar email
+        user.setActive(true); // TEMPORAL dev-http - volver a false antes de subir a produccion
         user.setCreatedAt(LocalDateTime.now());
 
         // Asegurar que userType está correctamente asignado

@@ -20,6 +20,7 @@ app:
   email:
     from: ${EMAIL_FROM:noreply@techcup.edu.co}
     verification-url: ${EMAIL_VERIFICATION_URL:http://localhost:3000/verify-email}
+    reset-password-url: ${EMAIL_RESET_PASSWORD_URL:http://localhost:3000/reset-password}
 
 server:
   port: 8443
