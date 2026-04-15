@@ -5,6 +5,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamRespo
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.RolePermissionRegistry;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.InvitationService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.MatchService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.TeamRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
@@ -48,10 +51,19 @@ class TeamControllerTest {
         private JwtService jwtService;
 
         @MockBean
+        private RolePermissionRegistry rolePermissionRegistry;
+
+        @MockBean
         private TeamRepository teamRepository;
 
         @MockBean
         private UserRepository userRepository;
+
+        @MockBean
+        private InvitationService invitationService;
+
+        @MockBean
+        private MatchService matchService;
 
         private TeamRequest teamRequest;
         private TeamResponse teamResponse;

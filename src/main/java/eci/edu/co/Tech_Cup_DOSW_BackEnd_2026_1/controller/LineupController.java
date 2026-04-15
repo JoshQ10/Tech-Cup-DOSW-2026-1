@@ -62,8 +62,8 @@ public class LineupController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('CAPTAIN')")
-    @Operation(summary = "Create lineup", description = "Allowed roles: CAPTAIN")
+    @PreAuthorize("hasAnyRole('CAPTAIN','ADMINISTRATOR')")
+    @Operation(summary = "Create lineup", description = "Allowed roles: CAPTAIN, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> create(@RequestBody LineupWriteRequest request,
             Authentication authentication) {
         MatchEntity match = matchRepository.findById(request.matchId())
@@ -83,8 +83,8 @@ public class LineupController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('CAPTAIN','ORGANIZER','ADMINISTRATOR')")
-    @Operation(summary = "Update lineup", description = "Allowed roles: CAPTAIN, ORGANIZER, ADMINISTRATOR")
+    @PreAuthorize("hasAnyRole('CAPTAIN','ADMINISTRATOR')")
+    @Operation(summary = "Update lineup", description = "Allowed roles: CAPTAIN, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> update(@PathVariable Long id, @RequestBody LineupWriteRequest request,
             Authentication authentication) {
         LineupEntity lineup = lineupRepository.findById(id)
@@ -109,8 +109,8 @@ public class LineupController {
     }
 
     @PostMapping("/{id}/players")
-    @PreAuthorize("hasAnyRole('CAPTAIN','ORGANIZER','ADMINISTRATOR')")
-    @Operation(summary = "Add player to lineup", description = "Allowed roles: CAPTAIN, ORGANIZER, ADMINISTRATOR")
+    @PreAuthorize("hasAnyRole('CAPTAIN','ADMINISTRATOR')")
+    @Operation(summary = "Add player to lineup", description = "Allowed roles: CAPTAIN, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> addPlayer(
             @PathVariable Long id,
             @RequestBody LineupPlayerWriteRequest request,
@@ -134,8 +134,8 @@ public class LineupController {
     }
 
     @PutMapping("/{id}/players/{lineupPlayerId}")
-    @PreAuthorize("hasAnyRole('CAPTAIN','ORGANIZER','ADMINISTRATOR')")
-    @Operation(summary = "Update lineup player", description = "Allowed roles: CAPTAIN, ORGANIZER, ADMINISTRATOR")
+    @PreAuthorize("hasAnyRole('CAPTAIN','ADMINISTRATOR')")
+    @Operation(summary = "Update lineup player", description = "Allowed roles: CAPTAIN, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> updateLineupPlayer(
             @PathVariable Long id,
             @PathVariable Long lineupPlayerId,

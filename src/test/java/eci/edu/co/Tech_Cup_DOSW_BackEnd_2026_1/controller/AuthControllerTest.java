@@ -10,6 +10,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundEx
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.RolePermissionRegistry;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,9 @@ class AuthControllerTest {
 
         @MockBean
         private JwtService jwtService;
+
+        @MockBean
+        private RolePermissionRegistry rolePermissionRegistry;
 
         private RegisterRequest registerRequest;
         private LoginRequest loginRequest;

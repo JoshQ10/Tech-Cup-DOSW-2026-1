@@ -1,5 +1,6 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,14 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -24,6 +26,7 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final RolePermissionRegistry rolePermissionRegistry;
 
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
@@ -61,10 +64,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String role = jwtService.extractRole(jwtToken);
 
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
+
+                try {
+                    Role roleEnum = Role.valueOf(role);
+                    rolePermissionRegistry.getPermissions(roleEnum)
+                            .forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.name())));
+                } catch (IllegalArgumentException ex) {
+                    log.warn("Unknown role in JWT token: {}", role);
+                }
+
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         email,
                         null,
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role)));
+                        authorities);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

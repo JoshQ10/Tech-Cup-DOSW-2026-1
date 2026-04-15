@@ -50,13 +50,10 @@ public class TeamInvitationController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    @Operation(
-        summary = "Listar invitaciones recibidas por el jugador",
-        description = "Retorna las invitaciones pendientes del jugador autenticado con datos del equipo. Paginación incluida."
-    )
+    @Operation(summary = "Listar invitaciones recibidas por el jugador", description = "Retorna las invitaciones pendientes del jugador autenticado con datos del equipo. Paginación incluida.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de invitaciones obtenida exitosamente"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
+            @ApiResponse(responseCode = "200", description = "Lista de invitaciones obtenida exitosamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     public ResponseEntity<InvitationPageResponse> list(
             @Parameter(description = "ID del jugador para filtrar invitaciones") @RequestParam(required = false) Long userId,
@@ -67,14 +64,15 @@ public class TeamInvitationController {
         Long filterUserId = userId != null ? userId : playerId;
 
         if (filterUserId != null) {
-            log.info("REST list pending invitations endpoint called for user: {}, page: {}, limit: {}", filterUserId, page, limit);
+            log.info("REST list pending invitations endpoint called for user: {}, page: {}, limit: {}", filterUserId,
+                    page, limit);
             return ResponseEntity.ok(invitationService.listPendingByUser(filterUserId, page, limit));
         }
 
         log.info("REST list all invitations endpoint called");
         java.util.List<TeamInvitationEntity> all = invitationRepository.findAll();
-        java.util.List<eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.InvitationDetailResponse> items =
-                all.stream().map(this::toDetailResponse).toList();
+        java.util.List<eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.InvitationDetailResponse> items = all
+                .stream().map(this::toDetailResponse).toList();
 
         InvitationPageResponse response = InvitationPageResponse.builder()
                 .invitations(items)
@@ -90,44 +88,62 @@ public class TeamInvitationController {
     }
 
     @PostMapping("/{id}/accept")
-    @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
-    @Operation(
-        summary = "Aceptar invitación a un equipo",
-        description = "Valida que el jugador no tenga equipo activo y que el equipo tenga cupo. Asigna el jugador al equipo y cancela las demás invitaciones pendientes."
-    )
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','CAPTAIN','PLAYER')")
+    @Operation(summary = "Aceptar invitación a un equipo", description = "Valida que el jugador no tenga equipo activo y que el equipo tenga cupo. Asigna el jugador al equipo y cancela las demás invitaciones pendientes.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Invitación aceptada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "El jugador ya tiene equipo o el equipo no tiene cupo"),
-        @ApiResponse(responseCode = "403", description = "Solo puedes aceptar tus propias invitaciones"),
-        @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
+            @ApiResponse(responseCode = "204", description = "Invitación aceptada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "El jugador ya tiene equipo o el equipo no tiene cupo"),
+            @ApiResponse(responseCode = "403", description = "Solo puedes aceptar tus propias invitaciones"),
+            @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
     })
     public ResponseEntity<Void> accept(
             @Parameter(description = "ID de la invitación", required = true) @PathVariable Long id,
             Authentication authentication) {
         log.info("REST accept invitation endpoint called for invitation: {}", id);
         UserEntity currentUser = getCurrentUser(authentication);
-        invitationService.acceptInvitation(id, currentUser.getId());
+        TeamInvitationEntity invitation = invitationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Invitation not found"));
+
+        Long targetPlayerId = currentUser.getId();
+        if (hasRole(authentication, "ROLE_ADMINISTRATOR") || hasRole(authentication, "ROLE_ORGANIZER")) {
+            targetPlayerId = invitation.getPlayer() != null ? invitation.getPlayer().getId() : null;
+        }
+
+        if (targetPlayerId == null) {
+            throw new ResourceNotFoundException("Invitation player not found");
+        }
+
+        invitationService.acceptInvitation(id, targetPlayerId);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/reject")
-    @PreAuthorize("hasAnyRole('PLAYER', 'CAPTAIN')")
-    @Operation(
-        summary = "Rechazar invitación a un equipo",
-        description = "Marca la invitación como rechazada. El jugador permanece sin equipo."
-    )
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','CAPTAIN','PLAYER')")
+    @Operation(summary = "Rechazar invitación a un equipo", description = "Marca la invitación como rechazada. El jugador permanece sin equipo.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Invitación rechazada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "La invitación ya fue procesada"),
-        @ApiResponse(responseCode = "403", description = "Solo puedes rechazar tus propias invitaciones"),
-        @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
+            @ApiResponse(responseCode = "204", description = "Invitación rechazada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "La invitación ya fue procesada"),
+            @ApiResponse(responseCode = "403", description = "Solo puedes rechazar tus propias invitaciones"),
+            @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
     })
     public ResponseEntity<Void> reject(
             @Parameter(description = "ID de la invitación", required = true) @PathVariable Long id,
             Authentication authentication) {
         log.info("REST reject invitation endpoint called for invitation: {}", id);
         UserEntity currentUser = getCurrentUser(authentication);
-        invitationService.rejectInvitation(id, currentUser.getId());
+        TeamInvitationEntity invitation = invitationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Invitation not found"));
+
+        Long targetPlayerId = currentUser.getId();
+        if (hasRole(authentication, "ROLE_ADMINISTRATOR") || hasRole(authentication, "ROLE_ORGANIZER")) {
+            targetPlayerId = invitation.getPlayer() != null ? invitation.getPlayer().getId() : null;
+        }
+
+        if (targetPlayerId == null) {
+            throw new ResourceNotFoundException("Invitation player not found");
+        }
+
+        invitationService.rejectInvitation(id, targetPlayerId);
         return ResponseEntity.noContent().build();
     }
 
@@ -135,8 +151,8 @@ public class TeamInvitationController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Obtener invitación por ID", description = "Retorna el detalle de una invitación")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Invitación encontrada"),
-        @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
+            @ApiResponse(responseCode = "200", description = "Invitación encontrada"),
+            @ApiResponse(responseCode = "404", description = "Invitación no encontrada")
     })
     public ResponseEntity<Map<String, Object>> getById(
             @Parameter(required = true) @PathVariable Long id) {
@@ -146,8 +162,8 @@ public class TeamInvitationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('CAPTAIN')")
-    @Operation(summary = "Crear invitación (uso interno)", description = "Allowed roles: CAPTAIN")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','CAPTAIN')")
+    @Operation(summary = "Crear invitación (uso interno)", description = "Allowed roles: ADMINISTRATOR, ORGANIZER, CAPTAIN")
     public ResponseEntity<Map<String, Object>> create(
             @RequestBody InvitationCreateRequest request,
             Authentication authentication) {
@@ -230,11 +246,16 @@ public class TeamInvitationController {
         return data;
     }
 
-    public record InvitationCreateRequest(Long teamId, Long playerId) {}
+    public record InvitationCreateRequest(Long teamId, Long playerId) {
+    }
 
-    public record InvitationStatusRequest(String status) {}
+    public record InvitationStatusRequest(String status) {
+    }
 
     private void assertCaptainOwnsTeam(Authentication authentication, TeamEntity team) {
+        if (!hasRole(authentication, "ROLE_CAPTAIN")) {
+            return;
+        }
         UserEntity currentUser = getCurrentUser(authentication);
         if (team.getCaptainId() == null || !team.getCaptainId().equals(currentUser.getId())) {
             throw new AccessDeniedException("Como CAPTAIN solo puedes invitar jugadores a tu propio equipo");

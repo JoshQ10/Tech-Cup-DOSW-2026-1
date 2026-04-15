@@ -4,8 +4,11 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TeamReques
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TeamResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityTestConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.RolePermissionRegistry;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.InvitationService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.MatchService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.team.TeamEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
@@ -41,162 +44,173 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("TeamController Security Tests")
 class TeamControllerSecurityTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockBean
-    private TeamService teamService;
+        @MockBean
+        private TeamService teamService;
 
-    @MockBean
-    private JwtService jwtService;
+        @MockBean
+        private JwtService jwtService;
 
-    @MockBean
-    private CustomOAuth2UserService customOAuth2UserService;
+        @MockBean
+        private RolePermissionRegistry rolePermissionRegistry;
 
-    @MockBean
-    private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+        @MockBean
+        private CustomOAuth2UserService customOAuth2UserService;
 
-    @MockBean
-    private TeamRepository teamRepository;
+        @MockBean
+        private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
-    @MockBean
-    private UserRepository userRepository;
+        @MockBean
+        private TeamRepository teamRepository;
 
-    private TeamRequest teamRequest;
-    private TeamResponse teamResponse;
+        @MockBean
+        private UserRepository userRepository;
 
-    @BeforeEach
-    void setUp() {
-        teamRequest = TeamRequest.builder()
-                .name("Team Alpha")
-                .shieldUrl("http://example.com/shield.jpg")
-                .uniformColors("Red and Black")
-                .tournamentId(1L)
-                .captainId(1L)
-                .build();
+        @MockBean
+        private InvitationService invitationService;
 
-        teamResponse = TeamResponse.builder()
-                .id(1L)
-                .name("Team Alpha")
-                .shieldUrl("http://example.com/shield.jpg")
-                .uniformColors("Red and Black")
-                .tournamentId(1L)
-                .captainId(1L)
-                .players(List.of(1L, 2L))
-                .build();
+        @MockBean
+        private MatchService matchService;
 
-        when(userRepository.findByEmail(any())).thenReturn(Optional.of(UserEntity.builder()
-                .id(1L)
-                .email("user")
-                .build()));
-        when(teamRepository.findById(anyLong())).thenReturn(Optional.of(TeamEntity.builder()
-                .id(1L)
-                .captainId(1L)
-                .build()));
-    }
+        private TeamRequest teamRequest;
+        private TeamResponse teamResponse;
 
-    // ---- Operaciones permitidas por rol ----
+        @BeforeEach
+        void setUp() {
+                teamRequest = TeamRequest.builder()
+                                .name("Team Alpha")
+                                .shieldUrl("http://example.com/shield.jpg")
+                                .uniformColors("Red and Black")
+                                .tournamentId(1L)
+                                .captainId(1L)
+                                .build();
 
-    @Test
-    @WithMockUser(roles = "CAPTAIN")
-    @DisplayName("CAPTAIN puede crear un equipo")
-    void captainCanCreateTeam() throws Exception {
-        when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
+                teamResponse = TeamResponse.builder()
+                                .id(1L)
+                                .name("Team Alpha")
+                                .shieldUrl("http://example.com/shield.jpg")
+                                .uniformColors("Red and Black")
+                                .tournamentId(1L)
+                                .captainId(1L)
+                                .players(List.of(1L, 2L))
+                                .build();
 
-        mockMvc.perform(post("/api/teams")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teamRequest)))
-                .andExpect(status().isCreated());
-    }
+                when(userRepository.findByEmail(any())).thenReturn(Optional.of(UserEntity.builder()
+                                .id(1L)
+                                .email("user")
+                                .build()));
+                when(teamRepository.findById(anyLong())).thenReturn(Optional.of(TeamEntity.builder()
+                                .id(1L)
+                                .captainId(1L)
+                                .build()));
+        }
 
-    @Test
-    @WithMockUser(roles = "ADMINISTRATOR")
-    @DisplayName("ADMINISTRATOR puede crear un equipo")
-    void administratorCanCreateTeam() throws Exception {
-        when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
+        // ---- Operaciones permitidas por rol ----
 
-        mockMvc.perform(post("/api/teams")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teamRequest)))
-                .andExpect(status().isCreated());
-    }
+        @Test
+        @WithMockUser(roles = "CAPTAIN")
+        @DisplayName("CAPTAIN puede crear un equipo")
+        void captainCanCreateTeam() throws Exception {
+                when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
 
-    @Test
-    @WithMockUser(roles = "CAPTAIN")
-    @DisplayName("CAPTAIN no puede remover un jugador del equipo - 403")
-    void captainCannotRemovePlayer() throws Exception {
-        mockMvc.perform(delete("/api/teams/1/players/1"))
-                .andExpect(status().isForbidden());
-    }
+                mockMvc.perform(post("/api/teams")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(teamRequest)))
+                                .andExpect(status().isCreated());
+        }
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER puede consultar un equipo")
-    void playerCanGetTeam() throws Exception {
-        when(teamService.getById(anyLong())).thenReturn(teamResponse);
+        @Test
+        @WithMockUser(roles = "ADMINISTRATOR")
+        @DisplayName("ADMINISTRATOR puede crear un equipo")
+        void administratorCanCreateTeam() throws Exception {
+                when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
 
-        mockMvc.perform(get("/api/teams/1"))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(post("/api/teams")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(teamRequest)))
+                                .andExpect(status().isCreated());
+        }
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER puede consultar la plantilla de un equipo")
-    void organizerCanGetRoster() throws Exception {
-        when(teamService.getRoster(anyLong())).thenReturn(teamResponse);
+        @Test
+        @WithMockUser(roles = "CAPTAIN")
+        @DisplayName("CAPTAIN puede remover un jugador de su equipo")
+        void captainCanRemovePlayer() throws Exception {
+                when(teamService.removePlayer(anyLong(), anyLong())).thenReturn(teamResponse);
 
-        mockMvc.perform(get("/api/teams/1/roster"))
-                .andExpect(status().isOk());
-    }
+                mockMvc.perform(delete("/api/teams/1/players/1"))
+                                .andExpect(status().isOk());
+        }
 
-    // ---- Acceso denegado a operaciones sin permisos ----
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER puede consultar un equipo")
+        void playerCanGetTeam() throws Exception {
+                when(teamService.getById(anyLong())).thenReturn(teamResponse);
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER no puede crear un equipo - 403")
-    void playerCannotCreateTeam() throws Exception {
-        mockMvc.perform(post("/api/teams")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teamRequest)))
-                .andExpect(status().isForbidden());
-    }
+                mockMvc.perform(get("/api/teams/1"))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @WithMockUser(roles = "ORGANIZER")
-    @DisplayName("ORGANIZER puede crear un equipo")
-    void organizerCanCreateTeam() throws Exception {
-        when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("ORGANIZER puede consultar la plantilla de un equipo")
+        void organizerCanGetRoster() throws Exception {
+                when(teamService.getRoster(anyLong())).thenReturn(teamResponse);
 
-        mockMvc.perform(post("/api/teams")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teamRequest)))
-                .andExpect(status().isCreated());
-    }
+                mockMvc.perform(get("/api/teams/1/roster"))
+                                .andExpect(status().isOk());
+        }
 
-    @Test
-    @WithMockUser(roles = "PLAYER")
-    @DisplayName("PLAYER no puede remover un jugador del equipo - 403")
-    void playerCannotRemovePlayer() throws Exception {
-        mockMvc.perform(delete("/api/teams/1/players/2"))
-                .andExpect(status().isForbidden());
-    }
+        // ---- Acceso denegado a operaciones sin permisos ----
 
-    @Test
-    @DisplayName("Usuario no autenticado no puede consultar un equipo - 401")
-    void unauthenticatedCannotGetTeam() throws Exception {
-        mockMvc.perform(get("/api/teams/1"))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER no puede crear un equipo - 403")
+        void playerCannotCreateTeam() throws Exception {
+                mockMvc.perform(post("/api/teams")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(teamRequest)))
+                                .andExpect(status().isForbidden());
+        }
 
-    @Test
-    @DisplayName("Usuario no autenticado no puede crear un equipo - 401")
-    void unauthenticatedCannotCreateTeam() throws Exception {
-        mockMvc.perform(post("/api/teams")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teamRequest)))
-                .andExpect(status().isUnauthorized());
-    }
+        @Test
+        @WithMockUser(roles = "ORGANIZER")
+        @DisplayName("ORGANIZER puede crear un equipo")
+        void organizerCanCreateTeam() throws Exception {
+                when(teamService.create(any(TeamRequest.class))).thenReturn(teamResponse);
+
+                mockMvc.perform(post("/api/teams")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(teamRequest)))
+                                .andExpect(status().isCreated());
+        }
+
+        @Test
+        @WithMockUser(roles = "PLAYER")
+        @DisplayName("PLAYER no puede remover un jugador del equipo - 403")
+        void playerCannotRemovePlayer() throws Exception {
+                mockMvc.perform(delete("/api/teams/1/players/2"))
+                                .andExpect(status().isForbidden());
+        }
+
+        @Test
+        @DisplayName("Usuario no autenticado no puede consultar un equipo - 401")
+        void unauthenticatedCannotGetTeam() throws Exception {
+                mockMvc.perform(get("/api/teams/1"))
+                                .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        @DisplayName("Usuario no autenticado no puede crear un equipo - 401")
+        void unauthenticatedCannotCreateTeam() throws Exception {
+                mockMvc.perform(post("/api/teams")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(teamRequest)))
+                                .andExpect(status().isUnauthorized());
+        }
 }

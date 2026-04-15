@@ -33,15 +33,15 @@ public class AdministrationController {
     }
 
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "List configuration", description = "Allowed roles: all authenticated")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER')")
+    @Operation(summary = "List configuration", description = "Allowed roles: ADMINISTRATOR, ORGANIZER")
     public ResponseEntity<Map<String, String>> list() {
         return ResponseEntity.ok(new LinkedHashMap<>(CONFIG));
     }
 
     @GetMapping("/{key}")
-    @PreAuthorize("isAuthenticated()")
-    @Operation(summary = "Get configuration value", description = "Allowed roles: all authenticated")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER')")
+    @Operation(summary = "Get configuration value", description = "Allowed roles: ADMINISTRATOR, ORGANIZER")
     public ResponseEntity<Map<String, String>> getOne(
             @Parameter(required = true) @PathVariable String key) {
         Map<String, String> data = new LinkedHashMap<>();

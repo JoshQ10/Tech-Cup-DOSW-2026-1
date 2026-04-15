@@ -63,8 +63,8 @@ public class PaymentController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('PLAYER','ORGANIZER')")
-    @Operation(summary = "Create payment", description = "Allowed roles: PLAYER, ORGANIZER")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','PLAYER')")
+    @Operation(summary = "Create payment", description = "Allowed roles: ADMINISTRATOR, ORGANIZER, PLAYER")
     public ResponseEntity<Map<String, Object>> create(@RequestBody PaymentWriteRequest request) {
         TeamEntity team = teamRepository.findById(request.teamId())
                 .orElseThrow(() -> new ResourceNotFoundException("Team not found"));

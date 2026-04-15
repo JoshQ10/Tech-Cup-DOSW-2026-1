@@ -187,7 +187,7 @@ public class TournamentController {
         }
 
         @PostMapping("/{id}/confirm-rules")
-        @PreAuthorize("hasRole('ADMINISTRATOR')")
+        @PreAuthorize("isAuthenticated()")
         @Operation(summary = "Confirm tournament rules reading", description = "Registers that authenticated user has read and confirmed tournament rules")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Rules confirmation registered"),
@@ -272,10 +272,7 @@ public class TournamentController {
 
         @GetMapping("/{id}/teams")
         @PreAuthorize("isAuthenticated()")
-        @Operation(
-                summary = "Listar equipos inscritos en el torneo",
-                description = "Retorna todos los equipos con escudo, nombre, capitán y número de jugadores. Utilizado en el carrusel de la ficha del torneo y en el bracket."
-        )
+        @Operation(summary = "Listar equipos inscritos en el torneo", description = "Retorna todos los equipos con escudo, nombre, capitán y número de jugadores. Utilizado en el carrusel de la ficha del torneo y en el bracket.")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Lista de equipos retornada exitosamente"),
                         @ApiResponse(responseCode = "401", description = "No autenticado"),

@@ -2,6 +2,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityTestConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.RolePermissionRegistry;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
@@ -37,6 +38,9 @@ class JwtTokenFlowTest {
 
         @MockBean
         private JwtService jwtService;
+
+        @MockBean
+        private RolePermissionRegistry rolePermissionRegistry;
 
         @MockBean
         private CustomOAuth2UserService customOAuth2UserService;

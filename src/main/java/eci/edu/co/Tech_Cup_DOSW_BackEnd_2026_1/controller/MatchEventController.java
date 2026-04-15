@@ -69,8 +69,8 @@ public class MatchEventController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('REFEREE')")
-    @Operation(summary = "Create match event", description = "Allowed roles: REFEREE")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','REFEREE')")
+    @Operation(summary = "Create match event", description = "Allowed roles: ADMINISTRATOR, REFEREE")
     public ResponseEntity<Map<String, Object>> create(@RequestBody MatchEventWriteRequest request) {
         MatchEventEntity entity = new MatchEventEntity();
         applyChanges(entity, request);
@@ -79,8 +79,8 @@ public class MatchEventController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','REFEREE')")
-    @Operation(summary = "Update match event", description = "Allowed roles: ADMINISTRATOR, ORGANIZER, REFEREE")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','REFEREE')")
+    @Operation(summary = "Update match event", description = "Allowed roles: ADMINISTRATOR, REFEREE")
     public ResponseEntity<Map<String, Object>> update(
             @Parameter(required = true) @PathVariable Long id,
             @RequestBody MatchEventWriteRequest request) {

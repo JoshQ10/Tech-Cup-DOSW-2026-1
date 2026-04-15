@@ -114,8 +114,8 @@ public class TeamController {
         }
 
         @DeleteMapping("/{id}/players/{playerId}")
-        @PreAuthorize("hasAnyRole('ORGANIZER', 'ADMINISTRATOR')")
-        @Operation(summary = "Remove player from team", description = "Removes a player from the team roster. Allowed roles: ORGANIZER, ADMINISTRATOR")
+        @PreAuthorize("hasAnyRole('CAPTAIN', 'ORGANIZER', 'ADMINISTRATOR')")
+        @Operation(summary = "Remove player from team", description = "Removes a player from the team roster. Allowed roles: CAPTAIN, ORGANIZER, ADMINISTRATOR")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Player successfully removed"),
                         @ApiResponse(responseCode = "403", description = "No permission for this operation"),
@@ -123,8 +123,10 @@ public class TeamController {
         })
         public ResponseEntity<TeamResponse> removePlayer(
                         @Parameter(description = "ID del equipo", required = true) @PathVariable("id") Long teamId,
-                        @Parameter(description = "ID del jugador a remover", required = true) @PathVariable Long playerId) {
+                        @Parameter(description = "ID del jugador a remover", required = true) @PathVariable Long playerId,
+                        Authentication authentication) {
                 log.info("REST remove player endpoint called for team: {} and player: {}", teamId, playerId);
+                assertCaptainOwnsTeam(authentication, teamId);
                 TeamResponse response = teamService.removePlayer(teamId, playerId);
                 return ResponseEntity.ok(response);
         }
@@ -165,9 +167,7 @@ public class TeamController {
 
         @GetMapping("/{teamId}/matches")
         @PreAuthorize("isAuthenticated()")
-        @Operation(
-                summary = "Obtener partidos del equipo",
-                description = "Lista todos los partidos del equipo con estado, equipos involucrados, cancha, fecha, hora y resultado. Con paginación.")
+        @Operation(summary = "Obtener partidos del equipo", description = "Lista todos los partidos del equipo con estado, equipos involucrados, cancha, fecha, hora y resultado. Con paginación.")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Lista de partidos retornada exitosamente"),
                         @ApiResponse(responseCode = "401", description = "No autenticado"),
@@ -177,7 +177,8 @@ public class TeamController {
                         @Parameter(description = "ID del equipo", required = true) @PathVariable Long teamId,
                         @Parameter(description = "Número de página (0-indexed)", example = "0") @org.springframework.web.bind.annotation.RequestParam(defaultValue = "0") int page,
                         @Parameter(description = "Cantidad de elementos por página", example = "10") @org.springframework.web.bind.annotation.RequestParam(defaultValue = "10") int limit) {
-                log.info("REST get team matches endpoint called for team: {}, page: {}, limit: {}", teamId, page, limit);
+                log.info("REST get team matches endpoint called for team: {}, page: {}, limit: {}", teamId, page,
+                                limit);
                 return ResponseEntity.ok(matchService.getTeamMatches(teamId, page, limit));
         }
 

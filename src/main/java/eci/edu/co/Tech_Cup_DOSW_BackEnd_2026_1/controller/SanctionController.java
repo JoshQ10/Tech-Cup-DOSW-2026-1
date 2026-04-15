@@ -72,8 +72,8 @@ public class SanctionController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER')")
-    @Operation(summary = "Update sanction", description = "Allowed roles: ADMINISTRATOR, ORGANIZER")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','REFEREE')")
+    @Operation(summary = "Update sanction", description = "Allowed roles: ADMINISTRATOR, ORGANIZER, REFEREE")
     public ResponseEntity<Map<String, Object>> update(@PathVariable Long id,
             @RequestBody SanctionWriteRequest request) {
         SanctionEntity sanction = sanctionRepository.findById(id)

@@ -1,6 +1,7 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.RolePermissionRegistry;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +28,9 @@ class OAuth2ControllerTest {
     private JwtService jwtService;
 
     @MockBean
+    private RolePermissionRegistry rolePermissionRegistry;
+
+    @MockBean
     private CustomOAuth2UserService customOAuth2UserService;
 
     @MockBean
@@ -44,8 +48,8 @@ class OAuth2ControllerTest {
     @DisplayName("Should return success response with valid tokens")
     void testSuccessCallbackWithTokens() throws Exception {
         mockMvc.perform(get("/api/auth/oauth2/success")
-                        .param("accessToken", "my-access-token")
-                        .param("refreshToken", "my-refresh-token"))
+                .param("accessToken", "my-access-token")
+                .param("refreshToken", "my-refresh-token"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("my-access-token"))
                 .andExpect(jsonPath("$.refreshToken").value("my-refresh-token"));
@@ -63,7 +67,7 @@ class OAuth2ControllerTest {
     @DisplayName("Should return failure response with error message")
     void testFailureCallback() throws Exception {
         mockMvc.perform(get("/api/auth/oauth2/failure")
-                        .param("error", "access_denied"))
+                .param("error", "access_denied"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("access_denied"));
     }

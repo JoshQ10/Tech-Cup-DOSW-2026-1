@@ -9,6 +9,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
@@ -189,7 +190,7 @@ class AuthServiceImplTest {
                 doNothing().when(registerRequestValidator).validate(any(RegisterRequest.class));
                 when(userRepository.findByEmail(registerRequest.getEmail())).thenReturn(Optional.of(testUserEntity));
 
-                assertThrows(BusinessRuleException.class, () -> authService.register(registerRequest));
+                assertThrows(ValidationException.class, () -> authService.register(registerRequest));
                 verify(userRepository, times(1)).findByEmail(registerRequest.getEmail());
                 verify(userRepository, never()).save(any());
         }

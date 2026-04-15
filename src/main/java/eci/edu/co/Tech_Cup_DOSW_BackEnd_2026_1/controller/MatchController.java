@@ -71,9 +71,7 @@ public class MatchController {
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
-    @Operation(
-            summary = "Obtener detalle de un partido",
-            description = "Retorna resultado, fecha, hora, cancha, goles (jugador + minuto), tarjetas (tipo + jugador + minuto) y datos de dominación del balón")
+    @Operation(summary = "Obtener detalle de un partido", description = "Retorna resultado, fecha, hora, cancha, goles (jugador + minuto), tarjetas (tipo + jugador + minuto) y datos de dominación del balón")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Detalle del partido retornado exitosamente"),
             @ApiResponse(responseCode = "401", description = "No autenticado"),
@@ -87,9 +85,7 @@ public class MatchController {
 
     @PostMapping("/{id}/result")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'REFEREE')")
-    @Operation(
-            summary = "Registrar resultado del partido",
-            description = "Registra el marcador final y actualiza automáticamente la tabla de posiciones. Allowed roles: ADMINISTRATOR, REFEREE")
+    @Operation(summary = "Registrar resultado del partido", description = "Registra el marcador final y actualiza automáticamente la tabla de posiciones. Allowed roles: ADMINISTRATOR, REFEREE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Resultado registrado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos"),
@@ -105,9 +101,7 @@ public class MatchController {
 
     @PostMapping("/{id}/goals")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'REFEREE')")
-    @Operation(
-            summary = "Registrar goles del partido",
-            description = "Registra cada gol con jugador, equipo y minuto exacto (incluyendo tiempo de reposición). Allowed roles: ADMINISTRATOR, REFEREE")
+    @Operation(summary = "Registrar goles del partido", description = "Registra cada gol con jugador, equipo y minuto exacto (incluyendo tiempo de reposición). Allowed roles: ADMINISTRATOR, REFEREE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Goles registrados exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos"),
@@ -123,9 +117,7 @@ public class MatchController {
 
     @PostMapping("/{id}/cards")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'REFEREE')")
-    @Operation(
-            summary = "Registrar tarjetas del partido",
-            description = "Registra tarjeta amarilla o roja con jugador, equipo y minuto. Acumula sanciones por jugador en el torneo. Allowed roles: ADMINISTRATOR, REFEREE")
+    @Operation(summary = "Registrar tarjetas del partido", description = "Registra tarjeta amarilla o roja con jugador, equipo y minuto. Acumula sanciones por jugador en el torneo. Allowed roles: ADMINISTRATOR, REFEREE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tarjetas registradas exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos"),
@@ -140,10 +132,8 @@ public class MatchController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER')")
-    @Operation(
-            summary = "Actualizar estado del partido",
-            description = "Cambia el estado: TO_ASSIGN → TO_PLAY → FINISHED / CANCELLED. Al cancelar muestra 'X-X'. Allowed roles: ADMINISTRATOR, ORGANIZER")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'ORGANIZER', 'REFEREE')")
+    @Operation(summary = "Actualizar estado del partido", description = "Cambia el estado: TO_ASSIGN → TO_PLAY → FINISHED / CANCELLED. Al cancelar muestra 'X-X'. Allowed roles: ADMINISTRATOR, ORGANIZER, REFEREE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
             @ApiResponse(responseCode = "400", description = "Estado inválido"),
@@ -159,9 +149,7 @@ public class MatchController {
 
     @PostMapping("/{id}/possession")
     @PreAuthorize("hasAnyRole('ADMINISTRATOR', 'REFEREE')")
-    @Operation(
-            summary = "Registrar dominación del balón",
-            description = "Almacena porcentaje de posesión por equipo y coordenadas del heatmap para visualización. Allowed roles: ADMINISTRATOR, REFEREE")
+    @Operation(summary = "Registrar dominación del balón", description = "Almacena porcentaje de posesión por equipo y coordenadas del heatmap para visualización. Allowed roles: ADMINISTRATOR, REFEREE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Datos de posesión registrados exitosamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos"),
@@ -184,8 +172,8 @@ public class MatchController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER','REFEREE')")
-    @Operation(summary = "Update match", description = "Allowed roles: ADMINISTRATOR, ORGANIZER, REFEREE")
+    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER')")
+    @Operation(summary = "Update match", description = "Allowed roles: ADMINISTRATOR, ORGANIZER")
     public ResponseEntity<Map<String, Object>> update(
             @Parameter(required = true) @PathVariable Long id,
             @RequestBody MatchWriteRequest request) {

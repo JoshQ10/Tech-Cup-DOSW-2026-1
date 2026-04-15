@@ -33,11 +33,14 @@ class JwtAuthenticationFilterTest {
     @Mock
     private JwtService mockJwtService;
 
+    @Mock
+    private RolePermissionRegistry mockRolePermissionRegistry;
+
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @BeforeEach
     void setUp() {
-        jwtAuthenticationFilter = new JwtAuthenticationFilter(mockJwtService);
+        jwtAuthenticationFilter = new JwtAuthenticationFilter(mockJwtService, mockRolePermissionRegistry);
     }
 
     @Test

@@ -95,7 +95,7 @@ public class UserManagementController {
     public ResponseEntity<Map<String, Object>> getUser(
             @Parameter(required = true) @PathVariable Long id,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
+        assertOwnUserForRestrictedRoles(authentication, id);
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
         return ResponseEntity.ok(toUserSummary(user));
@@ -107,7 +107,7 @@ public class UserManagementController {
     public ResponseEntity<NotificationCountResponse> getNotificationsCount(
             @Parameter(required = true) @PathVariable Long id,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
+        assertOwnUserForRestrictedRoles(authentication, id);
 
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
@@ -150,7 +150,7 @@ public class UserManagementController {
     public ResponseEntity<UserCompleteProfileResponse> getCompleteProfile(
             @Parameter(required = true) @PathVariable Long id,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
+        assertOwnUserForRestrictedRoles(authentication, id);
 
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
@@ -202,14 +202,11 @@ public class UserManagementController {
 
     @GetMapping("/{id}/team")
     @PreAuthorize("isAuthenticated()")
-    @Operation(
-        summary = "Obtener equipo actual del jugador",
-        description = "Retorna los datos del equipo al que pertenece actualmente el usuario (nombre, escudo, capitán, jugadores) o estado 'sin equipo'."
-    )
+    @Operation(summary = "Obtener equipo actual del jugador", description = "Retorna los datos del equipo al que pertenece actualmente el usuario (nombre, escudo, capitán, jugadores) o estado 'sin equipo'.")
     @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Datos del equipo o estado sin equipo retornados exitosamente"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autenticado"),
-        @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Datos del equipo o estado sin equipo retornados exitosamente"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "No autenticado"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     public ResponseEntity<UserTeamResponse> getUserTeam(
             @Parameter(description = "ID del usuario", required = true) @PathVariable Long id) {
@@ -219,8 +216,8 @@ public class UserManagementController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER')")
-    @Operation(summary = "Create user", description = "Allowed roles: ADMINISTRATOR, ORGANIZER")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @Operation(summary = "Create user", description = "Allowed roles: ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> createUser(@RequestBody UserWriteRequest request) {
         UserEntity user = UserEntity.builder()
                 .firstName(request.firstName())
@@ -244,16 +241,18 @@ public class UserManagementController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','ORGANIZER','ADMINISTRATOR')")
-    @Operation(summary = "Update user", description = "Allowed roles: PLAYER, CAPTAIN, ORGANIZER, ADMINISTRATOR")
+    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','REFEREE','ORGANIZER','ADMINISTRATOR')")
+    @Operation(summary = "Update user", description = "Allowed roles: PLAYER, CAPTAIN, REFEREE, ORGANIZER, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> updateUser(
             @Parameter(required = true) @PathVariable Long id,
             @RequestBody UserWriteRequest request,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
-        if ((hasRole(authentication, "ROLE_PLAYER") || hasRole(authentication, "ROLE_CAPTAIN"))
+        assertOwnUserForRestrictedRoles(authentication, id);
+        if ((hasRole(authentication, "ROLE_PLAYER") || hasRole(authentication, "ROLE_CAPTAIN")
+                || hasRole(authentication, "ROLE_REFEREE"))
                 && (request.role() != null || request.userType() != null || request.active() != null)) {
-            throw new AccessDeniedException("PLAYER/CAPTAIN no pueden cambiar rol, tipo de usuario ni estado activo");
+            throw new AccessDeniedException(
+                    "PLAYER/CAPTAIN/REFEREE no pueden cambiar rol, tipo de usuario ni estado activo");
         }
 
         UserEntity user = userRepository.findById(id)
@@ -289,18 +288,14 @@ public class UserManagementController {
     }
 
     @PutMapping("/{id}/role")
-    @PreAuthorize("hasAnyRole('ADMINISTRATOR','ORGANIZER')")
-    @Operation(summary = "Update user role", description = "Assigns or updates a user's role. Allowed roles: ADMINISTRATOR, ORGANIZER")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @Operation(summary = "Update user role", description = "Assigns or updates a user's role. Allowed roles: ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> updateUserRole(
             @Parameter(required = true) @PathVariable Long id,
             @Valid @RequestBody RoleUpdateRequest request,
             Authentication authentication) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
-
-        if (hasRole(authentication, "ROLE_ORGANIZER") && request.role() == Role.ADMINISTRATOR) {
-            throw new AccessDeniedException("ORGANIZER no puede asignar el rol ADMINISTRATOR");
-        }
 
         user.setRole(request.role());
         UserEntity updated = userRepository.save(user);
@@ -314,7 +309,7 @@ public class UserManagementController {
             @Parameter(required = true) @PathVariable Long id,
             @Valid @RequestBody SportsProfileUpdateRequest request,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
+        assertOwnUserForRestrictedRoles(authentication, id);
 
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
@@ -328,13 +323,13 @@ public class UserManagementController {
     }
 
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','ORGANIZER','ADMINISTRATOR')")
-    @Operation(summary = "Upload avatar", description = "Receives avatar image (multipart/form-data), validates format and size, stores it and saves URL in user. Allowed roles: PLAYER, CAPTAIN, ORGANIZER, ADMINISTRATOR")
+    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','REFEREE','ORGANIZER','ADMINISTRATOR')")
+    @Operation(summary = "Upload avatar", description = "Receives avatar image (multipart/form-data), validates format and size, stores it and saves URL in user. Allowed roles: PLAYER, CAPTAIN, REFEREE, ORGANIZER, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> uploadAvatar(
             @Parameter(required = true) @PathVariable Long id,
             @RequestParam("file") MultipartFile file,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
+        assertOwnUserForRestrictedRoles(authentication, id);
 
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
@@ -346,19 +341,20 @@ public class UserManagementController {
     }
 
     @PostMapping(value = "/{id}/full-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','ORGANIZER','ADMINISTRATOR')")
-    @Operation(summary = "Upload full body photo", description = "Receives full body image (multipart/form-data), validates required dimensions 1428x2920, stores it and saves URL in sports profile. Allowed roles: PLAYER, CAPTAIN, ORGANIZER, ADMINISTRATOR")
+    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','REFEREE','ORGANIZER','ADMINISTRATOR')")
+    @Operation(summary = "Upload full body photo", description = "Receives full body image (multipart/form-data), validates required dimensions 1428x2920, stores it and saves URL in sports profile. Allowed roles: PLAYER, CAPTAIN, REFEREE, ORGANIZER, ADMINISTRATOR")
     public ResponseEntity<ProfileResponse> uploadFullPhoto(
             @Parameter(required = true) @PathVariable Long id,
             @RequestParam("file") MultipartFile file,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
+        assertOwnUserForRestrictedRoles(authentication, id);
 
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
 
-        if (user.getRole() != Role.PLAYER && user.getRole() != Role.CAPTAIN) {
-            throw new AccessDeniedException("Solo se permite foto de cuerpo completo para usuarios PLAYER o CAPTAIN");
+        if (user.getRole() != Role.PLAYER && user.getRole() != Role.CAPTAIN && user.getRole() != Role.REFEREE) {
+            throw new AccessDeniedException(
+                    "Solo se permite foto de cuerpo completo para usuarios PLAYER, CAPTAIN o REFEREE");
         }
 
         ProfileResponse response = playerService.uploadFullPhotoByUserId(id, file);
@@ -366,13 +362,13 @@ public class UserManagementController {
     }
 
     @PostMapping("/{id}/school-relation")
-    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','ORGANIZER','ADMINISTRATOR')")
-    @Operation(summary = "Register school relation", description = "Stores external user subtype and relation description. Allowed roles: PLAYER, CAPTAIN, ORGANIZER, ADMINISTRATOR")
+    @PreAuthorize("hasAnyRole('PLAYER','CAPTAIN','REFEREE','ORGANIZER','ADMINISTRATOR')")
+    @Operation(summary = "Register school relation", description = "Stores external user subtype and relation description. Allowed roles: PLAYER, CAPTAIN, REFEREE, ORGANIZER, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> registerSchoolRelation(
             @Parameter(required = true) @PathVariable Long id,
             @Valid @RequestBody SchoolRelationRequest request,
             Authentication authentication) {
-        assertOwnUserForPlayerOrCaptain(authentication, id);
+        assertOwnUserForRestrictedRoles(authentication, id);
 
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
@@ -444,8 +440,10 @@ public class UserManagementController {
             long totalPending) {
     }
 
-    private void assertOwnUserForPlayerOrCaptain(Authentication authentication, Long targetUserId) {
-        if (!hasRole(authentication, "ROLE_PLAYER") && !hasRole(authentication, "ROLE_CAPTAIN")) {
+    private void assertOwnUserForRestrictedRoles(Authentication authentication, Long targetUserId) {
+        if (!hasRole(authentication, "ROLE_PLAYER")
+                && !hasRole(authentication, "ROLE_CAPTAIN")
+                && !hasRole(authentication, "ROLE_REFEREE")) {
             return;
         }
         UserEntity currentUser = getCurrentUser(authentication);

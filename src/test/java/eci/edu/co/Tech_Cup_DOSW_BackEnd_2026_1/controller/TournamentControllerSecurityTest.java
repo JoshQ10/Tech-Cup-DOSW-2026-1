@@ -11,8 +11,10 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.Tournamen
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityTestConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.RolePermissionRegistry;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,10 +61,16 @@ class TournamentControllerSecurityTest {
         private JwtService jwtService;
 
         @MockBean
+        private RolePermissionRegistry rolePermissionRegistry;
+
+        @MockBean
         private CustomOAuth2UserService customOAuth2UserService;
 
         @MockBean
         private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+
+        @MockBean
+        private TeamService teamService;
 
         private TournamentRequest tournamentRequest;
         private TournamentConfigRequest configRequest;

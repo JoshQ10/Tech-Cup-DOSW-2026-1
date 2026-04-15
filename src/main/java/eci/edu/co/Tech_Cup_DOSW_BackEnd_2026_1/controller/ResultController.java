@@ -51,8 +51,8 @@ public class ResultController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('REFEREE')")
-    @Operation(summary = "Create result", description = "Allowed roles: REFEREE")
+    @PreAuthorize("hasAnyRole('REFEREE','ORGANIZER','ADMINISTRATOR')")
+    @Operation(summary = "Create result", description = "Allowed roles: REFEREE, ORGANIZER, ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> create(@RequestBody ResultWriteRequest request) {
         MatchEntity match = matchRepository.findById(request.matchId())
                 .orElseThrow(() -> new ResourceNotFoundException("Match not found"));
