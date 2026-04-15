@@ -222,6 +222,63 @@ class AuthServiceImplTest {
         }
 
         @Test
+        @DisplayName("Should login PLAYER with non-institutional email")
+        void testLoginPlayerWithNonInstitutionalEmail() {
+                User externalPlayer = User.builder()
+                                .id(2L)
+                                .firstName("External")
+                                .lastName("Player")
+                                .username("extplayer")
+                                .email("player@gmail.com")
+                                .password("encoded-password")
+                                .role(Role.PLAYER)
+                                .active(true)
+                                .createdAt(LocalDateTime.now())
+                                .build();
+
+                UserEntity externalPlayerEntity = UserEntity.builder()
+                                .id(2L)
+                                .firstName("External")
+                                .lastName("Player")
+                                .username("extplayer")
+                                .email("player@gmail.com")
+                                .password("encoded-password")
+                                .role(Role.PLAYER)
+                                .active(true)
+                                .build();
+
+                UserResponse expectedResponse = UserResponse.builder()
+                                .id(2L)
+                                .firstName("External")
+                                .lastName("Player")
+                                .username("extplayer")
+                                .email("player@gmail.com")
+                                .role(Role.PLAYER)
+                                .active(true)
+                                .build();
+
+                LoginRequest externalLogin = LoginRequest.builder()
+                                .email("player@gmail.com")
+                                .password("password123")
+                                .build();
+
+                when(userRepository.findByEmail("player@gmail.com")).thenReturn(Optional.of(externalPlayerEntity));
+                when(userPersistenceMapper.toModel(externalPlayerEntity)).thenReturn(externalPlayer);
+                when(passwordEncoder.matches("password123", externalPlayer.getPassword())).thenReturn(true);
+                when(jwtService.generateAccessToken(externalPlayer)).thenReturn("access-token");
+                when(jwtService.generateRefreshToken(externalPlayer)).thenReturn("refresh-token");
+                when(userMapper.toResponse(any(User.class))).thenReturn(expectedResponse);
+
+                LoginResponse response = authService.login(externalLogin);
+
+                assertNotNull(response);
+                assertEquals("access-token", response.getAccessToken());
+                assertEquals("refresh-token", response.getRefreshToken());
+                assertEquals("player@gmail.com", response.getUser().getEmail());
+                verify(userRepository, times(1)).findByEmail("player@gmail.com");
+        }
+
+        @Test
         @DisplayName("Should fail login when user not found")
         void testLoginUserNotFound() {
                 when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.empty());

@@ -55,6 +55,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
@@ -63,6 +65,12 @@ import java.util.Map;
 @Tag(name = "Users", description = "User management and profiles")
 @SuppressWarnings("null")
 public class UserManagementController {
+
+    private static final Set<Role> PRIVILEGED_ROLES_WITH_IDENTIFICATION = Set.of(
+            Role.REFEREE,
+            Role.ORGANIZER,
+            Role.ADMINISTRATOR);
+    private static final Pattern IDENTIFICATION_NUMERIC_PATTERN = Pattern.compile("^\\d+$");
 
     private final UserRepository userRepository;
     private final SportProfileRepository sportProfileRepository;
@@ -219,16 +227,19 @@ public class UserManagementController {
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     @Operation(summary = "Create user", description = "Allowed roles: ADMINISTRATOR")
     public ResponseEntity<Map<String, Object>> createUser(@RequestBody UserWriteRequest request) {
+        Role targetRole = request.role() == null ? Role.PLAYER : request.role();
+        String normalizedIdentification = normalizeIdentificationForRole(targetRole, request.identification());
+
         UserEntity user = UserEntity.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .username(request.username())
                 .email(request.email())
                 .password(request.password() == null || request.password().isBlank() ? "changeme" : request.password())
-                .role(request.role() == null ? Role.PLAYER : request.role())
+                .role(targetRole)
                 .userType(request.userType() == null ? UserType.EXTERNAL : request.userType())
                 .program(request.program())
-                .identification(request.identification())
+                .identification(normalizedIdentification)
                 .relationshipType(request.relationshipType())
                 .relationshipDescription(request.relationshipDescription())
                 .createdAt(LocalDateTime.now())
@@ -274,8 +285,12 @@ public class UserManagementController {
             user.setUserType(request.userType());
         if (request.program() != null)
             user.setProgram(request.program());
-        if (request.identification() != null)
-            user.setIdentification(request.identification());
+        if (request.role() != null || request.identification() != null) {
+            Role effectiveRole = request.role() != null ? request.role() : user.getRole();
+            String effectiveIdentification = request.identification() != null ? request.identification()
+                    : user.getIdentification();
+            user.setIdentification(normalizeIdentificationForRole(effectiveRole, effectiveIdentification));
+        }
         if (request.relationshipType() != null)
             user.setRelationshipType(request.relationshipType());
         if (request.relationshipDescription() != null)
@@ -297,6 +312,7 @@ public class UserManagementController {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.ERROR_USER_NOT_FOUND));
 
+        user.setIdentification(normalizeIdentificationForRole(request.role(), user.getIdentification()));
         user.setRole(request.role());
         UserEntity updated = userRepository.save(user);
         return ResponseEntity.ok(toUserSummary(updated));
@@ -461,5 +477,27 @@ public class UserManagementController {
     private boolean hasRole(Authentication authentication, String roleName) {
         return authentication != null
                 && authentication.getAuthorities().stream().anyMatch(a -> roleName.equals(a.getAuthority()));
+    }
+
+    private String normalizeIdentificationForRole(Role role, String identification) {
+        if (role == null) {
+            return identification;
+        }
+
+        if (!PRIVILEGED_ROLES_WITH_IDENTIFICATION.contains(role)) {
+            return null;
+        }
+
+        if (identification == null || identification.isBlank()) {
+            throw new IllegalArgumentException(
+                    "La identificación es obligatoria para roles REFEREE, ORGANIZER y ADMINISTRATOR");
+        }
+
+        String normalized = identification.trim();
+        if (!IDENTIFICATION_NUMERIC_PATTERN.matcher(normalized).matches()) {
+            throw new IllegalArgumentException("La identificación debe contener únicamente números");
+        }
+
+        return normalized;
     }
 }

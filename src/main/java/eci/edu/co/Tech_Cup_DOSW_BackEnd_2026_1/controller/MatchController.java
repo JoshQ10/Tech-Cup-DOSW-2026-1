@@ -50,6 +50,7 @@ import java.util.Map;
 @RequestMapping("/api/matches")
 @RequiredArgsConstructor
 @Tag(name = "Matches", description = "Match management")
+@SuppressWarnings("null")
 public class MatchController {
 
     private final MatchRepository matchRepository;

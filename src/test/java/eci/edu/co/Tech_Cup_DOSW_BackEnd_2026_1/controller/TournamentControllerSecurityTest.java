@@ -1,5 +1,7 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityTestConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ChangeStatusRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.CourtRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentConfigRequest;
@@ -8,7 +10,6 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.Tournament
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.TournamentSetupRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.TournamentSetupResponse;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config.SecurityTestConfig;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.TournamentStatus;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.RolePermissionRegistry;
@@ -16,7 +17,6 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TeamService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.TournamentService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -125,8 +125,6 @@ class TournamentControllerSecurityTest {
                                 .build();
         }
 
-        // ---- Operaciones permitidas por rol ----
-
         @Test
         @WithMockUser(roles = "ORGANIZER")
         @DisplayName("ORGANIZER puede crear un torneo")
@@ -198,8 +196,6 @@ class TournamentControllerSecurityTest {
                                 .andExpect(status().isOk());
         }
 
-        // ---- Acceso denegado a operaciones sin permisos ----
-
         @Test
         @WithMockUser(roles = "PLAYER")
         @DisplayName("PLAYER no puede crear un torneo - 403")
@@ -255,8 +251,6 @@ class TournamentControllerSecurityTest {
                                 .content(objectMapper.writeValueAsString(tournamentRequest)))
                                 .andExpect(status().isUnauthorized());
         }
-
-        // ---- Tests de seguridad para setup ----
 
         @Test
         @WithMockUser(roles = "ORGANIZER")

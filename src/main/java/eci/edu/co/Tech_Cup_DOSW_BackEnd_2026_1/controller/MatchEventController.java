@@ -35,6 +35,7 @@ import java.util.Map;
 @RequestMapping("/api/match-events")
 @RequiredArgsConstructor
 @Tag(name = "Match Events", description = "Events registered during matches")
+@SuppressWarnings("null")
 public class MatchEventController {
 
     private final MatchEventRepository matchEventRepository;

@@ -46,7 +46,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .orElseGet(() -> createOauthUser(email, name));
 
         ensureDefaults(user);
-        validatePlayerCaptainLoginPolicy(user);
         log.debug("OAuth2 user processed successfully for email: {}", email);
 
         return oauth2User;
@@ -103,17 +102,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         if (needsUpdate) {
             log.debug("Normalizing OAuth2 user defaults for: {}", user.getEmail());
             userRepository.save(userPersistenceMapper.toEntity(user));
-        }
-    }
-
-    private void validatePlayerCaptainLoginPolicy(User user) {
-        if ((user.getRole() == Role.CAPTAIN || user.getRole() == Role.PLAYER)
-                && !InstitutionEmailUtils.isValidCaptainInstitutionalEmailFormat(user.getEmail())) {
-            throw new OAuth2AuthenticationException(
-                    new OAuth2Error(
-                            "invalid_player_captain_email",
-                            "El usuario PLAYER/CAPTAIN solo puede iniciar sesion con correo institucional valido",
-                            null));
         }
     }
 }

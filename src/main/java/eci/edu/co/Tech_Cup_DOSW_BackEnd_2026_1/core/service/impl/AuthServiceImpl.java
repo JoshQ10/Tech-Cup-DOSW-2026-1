@@ -5,7 +5,6 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.RegisterRe
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.LoginResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.UserMapper;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
@@ -13,7 +12,6 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.PasswordResetToke
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.InstitutionEmailUtils;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.LoginRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
@@ -145,8 +143,6 @@ public class AuthServiceImpl implements AuthService {
             throw new BusinessRuleException("User account is inactive");
         }
         log.debug("User active status verified: true");
-
-        validatePlayerCaptainLoginPolicy(user);
 
         log.info("Login successful for user: {}", user.getId());
 
@@ -426,22 +422,12 @@ public class AuthServiceImpl implements AuthService {
         return userMapper.toResponse(user);
     }
 
-    private void validatePlayerCaptainLoginPolicy(User user) {
-        if ((user.getRole() == Role.CAPTAIN || user.getRole() == Role.PLAYER)
-                && !InstitutionEmailUtils.isValidCaptainInstitutionalEmailFormat(user.getEmail())) {
-            throw new BusinessRuleException(
-                    "El usuario PLAYER/CAPTAIN solo puede iniciar sesion con correo institucional valido: "
-                            + "XXX.XXX-X@escuelaing.edu.co, XXX.XXX-X@mail.escuelaing.edu.co o XXX.XXX@escuelaing.edu.co");
-        }
-    }
-
     @Override
     public LoginResponse loginWithGoogle(String idToken) {
         log.info("Google login attempt");
         log.debug("Validating Google ID token");
 
         User user = googleOAuth2Service.validateAndGetGoogleUser(idToken);
-        validatePlayerCaptainLoginPolicy(user);
         log.info("Google login successful for user: {}", user.getId());
 
         String accessToken = jwtService.generateAccessToken(user);

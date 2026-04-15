@@ -55,9 +55,7 @@ public class GoogleOAuth2Service {
 
             if (existingUser.isPresent()) {
                 log.info("User found in database for Google email: {}", email);
-                User user = existingUser.get();
-                validatePlayerCaptainLoginPolicy(user);
-                return user;
+                return existingUser.get();
             }
 
             // Crear nuevo usuario
@@ -76,8 +74,6 @@ public class GoogleOAuth2Service {
                     .createdAt(LocalDateTime.now())
                     .build();
 
-            validatePlayerCaptainLoginPolicy(newUser);
-
             @SuppressWarnings("null")
             User savedUser = userPersistenceMapper.toModel(
                     userRepository.save(userPersistenceMapper.toEntity(newUser)));
@@ -90,15 +86,6 @@ public class GoogleOAuth2Service {
         } catch (Exception e) {
             log.error("Error validating Google token: {}", e.getMessage(), e);
             throw new BusinessRuleException("Error validating Google authentication: " + e.getMessage());
-        }
-    }
-
-    private void validatePlayerCaptainLoginPolicy(User user) {
-        if ((user.getRole() == Role.CAPTAIN || user.getRole() == Role.PLAYER)
-                && !InstitutionEmailUtils.isValidCaptainInstitutionalEmailFormat(user.getEmail())) {
-            throw new BusinessRuleException(
-                    "El usuario PLAYER/CAPTAIN solo puede iniciar sesion con correo institucional valido: "
-                            + "XXX.XXX-X@escuelaing.edu.co, XXX.XXX-X@mail.escuelaing.edu.co o XXX.XXX@escuelaing.edu.co");
         }
     }
 }
