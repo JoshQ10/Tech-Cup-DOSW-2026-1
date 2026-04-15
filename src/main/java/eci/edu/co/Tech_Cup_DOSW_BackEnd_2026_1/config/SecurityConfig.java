@@ -1,9 +1,10 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.config;
 
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAccessDeniedHandler;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthEntryPoint;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtAuthenticationFilter;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.CustomOAuth2UserService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2.OAuth2AuthenticationSuccessHandler;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +33,8 @@ import org.springframework.context.annotation.Profile;
 public class SecurityConfig {
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final JwtAuthEntryPoint jwtAuthEntryPoint;
+        private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
         private final CustomOAuth2UserService customOAuth2UserService;
         private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
@@ -81,10 +84,9 @@ public class SecurityConfig {
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
                                                 .successHandler(oAuth2AuthenticationSuccessHandler))
-                                .exceptionHandling(ex -> ex.authenticationEntryPoint(
-                                                (request, response, authException) -> response.sendError(
-                                                                HttpServletResponse.SC_UNAUTHORIZED,
-                                                                "Unauthorized")))
+                                .exceptionHandling(ex -> ex
+                                                .authenticationEntryPoint(jwtAuthEntryPoint)
+                                                .accessDeniedHandler(jwtAccessDeniedHandler))
                                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
