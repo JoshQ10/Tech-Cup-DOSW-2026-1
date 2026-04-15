@@ -7,6 +7,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.UserRespo
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.UserMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.PasswordResetToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
@@ -65,13 +66,15 @@ public class AuthServiceImpl implements AuthService {
         Optional<UserEntity> existingUser = userRepository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             log.warn("Registration failed: email {} already exists", request.getEmail());
-            throw new BusinessRuleException("Email already registered");
+            throw new ValidationException("Conflicto de unicidad en el registro",
+                    java.util.Map.of("email", "El correo electrónico ya está registrado"));
         }
 
         Optional<UserEntity> existingUsername = userRepository.findByUsername(request.getUsername());
         if (existingUsername.isPresent()) {
             log.warn("Registration failed: username {} already exists", request.getUsername());
-            throw new BusinessRuleException("Username already registered");
+            throw new ValidationException("Conflicto de unicidad en el registro",
+                    java.util.Map.of("username", "El nombre de usuario ya está en uso"));
         }
         log.debug("Email validation passed for: {}", request.getEmail());
 
