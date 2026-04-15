@@ -22,10 +22,10 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 COPY --from=build /app/target/*.jar app.jar
 
-RUN chown appuser:appgroup app.jar
+RUN mkdir -p /app/logs && chown -R appuser:appgroup /app
 
 USER appuser
 
-EXPOSE 8443
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
