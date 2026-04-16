@@ -22,6 +22,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.context.annotation.Profile;
 
@@ -40,6 +41,9 @@ public class SecurityConfig {
 
         @Value("${app.security.require-ssl:false}")
         private boolean requireSsl;
+
+        @Value("${spring.web.cors.allowed-origin-patterns:http://localhost:*,https://localhost:*,http://127.0.0.1:*,https://127.0.0.1:*}")
+        private String allowedOriginPatterns;
 
         @Bean
         public PasswordEncoder passwordEncoder() {
@@ -97,9 +101,8 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOriginPatterns(
-                                Arrays.asList("https://localhost:*", "http://localhost:*", "https://127.0.0.1:*",
-                                                "http://127.0.0.1:*"));
+                List<String> origins = Arrays.asList(allowedOriginPatterns.split(","));
+                configuration.setAllowedOriginPatterns(origins);
                 configuration.setAllowedMethods(
                                 Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
                 configuration.setAllowedHeaders(Arrays.asList("*"));
