@@ -69,7 +69,9 @@ public class SecurityConfig {
                                                                 "/webjars/**",
                                                                 "/h2-console/**",
                                                                 "/oauth2/**",
-                                                                "/login/oauth2/**")
+                                                                "/login/oauth2/**",
+                                                                "/actuator/health",
+                                                                "/actuator/health/**")
                                                 .permitAll()
                                                 .requestMatchers("/api/auth/logout").authenticated()
                                                 // Endpoints públicos de autenticación
