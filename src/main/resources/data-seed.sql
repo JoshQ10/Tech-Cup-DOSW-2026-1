@@ -9,6 +9,8 @@ DELETE FROM elimination_brackets;
 DELETE FROM lineup_players;
 DELETE FROM lineups;
 DELETE FROM match_events;
+DELETE FROM match_possession_heatmap;
+DELETE FROM match_possessions;
 DELETE FROM matches;
 DELETE FROM courts;
 DELETE FROM standings;
@@ -16,9 +18,16 @@ DELETE FROM payments;
 DELETE FROM team_invitations;
 DELETE FROM team_players;
 DELETE FROM teams;
+DELETE FROM tournament_rules_confirmations;
 DELETE FROM tournament_dates;
 DELETE FROM tournaments;
 DELETE FROM sport_profiles;
+DELETE FROM verification_tokens;
+DELETE FROM password_reset_tokens;
+DELETE FROM revoked_refresh_tokens;
+DELETE FROM role_permissions;
+DELETE FROM permissions;
+DELETE FROM roles;
 DELETE FROM users;
 
 -- 2. Reiniciar secuencias
@@ -39,32 +48,34 @@ ALTER SEQUENCE elimination_brackets_id_seq RESTART WITH 1;
 ALTER SEQUENCE sanctions_id_seq RESTART WITH 1;
 
 -- ============================================================
--- TABLA 1: users (12 usuarios - 4 roles)
+-- TABLA 1: users (13 usuarios - 5 roles)
 -- Password: "password123" encriptado con BCrypt
+-- Columnas: id, first_name, last_name, username, email, password,
+--           identification, role, user_type, program, active, created_at
 -- ============================================================
-INSERT INTO users (id, name, email, password, identification, role, user_type, program, active, created_at) VALUES
+INSERT INTO users (id, first_name, last_name, username, email, password, identification, role, user_type, program, active, created_at) VALUES
 -- ADMINISTRADOR (1)
-(1, 'Juan Admin Lopez', 'admin@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1001234567', 'ADMINISTRATOR', 'PROFESSOR', 'SYSTEMS_ENGINEERING', true, '2026-01-15 08:00:00'),
+(1, 'Juan', 'Lopez', 'juan.admin', 'admin@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1001234567', 'ADMINISTRATOR', 'PROFESSOR', 'SYSTEMS_ENGINEERING', true, '2026-01-15 08:00:00'),
 
 -- ARBITROS (2)
-(2, 'Carlos Arbitro Perez', 'arbitro1@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1009876543', 'REFEREE', 'PROFESSOR', 'ECONOMICS', true, '2026-01-20 10:00:00'),
-(3, 'Ana Arbitro Rodriguez', 'arbitro2@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1005551234', 'REFEREE', 'ADMINISTRATIVE', 'BUSINESS_ADMINISTRATION', true, '2026-01-20 10:30:00'),
+(2, 'Carlos', 'Perez', 'carlos.arbitro', 'arbitro1@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1009876543', 'REFEREE', 'PROFESSOR', 'ECONOMICS', true, '2026-01-20 10:00:00'),
+(3, 'Ana', 'Rodriguez', 'ana.arbitro', 'arbitro2@escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1005551234', 'REFEREE', 'ADMINISTRATIVE', 'BUSINESS_ADMINISTRATION', true, '2026-01-20 10:30:00'),
 
 -- CAPITANES (2) - tambien son jugadores
-(4, 'Pedro Capitan Garcia', 'capitan.ingenieros@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134001', 'CAPTAIN', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-01 09:00:00'),
-(5, 'Maria Capitan Torres', 'capitan.byte@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134002', 'CAPTAIN', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-01 09:30:00'),
+(4, 'Pedro', 'Garcia', 'pedro.capitan', 'capitan.ingenieros@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134001', 'CAPTAIN', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-01 09:00:00'),
+(5, 'Maria', 'Torres', 'maria.capitan', 'capitan.byte@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134002', 'CAPTAIN', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-01 09:30:00'),
 
 -- JUGADORES Equipo 1: Ingenieros FC (4 jugadores)
-(6, 'Andres Delantero Ruiz', 'andres.ruiz@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134001', 'PLAYER', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-05 14:00:00'),
-(7, 'Luis Mediocampo Diaz', 'luis.diaz@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134002', 'PLAYER', 'STUDENT', 'CYBERSECURITY_ENGINEERING', true, '2026-02-05 14:30:00'),
-(8, 'Sofia Defensa Martinez', 'sofia.martinez@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134001', 'PLAYER', 'STUDENT', 'STATISTICS_ENGINEERING', true, '2026-02-06 08:00:00'),
-(9, 'Diego Portero Gomez', 'diego.gomez@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134002', 'PLAYER', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-06 08:30:00'),
+(6, 'Andres', 'Ruiz', 'andres.ruiz', 'andres.ruiz@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134001', 'PLAYER', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-05 14:00:00'),
+(7, 'Luis', 'Diaz', 'luis.diaz', 'luis.diaz@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134002', 'PLAYER', 'STUDENT', 'CYBERSECURITY_ENGINEERING', true, '2026-02-05 14:30:00'),
+(8, 'Sofia', 'Martinez', 'sofia.martinez', 'sofia.martinez@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134001', 'PLAYER', 'STUDENT', 'STATISTICS_ENGINEERING', true, '2026-02-06 08:00:00'),
+(9, 'Diego', 'Gomez', 'diego.gomez', 'diego.gomez@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134002', 'PLAYER', 'STUDENT', 'SYSTEMS_ENGINEERING', true, '2026-02-06 08:30:00'),
 
 -- JUGADORES Equipo 2: Byte United (4 jugadores)
-(10, 'Valentina Goleadora Rios', 'valentina.rios@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134003', 'PLAYER', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 10:00:00'),
-(11, 'Sebastian Volante Castro', 'sebastian.castro@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134003', 'PLAYER', 'STUDENT', 'CYBERSECURITY_ENGINEERING', true, '2026-02-07 10:30:00'),
-(12, 'Camila Central Herrera', 'camila.herrera@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134003', 'PLAYER', 'STUDENT', 'STATISTICS_ENGINEERING', true, '2026-02-07 11:00:00'),
-(13, 'Felipe Arquero Mora', 'felipe.mora@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2023134001', 'PLAYER', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 11:30:00');
+(10, 'Valentina', 'Rios', 'valentina.rios', 'valentina.rios@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134003', 'PLAYER', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 10:00:00'),
+(11, 'Sebastian', 'Castro', 'sebastian.castro', 'sebastian.castro@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134003', 'PLAYER', 'STUDENT', 'CYBERSECURITY_ENGINEERING', true, '2026-02-07 10:30:00'),
+(12, 'Camila', 'Herrera', 'camila.herrera', 'camila.herrera@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134003', 'PLAYER', 'STUDENT', 'STATISTICS_ENGINEERING', true, '2026-02-07 11:00:00'),
+(13, 'Felipe', 'Mora', 'felipe.mora', 'felipe.mora@mail.escuelaing.edu.co', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2023134001', 'PLAYER', 'STUDENT', 'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 11:30:00');
 
 SELECT setval('users_id_seq', 13);
 
@@ -160,7 +171,7 @@ INSERT INTO team_invitations (id, team_id, player_id, status, sent_at, responded
 (6, 2, 11, 'ACCEPTED', '2026-02-12 14:05:00', '2026-02-13 09:00:00'),
 (7, 2, 12, 'ACCEPTED', '2026-02-12 14:10:00', '2026-02-13 11:00:00'),
 (8, 2, 13, 'ACCEPTED', '2026-02-12 14:15:00', '2026-02-13 14:00:00'),
--- Invitacion pendiente (alguien mas que invitaron)
+-- Invitacion rechazada
 (9, 1, 10, 'REJECTED', '2026-02-11 08:00:00', '2026-02-11 20:00:00'),
 -- Invitacion pendiente sin respuesta
 (10, 2, 8, 'PENDING', '2026-02-14 10:00:00', NULL);
@@ -202,8 +213,9 @@ SELECT setval('matches_id_seq', 3);
 
 -- ============================================================
 -- TABLA 11: match_events (eventos del partido 1)
+-- FIX: columna correcta es event_minute (no minute)
 -- ============================================================
-INSERT INTO match_events (id, match_id, player_id, team_id, event_type, minute) VALUES
+INSERT INTO match_events (id, match_id, player_id, team_id, event_type, event_minute) VALUES
 -- Gol de Andres (Ingenieros FC) min 15
 (1, 1, 6, 1, 'GOAL', 15),
 -- Tarjeta amarilla a Sebastian (Byte United) min 22
@@ -230,8 +242,9 @@ SELECT setval('lineups_id_seq', 2);
 
 -- ============================================================
 -- TABLA 13: lineup_players (jugadores en la alineacion)
+-- FIX: columnas correctas son position_x, position_y (no positionx, positiony)
 -- ============================================================
-INSERT INTO lineup_players (id, lineup_id, player_id, positionx, positiony, starter) VALUES
+INSERT INTO lineup_players (id, lineup_id, player_id, position_x, position_y, starter) VALUES
 -- Alineacion Ingenieros FC (lineup_id = 1)
 (1, 1, 9, 50, 10, true),   -- Diego (Portero)
 (2, 1, 8, 30, 30, true),   -- Sofia (Defensa izq)
