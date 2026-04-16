@@ -486,6 +486,34 @@ CREATE TABLE IF NOT EXISTS sanctions (
 -- Si usas Flyway con baseline-on-migrate=true, no necesitas crearla manualmente.
 
 -- =============================================================
--- FIN DEL SCHEMA
--- Total: 24 tablas (+ 2 tablas de join/embeddable)
+-- 7. DATOS DE PRUEBA
+-- Password de todos los usuarios: "password123" (BCrypt)
+-- =============================================================
+
+INSERT INTO users (first_name, last_name, username, email, password, identification, role, user_type, program, active, created_at) VALUES
+-- ADMINISTRADOR
+('Juan',      'Admin Lopez',       'admin',               'admin@escuelaing.edu.co',                        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1001234567', 'ADMINISTRATOR', 'PROFESSOR', 'SYSTEMS_ENGINEERING',                 true, '2026-01-15 08:00:00'),
+-- ARBITROS
+('Carlos',    'Arbitro Perez',     'arbitro1',            'arbitro1@escuelaing.edu.co',                     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1009876543', 'REFEREE',       'PROFESSOR', 'ECONOMICS',                           true, '2026-01-20 10:00:00'),
+('Ana',       'Arbitro Rodriguez', 'arbitro2',            'arbitro2@escuelaing.edu.co',                     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '1005551234', 'REFEREE',       'ADMINISTRATIVE', 'BUSINESS_ADMINISTRATION',         true, '2026-01-20 10:30:00'),
+-- CAPITANES
+('Pedro',     'Capitan Garcia',    'capitan.ingenieros',  'capitan.ingenieros@mail.escuelaing.edu.co',      '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134001', 'CAPTAIN',       'STUDENT',    'SYSTEMS_ENGINEERING',                 true, '2026-02-01 09:00:00'),
+('Maria',     'Capitan Torres',    'capitan.byte',        'capitan.byte@mail.escuelaing.edu.co',            '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134002', 'CAPTAIN',       'STUDENT',    'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-01 09:30:00'),
+-- JUGADORES Equipo 1: Ingenieros FC
+('Andres',    'Delantero Ruiz',    'andres.ruiz',         'andres.ruiz@mail.escuelaing.edu.co',             '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134001', 'PLAYER',        'STUDENT',    'SYSTEMS_ENGINEERING',                 true, '2026-02-05 14:00:00'),
+('Luis',      'Mediocampo Diaz',   'luis.diaz',           'luis.diaz@mail.escuelaing.edu.co',               '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134002', 'PLAYER',        'STUDENT',    'CYBERSECURITY_ENGINEERING',           true, '2026-02-05 14:30:00'),
+('Sofia',     'Defensa Martinez',  'sofia.martinez',      'sofia.martinez@mail.escuelaing.edu.co',          '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134001', 'PLAYER',        'STUDENT',    'STATISTICS_ENGINEERING',              true, '2026-02-06 08:00:00'),
+('Diego',     'Portero Gomez',     'diego.gomez',         'diego.gomez@mail.escuelaing.edu.co',             '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134002', 'PLAYER',        'STUDENT',    'SYSTEMS_ENGINEERING',                 true, '2026-02-06 08:30:00'),
+-- JUGADORES Equipo 2: Byte United
+('Valentina', 'Goleadora Rios',    'valentina.rios',      'valentina.rios@mail.escuelaing.edu.co',          '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2020134003', 'PLAYER',        'STUDENT',    'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 10:00:00'),
+('Sebastian', 'Volante Castro',    'sebastian.castro',    'sebastian.castro@mail.escuelaing.edu.co',        '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2021134003', 'PLAYER',        'STUDENT',    'CYBERSECURITY_ENGINEERING',           true, '2026-02-07 10:30:00'),
+('Camila',    'Central Herrera',   'camila.herrera',      'camila.herrera@mail.escuelaing.edu.co',          '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2022134003', 'PLAYER',        'STUDENT',    'STATISTICS_ENGINEERING',              true, '2026-02-07 11:00:00'),
+('Felipe',    'Arquero Mora',      'felipe.mora',         'felipe.mora@mail.escuelaing.edu.co',             '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '2023134001', 'PLAYER',        'STUDENT',    'ARTIFICIAL_INTELLIGENCE_ENGINEERING', true, '2026-02-07 11:30:00')
+ON CONFLICT (email) DO NOTHING;
+
+-- =============================================================
+-- FIN DEL SCHEMA + DATOS
+-- Total tablas: 24 (+ 2 tablas de join/embeddable)
+-- Total usuarios de prueba: 13
+-- Password de todos: password123
 -- =============================================================
