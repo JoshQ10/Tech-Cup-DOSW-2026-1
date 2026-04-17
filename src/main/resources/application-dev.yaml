@@ -50,10 +50,28 @@ springdoc:
   show-actuator: false
   use-swagger-ui: true
 
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 app:
   security:
     require-ssl: true
   email:
+    from: ${EMAIL_FROM:noreply@techcup.edu.co}
+    verification-url: ${EMAIL_VERIFICATION_URL:http://localhost:3000/verify-email}
     reset-password-url: ${EMAIL_RESET_PASSWORD_URL:http://localhost:3000/reset-password}
 
 logging:

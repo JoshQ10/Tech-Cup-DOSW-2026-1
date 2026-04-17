@@ -98,6 +98,10 @@ public class MatchServiceImpl implements MatchService {
         log.info("Registering result for match: {} — {}:{}", matchId, request.getHomeScore(), request.getAwayScore());
         MatchEntity match = findMatch(matchId);
 
+        if (match.isPlayed()) {
+            throw new BusinessRuleException("El resultado de este partido ya fue registrado");
+        }
+
         match.setHomeScore(request.getHomeScore());
         match.setAwayScore(request.getAwayScore());
         match.setPlayed(true);

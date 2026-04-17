@@ -33,14 +33,15 @@ public class OAuth2Controller {
     }
 
     @GetMapping("/microsoft")
-    @Operation(summary = "Start authentication with Microsoft", description = "Returns the URL to start OAuth2 flow with Microsoft")
+    @Operation(summary = "Start authentication with Microsoft (not available)",
+            description = "Microsoft OAuth2 is not yet configured. Returns 501 Not Implemented.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Authorization URL generated")
+            @ApiResponse(responseCode = "501", description = "Microsoft authentication not implemented")
     })
     public ResponseEntity<Map<String, String>> microsoftAuthorizationUrl() {
-        String authorizationUrl = "/oauth2/authorization/microsoft";
-        log.info("OAuth2 Microsoft authorization URL requested");
-        return ResponseEntity.ok(Map.of("authorizationUrl", authorizationUrl));
+        log.warn("Microsoft OAuth2 authentication requested but not implemented");
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                .body(Map.of("message", "La autenticación con Microsoft no está disponible actualmente"));
     }
 
     @GetMapping("/success")

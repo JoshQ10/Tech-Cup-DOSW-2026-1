@@ -2,6 +2,8 @@ spring:
   mail:
     host: 127.0.0.1
     port: 3025
+  flyway:
+    enabled: false
   security:
     oauth2:
       client:
@@ -11,6 +13,20 @@ spring:
             client-secret: test-client-secret
             scope: openid,profile,email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+          microsoft:
+            client-id: test-microsoft-client-id
+            client-secret: test-microsoft-client-secret
+            scope: openid,profile,email,User.Read
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-name: Microsoft
+        provider:
+          microsoft:
+            authorization-uri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
+            token-uri: https://login.microsoftonline.com/common/oauth2/v2.0/token
+            jwk-set-uri: https://login.microsoftonline.com/common/discovery/v2.0/keys
+            user-info-uri: https://graph.microsoft.com/oidc/userinfo
+            user-name-attribute: sub
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
@@ -30,6 +46,10 @@ app:
     jwt:
       access-token-ttl-ms: 3600000
       refresh-token-ttl-ms: 86400000
+  email:
+    from: noreply@techcup-test.edu.co
+    verification-url: http://localhost:3000/verify-email
+    reset-password-url: http://localhost:3000/reset-password
 
 server:
   port: 0  # Puerto aleatorio para pruebas

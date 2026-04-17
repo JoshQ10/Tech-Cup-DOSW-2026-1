@@ -77,8 +77,8 @@ public class SecurityConfig {
                                                                 "/actuator/health",
                                                                 "/actuator/health/**")
                                                 .permitAll()
-                                                .requestMatchers("/api/auth/logout").authenticated()
-                                                // Endpoints públicos de autenticación
+                                                // Endpoints públicos de autenticación (incluyendo logout, que se
+                                                // autentica vía refresh token en la capa de servicio)
                                                 .requestMatchers("/api/auth/**").permitAll()
                                                 // Requerir autenticación para todo lo demás
                                                 .anyRequest().authenticated())

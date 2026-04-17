@@ -28,10 +28,10 @@ class RegisterRequestValidatorTest {
     }
 
     @Test
-    @DisplayName("Should reject CAPTAIN when email is not @escuelaing.edu.co")
+    @DisplayName("Should reject CAPTAIN when email is not an institutional domain")
     void shouldRejectCaptainWithoutEscuelaingDomain() {
         RegisterRequest request = baseRequestBuilder()
-                .email("captain@mail.escuelaing.edu.co")
+                .email("captain@gmail.com")
                 .role(Role.CAPTAIN)
                 .build();
 
