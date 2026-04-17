@@ -2,24 +2,35 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.EmailDeliveryException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
+    private static final String INSTITUTIONAL_MAIL_DOMAIN = "@mail.escuelaing.edu.co";
+    private static final String INSTITUTIONAL_DOMAIN = "@escuelaing.edu.co";
+
     private final JavaMailSender mailSender;
+    private final ResendEmailClient resendEmailClient;
 
     @Value("${app.email.from:noreply@techcup.edu.co}")
     private String emailFrom;
@@ -30,31 +41,125 @@ public class EmailServiceImpl implements EmailService {
     @Value("${app.email.reset-password-url:http://localhost:3000/reset-password}")
     private String resetPasswordUrl;
 
+    @Value("${app.email.smtp.primary-enabled:true}")
+    private boolean primarySmtpEnabled;
+
+    @Value("${app.email.smtp.enable-provider-routing:true}")
+    private boolean providerRoutingEnabled;
+
+    @Value("${spring.mail.host:}")
+    private String primaryHost;
+
+    @Value("${spring.mail.username:}")
+    private String primaryUsername;
+
+    @Value("${spring.mail.password:}")
+    private String primaryPassword;
+
+    @Value("${spring.mail.properties.mail.smtp.auth:true}")
+    private boolean primaryAuthEnabled;
+
+    @Value("${app.email.smtp.microsoft.enabled:false}")
+    private boolean microsoftEnabled;
+
+    @Value("${app.email.smtp.microsoft.host:smtp.office365.com}")
+    private String microsoftHost;
+
+    @Value("${app.email.smtp.microsoft.port:587}")
+    private int microsoftPort;
+
+    @Value("${app.email.smtp.microsoft.username:}")
+    private String microsoftUsername;
+
+    @Value("${app.email.smtp.microsoft.password:}")
+    private String microsoftPassword;
+
+    @Value("${app.email.smtp.microsoft.from:}")
+    private String microsoftFrom;
+
+    @Value("${app.email.smtp.microsoft.auth:true}")
+    private boolean microsoftAuthEnabled;
+
+    @Value("${app.email.smtp.microsoft.starttls-enable:true}")
+    private boolean microsoftStarttlsEnabled;
+
+    @Value("${app.email.smtp.microsoft.starttls-required:true}")
+    private boolean microsoftStarttlsRequired;
+
+    @Value("${app.email.smtp.microsoft.connection-timeout:5000}")
+    private int microsoftConnectionTimeout;
+
+    @Value("${app.email.smtp.microsoft.timeout:5000}")
+    private int microsoftTimeout;
+
+    @Value("${app.email.smtp.microsoft.write-timeout:5000}")
+    private int microsoftWriteTimeout;
+
+    @Value("${app.email.smtp.google.enabled:false}")
+    private boolean googleEnabled;
+
+    @Value("${app.email.smtp.google.host:smtp.gmail.com}")
+    private String googleHost;
+
+    @Value("${app.email.smtp.google.port:587}")
+    private int googlePort;
+
+    @Value("${app.email.smtp.google.username:}")
+    private String googleUsername;
+
+    @Value("${app.email.smtp.google.password:}")
+    private String googlePassword;
+
+    @Value("${app.email.smtp.google.from:}")
+    private String googleFrom;
+
+    @Value("${app.email.smtp.google.auth:true}")
+    private boolean googleAuthEnabled;
+
+    @Value("${app.email.smtp.google.starttls-enable:true}")
+    private boolean googleStarttlsEnabled;
+
+    @Value("${app.email.smtp.google.starttls-required:true}")
+    private boolean googleStarttlsRequired;
+
+    @Value("${app.email.smtp.google.connection-timeout:5000}")
+    private int googleConnectionTimeout;
+
+    @Value("${app.email.smtp.google.timeout:5000}")
+    private int googleTimeout;
+
+    @Value("${app.email.smtp.google.write-timeout:5000}")
+    private int googleWriteTimeout;
+
+    @Value("${app.email.mock-enabled:false}")
+    private boolean mockEmailEnabled;
+
     @SuppressWarnings("null")
     @Override
     public void sendVerificationEmail(String email, String firstName, String lastName, String token,
             UserType userType, Role role) {
         try {
             log.info("Sending verification email to: {}", email);
-
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-
-            helper.setFrom(emailFrom);
-            helper.setTo(email);
-            helper.setSubject("Verifica tu correo electrónico - Tech Cup DOSW");
-
             String htmlContent = buildVerificationEmailContent(firstName, lastName, token, userType, role, email);
-            helper.setText(htmlContent, true);
-
-            mailSender.send(mimeMessage);
-            log.info("Verification email sent successfully to: {}", email);
-
-        } catch (MessagingException e) {
-            log.error("Error sending verification email to {}: {}", email, e.getMessage(), e);
-            // No lanzar excepción para no bloquear el registro
+            sendWithProviderFallback(
+                    email,
+                    "verification",
+                    provider -> sendHtmlEmail(
+                            provider,
+                            email,
+                            "Verifica tu correo electrónico - Tech Cup DOSW",
+                            htmlContent),
+                    () -> resendEmailClient.sendHtmlEmail(
+                            email,
+                            "Verifica tu correo electrónico - Tech Cup DOSW",
+                            htmlContent),
+                    true,
+                    "No se pudo enviar el correo de verificacion");
+        } catch (EmailDeliveryException e) {
+            throw e;
         } catch (Exception e) {
             log.error("Unexpected error sending verification email to {}: {}", email, e.getMessage(), e);
+            throw new EmailDeliveryException("Error inesperado enviando correo de verificacion", e);
         }
     }
 
@@ -68,25 +173,30 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendWelcomeEmail(String email, String firstName, String lastName) {
+        String body = String.format(
+                "Hola %s %s,\n\n" +
+                        "Tu correo ha sido verificado exitosamente. Tu cuenta está lista para usar.\n\n" +
+                        "Ya puedes acceder a Tech Cup DOSW 2026 y participar en todas las actividades.\n\n" +
+                        "¡Gracias por ser parte de nuestra comunidad!\n\n" +
+                        "Saludos,\n" +
+                        "Equipo Tech Cup DOSW 2026",
+                firstName, lastName);
         try {
             log.info("Sending welcome email to: {}", email);
-
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(emailFrom);
-            message.setTo(email);
-            message.setSubject("¡Bienvenido a Tech Cup DOSW 2026!");
-            message.setText(String.format(
-                    "Hola %s %s,\n\n" +
-                            "Tu correo ha sido verificado exitosamente. Tu cuenta está lista para usar.\n\n" +
-                            "Ya puedes acceder a Tech Cup DOSW 2026 y participar en todas las actividades.\n\n" +
-                            "¡Gracias por ser parte de nuestra comunidad!\n\n" +
-                            "Saludos,\n" +
-                            "Equipo Tech Cup DOSW 2026",
-                    firstName, lastName));
-
-            mailSender.send(message);
-            log.info("Welcome email sent successfully to: {}", email);
-
+            sendWithProviderFallback(
+                    email,
+                    "welcome",
+                    provider -> sendPlainTextEmail(
+                            provider,
+                            email,
+                            "¡Bienvenido a Tech Cup DOSW 2026!",
+                            body),
+                    () -> resendEmailClient.sendPlainTextEmail(
+                            email,
+                            "¡Bienvenido a Tech Cup DOSW 2026!",
+                            body),
+                    false,
+                    "No se pudo enviar el correo de bienvenida");
         } catch (Exception e) {
             log.error("Error sending welcome email to {}: {}", email, e.getMessage(), e);
             // No lanzar excepción para no bloquear la verificación
@@ -96,27 +206,313 @@ public class EmailServiceImpl implements EmailService {
     @SuppressWarnings("null")
     @Override
     public void sendPasswordResetEmail(String email, String firstName, String lastName, String token) {
+        String htmlContent = buildPasswordResetEmailContent(firstName, lastName, token);
         try {
             log.info("Sending password reset email to: {}", email);
-
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-
-            helper.setFrom(emailFrom);
-            helper.setTo(email);
-            helper.setSubject("Recuperacion de contrasena - Tech Cup DOSW");
-
-            String htmlContent = buildPasswordResetEmailContent(firstName, lastName, token);
-            helper.setText(htmlContent, true);
-
-            mailSender.send(mimeMessage);
-            log.info("Password reset email sent successfully to: {}", email);
-
-        } catch (MessagingException e) {
-            log.error("Error sending password reset email to {}: {}", email, e.getMessage(), e);
+            sendWithProviderFallback(
+                    email,
+                    "password-reset",
+                    provider -> sendHtmlEmail(
+                            provider,
+                            email,
+                            "Recuperacion de contrasena - Tech Cup DOSW",
+                            htmlContent),
+                    () -> resendEmailClient.sendHtmlEmail(
+                            email,
+                            "Recuperacion de contrasena - Tech Cup DOSW",
+                            htmlContent),
+                    false,
+                    "No se pudo enviar el correo de recuperacion");
         } catch (Exception e) {
             log.error("Unexpected error sending password reset email to {}: {}", email, e.getMessage(), e);
         }
+    }
+
+    private void sendWithProviderFallback(String recipientEmail, String flowName, ProviderSendAction smtpAction,
+            ApiSendAction resendAction,
+            boolean throwOnFailure, String failureMessage) {
+        if (mockEmailEnabled) {
+            log.warn("Mock email enabled. Skipping {} email send to {}", flowName, recipientEmail);
+            return;
+        }
+
+        Exception lastException = null;
+        List<String> failedProviders = new ArrayList<>();
+        boolean resendEnabled = resendEmailClient.isEnabled();
+        boolean resendPreferred = resendEnabled && resendEmailClient.isPreferred();
+
+        if (resendPreferred) {
+            try {
+                resendAction.send();
+                log.info("{} email sent to {} using provider resend-api", flowName, recipientEmail);
+                return;
+            } catch (Exception e) {
+                lastException = e;
+                failedProviders.add("resend-api");
+                log.warn("{} email failed with provider resend-api for {}: {}",
+                        flowName, recipientEmail, e.getMessage());
+            }
+        }
+
+        List<SmtpProvider> providers = resolveProviders(recipientEmail);
+
+        for (SmtpProvider provider : providers) {
+            try {
+                smtpAction.send(provider);
+                log.info("{} email sent to {} using provider {}", flowName, recipientEmail, provider.name());
+                return;
+            } catch (MessagingException | MailException e) {
+                lastException = e;
+                failedProviders.add(provider.name());
+                log.warn("{} email failed with provider {} for {}: {}",
+                        flowName, provider.name(), recipientEmail, e.getMessage());
+            } catch (Exception e) {
+                lastException = e;
+                failedProviders.add(provider.name());
+                log.warn("{} email failed with unexpected error in provider {} for {}: {}",
+                        flowName, provider.name(), recipientEmail, e.getMessage());
+            }
+        }
+
+        if (resendEnabled && !resendPreferred) {
+            try {
+                resendAction.send();
+                log.info("{} email sent to {} using provider resend-api", flowName, recipientEmail);
+                return;
+            } catch (Exception e) {
+                lastException = e;
+                failedProviders.add("resend-api");
+                log.warn("{} email failed with provider resend-api for {}: {}",
+                        flowName, recipientEmail, e.getMessage());
+            }
+        }
+
+        if (failedProviders.isEmpty()) {
+            String message = "No hay proveedores SMTP ni Resend configurados para enviar correos";
+            log.error(message);
+            if (throwOnFailure) {
+                throw new EmailDeliveryException(message);
+            }
+            return;
+        }
+
+        String providersSummary = String.join(", ", failedProviders);
+        String smtpGuidance = resolveSmtpGuidance(lastException);
+        String finalMessage = failureMessage + ". Proveedores intentados: " + providersSummary;
+        if (!isBlank(smtpGuidance)) {
+            finalMessage += ". " + smtpGuidance;
+        }
+        log.error("Failed to send {} email to {}. Providers tried: {}", flowName, recipientEmail, providersSummary,
+                lastException);
+        if (throwOnFailure) {
+            throw new EmailDeliveryException(finalMessage, lastException);
+        }
+    }
+
+    private String resolveSmtpGuidance(Exception exception) {
+        Throwable current = exception;
+        while (current != null) {
+            String message = current.getMessage();
+            if (!isBlank(message)) {
+                String normalized = message.toLowerCase();
+                if (normalized.contains("api key is invalid")
+                        || (normalized.contains("status=401") && normalized.contains("resend"))) {
+                    return "Resend rechazo la autenticacion (401). "
+                            + "Verifica que RESEND_API_KEY sea valida, vigente y pertenezca al entorno correcto "
+                            + "(test/produccion).";
+                }
+                if (normalized.contains("smtpclientauthentication is disabled for the tenant")) {
+                    return "SMTP AUTH esta deshabilitado para el tenant de Microsoft 365. "
+                            + "Habilita SMTP AUTH en el tenant y en el mailbox para completar el registro.";
+                }
+                if (normalized.contains("535 5.7.3") || normalized.contains("authentication unsuccessful")) {
+                    return "Autenticacion SMTP rechazada por Microsoft 365 (535 5.7.3). "
+                            + "Verifica usuario SMTP, contrasena/app password y que SMTP AUTH este habilitado "
+                            + "en tenant y mailbox.";
+                }
+                if (normalized.contains("you can only send testing emails to your own email address")
+                        || normalized.contains("verify a domain at resend.com/domains")) {
+                    return "Resend esta en modo de prueba (sandbox) y solo permite enviar al correo del owner. "
+                            + "Para enviar a otros destinatarios, verifica un dominio en resend.com/domains "
+                            + "y configura RESEND_FROM con ese dominio verificado.";
+                }
+            }
+            current = current.getCause();
+        }
+        return "";
+    }
+
+    private void sendHtmlEmail(SmtpProvider provider, String to, String subject, String htmlContent)
+            throws MessagingException {
+        MimeMessage mimeMessage = provider.sender().createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+        helper.setFrom(provider.from());
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlContent, true);
+        provider.sender().send(mimeMessage);
+    }
+
+    private void sendPlainTextEmail(SmtpProvider provider, String to, String subject, String body) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(provider.from());
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+        provider.sender().send(message);
+    }
+
+    private List<SmtpProvider> resolveProviders(String recipientEmail) {
+        List<SmtpProvider> providers = new ArrayList<>();
+
+        if (providerRoutingEnabled && isInstitutionalRecipient(recipientEmail)) {
+            addMicrosoftProvider(providers);
+            addGoogleProvider(providers);
+        } else if (providerRoutingEnabled) {
+            addGoogleProvider(providers);
+            addMicrosoftProvider(providers);
+        }
+
+        addPrimaryProvider(providers);
+
+        if (!providerRoutingEnabled) {
+            addMicrosoftProvider(providers);
+            addGoogleProvider(providers);
+        }
+
+        return providers;
+    }
+
+    private void addPrimaryProvider(List<SmtpProvider> providers) {
+        if (!isPrimaryProviderConfigured()) {
+            return;
+        }
+
+        providers.add(new SmtpProvider(
+                "primary",
+                mailSender,
+                resolveFromAddress(emailFrom, primaryUsername)));
+    }
+
+    private void addMicrosoftProvider(List<SmtpProvider> providers) {
+        if (!isProviderConfigured(microsoftEnabled, microsoftHost, microsoftAuthEnabled,
+                microsoftUsername, microsoftPassword)) {
+            return;
+        }
+
+        providers.add(new SmtpProvider(
+                "microsoft",
+                buildProviderSender(
+                        microsoftHost,
+                        microsoftPort,
+                        microsoftUsername,
+                        microsoftPassword,
+                        microsoftAuthEnabled,
+                        microsoftStarttlsEnabled,
+                        microsoftStarttlsRequired,
+                        microsoftConnectionTimeout,
+                        microsoftTimeout,
+                        microsoftWriteTimeout),
+                resolveFromAddress(microsoftFrom, microsoftUsername)));
+    }
+
+    private void addGoogleProvider(List<SmtpProvider> providers) {
+        if (!isProviderConfigured(googleEnabled, googleHost, googleAuthEnabled,
+                googleUsername, googlePassword)) {
+            return;
+        }
+
+        providers.add(new SmtpProvider(
+                "google",
+                buildProviderSender(
+                        googleHost,
+                        googlePort,
+                        googleUsername,
+                        googlePassword,
+                        googleAuthEnabled,
+                        googleStarttlsEnabled,
+                        googleStarttlsRequired,
+                        googleConnectionTimeout,
+                        googleTimeout,
+                        googleWriteTimeout),
+                resolveFromAddress(googleFrom, googleUsername)));
+    }
+
+    private JavaMailSender buildProviderSender(String host, int port, String username, String password,
+            boolean authEnabled, boolean starttlsEnabled, boolean starttlsRequired,
+            int connectionTimeout, int timeout, int writeTimeout) {
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setHost(host);
+        sender.setPort(port);
+        sender.setUsername(username);
+        sender.setPassword(password);
+
+        Properties properties = sender.getJavaMailProperties();
+        properties.put("mail.smtp.auth", Boolean.toString(authEnabled));
+        properties.put("mail.smtp.starttls.enable", Boolean.toString(starttlsEnabled));
+        properties.put("mail.smtp.starttls.required", Boolean.toString(starttlsRequired));
+        properties.put("mail.smtp.connectiontimeout", Integer.toString(connectionTimeout));
+        properties.put("mail.smtp.timeout", Integer.toString(timeout));
+        properties.put("mail.smtp.writetimeout", Integer.toString(writeTimeout));
+
+        return sender;
+    }
+
+    private boolean isPrimaryProviderConfigured() {
+        if (!primarySmtpEnabled || isBlank(primaryHost)) {
+            return false;
+        }
+        if (!primaryAuthEnabled) {
+            return true;
+        }
+        return !isBlank(primaryUsername) && !isBlank(primaryPassword);
+    }
+
+    private boolean isProviderConfigured(boolean enabled, String host, boolean authEnabled,
+            String username, String password) {
+        if (!enabled || isBlank(host)) {
+            return false;
+        }
+        if (!authEnabled) {
+            return true;
+        }
+        return !isBlank(username) && !isBlank(password);
+    }
+
+    private String resolveFromAddress(String configuredFrom, String fallbackUsername) {
+        if (!isBlank(configuredFrom)) {
+            return configuredFrom;
+        }
+        if (!isBlank(fallbackUsername)) {
+            return fallbackUsername;
+        }
+        return emailFrom;
+    }
+
+    private boolean isInstitutionalRecipient(String email) {
+        if (isBlank(email)) {
+            return false;
+        }
+        String normalizedEmail = email.trim().toLowerCase();
+        return normalizedEmail.endsWith(INSTITUTIONAL_MAIL_DOMAIN)
+                || normalizedEmail.endsWith(INSTITUTIONAL_DOMAIN);
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    @FunctionalInterface
+    private interface ProviderSendAction {
+        void send(SmtpProvider provider) throws Exception;
+    }
+
+    @FunctionalInterface
+    private interface ApiSendAction {
+        void send() throws Exception;
+    }
+
+    private record SmtpProvider(String name, JavaMailSender sender, String from) {
     }
 
     private String buildVerificationEmailContent(String firstName, String lastName, String token, UserType userType,

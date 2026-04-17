@@ -55,6 +55,7 @@ app:
     require-ssl: true
   email:
     reset-password-url: ${EMAIL_RESET_PASSWORD_URL:http://localhost:3000/reset-password}
+    mock-enabled: ${EMAIL_MOCK_ENABLED:false}
 
 logging:
   level:

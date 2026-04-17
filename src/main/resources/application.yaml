@@ -1,6 +1,21 @@
 spring:
   profiles:
     active: dev-http
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:true}
+          starttls:
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE:true}
+            required: ${MAIL_SMTP_STARTTLS_REQUIRED:true}
+          connectiontimeout: ${MAIL_SMTP_CONNECTION_TIMEOUT:5000}
+          timeout: ${MAIL_SMTP_TIMEOUT:5000}
+          writetimeout: ${MAIL_SMTP_WRITE_TIMEOUT:5000}
   security:
     oauth2:
       client:
@@ -21,6 +36,46 @@ app:
     from: ${EMAIL_FROM:noreply@techcup.edu.co}
     verification-url: ${EMAIL_VERIFICATION_URL:http://localhost:3000/verify-email}
     reset-password-url: ${EMAIL_RESET_PASSWORD_URL:http://localhost:3000/reset-password}
+    mock-enabled: ${EMAIL_MOCK_ENABLED:false}
+    resend:
+      enabled: ${RESEND_ENABLED:false}
+      prefer-api: ${RESEND_PREFER_API:true}
+      base-url: ${RESEND_BASE_URL:https://api.resend.com}
+      api-key: ${RESEND_API_KEY:}
+      from: ${RESEND_FROM:}
+      fallback-from: ${RESEND_FALLBACK_FROM:onboarding@resend.dev}
+      reply-to: ${RESEND_REPLY_TO:}
+      connect-timeout-ms: ${RESEND_CONNECT_TIMEOUT_MS:5000}
+      request-timeout-ms: ${RESEND_REQUEST_TIMEOUT_MS:10000}
+    smtp:
+      primary-enabled: ${MAIL_PRIMARY_ENABLED:true}
+      enable-provider-routing: ${MAIL_PROVIDER_ROUTING_ENABLED:true}
+      microsoft:
+        enabled: ${MAIL_MICROSOFT_ENABLED:false}
+        host: ${MAIL_MICROSOFT_HOST:smtp.office365.com}
+        port: ${MAIL_MICROSOFT_PORT:587}
+        username: ${MAIL_MICROSOFT_USERNAME:}
+        password: ${MAIL_MICROSOFT_PASSWORD:}
+        from: ${MAIL_MICROSOFT_FROM:}
+        auth: ${MAIL_MICROSOFT_AUTH:true}
+        starttls-enable: ${MAIL_MICROSOFT_STARTTLS_ENABLE:true}
+        starttls-required: ${MAIL_MICROSOFT_STARTTLS_REQUIRED:true}
+        connection-timeout: ${MAIL_MICROSOFT_CONNECTION_TIMEOUT:5000}
+        timeout: ${MAIL_MICROSOFT_TIMEOUT:5000}
+        write-timeout: ${MAIL_MICROSOFT_WRITE_TIMEOUT:5000}
+      google:
+        enabled: ${MAIL_GOOGLE_ENABLED:false}
+        host: ${MAIL_GOOGLE_HOST:smtp.gmail.com}
+        port: ${MAIL_GOOGLE_PORT:587}
+        username: ${MAIL_GOOGLE_USERNAME:}
+        password: ${MAIL_GOOGLE_PASSWORD:}
+        from: ${MAIL_GOOGLE_FROM:}
+        auth: ${MAIL_GOOGLE_AUTH:true}
+        starttls-enable: ${MAIL_GOOGLE_STARTTLS_ENABLE:true}
+        starttls-required: ${MAIL_GOOGLE_STARTTLS_REQUIRED:true}
+        connection-timeout: ${MAIL_GOOGLE_CONNECTION_TIMEOUT:5000}
+        timeout: ${MAIL_GOOGLE_TIMEOUT:5000}
+        write-timeout: ${MAIL_GOOGLE_WRITE_TIMEOUT:5000}
 
 server:
   port: 8443

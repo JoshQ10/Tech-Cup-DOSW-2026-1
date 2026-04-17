@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -54,6 +55,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserPersistenceMapper userPersistenceMapper;
 
     @Override
+    @Transactional
     @SuppressWarnings("null")
     public UserResponse register(RegisterRequest request) {
         registerRequestValidator.validate(request);
@@ -96,20 +98,14 @@ public class AuthServiceImpl implements AuthService {
         verificationTokenRepository.save(userPersistenceMapper.toEntity(token));
         log.debug("Verification token created for user: {}", savedUser.getId());
 
-        // Enviar email de verificación
-        try {
-            log.debug("Sending verification email to: {}", savedUser.getEmail());
-            emailService.sendVerificationEmail(
-                    savedUser.getEmail(),
-                    savedUser.getFirstName(),
-                    savedUser.getLastName(),
-                    verificationToken,
-                    savedUser.getUserType(),
-                    savedUser.getRole());
-        } catch (Exception e) {
-            log.warn("Error sending verification email to {}: {}", savedUser.getEmail(), e.getMessage());
-            // No lanzar excepción, el usuario se registró correctamente
-        }
+        log.debug("Sending verification email to: {}", savedUser.getEmail());
+        emailService.sendVerificationEmail(
+                savedUser.getEmail(),
+                savedUser.getFirstName(),
+                savedUser.getLastName(),
+                verificationToken,
+                savedUser.getUserType(),
+                savedUser.getRole());
 
         return mapToUserResponse(savedUser);
     }
@@ -407,7 +403,7 @@ public class AuthServiceImpl implements AuthService {
     private User mapToUser(RegisterRequest request) {
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setActive(true); // TEMPORAL dev-http - volver a false antes de subir a produccion
+        user.setActive(false);
         user.setCreatedAt(LocalDateTime.now());
 
         // Asegurar que userType está correctamente asignado

@@ -10,6 +10,25 @@ Se han **eliminado TODOS los archivos innecesarios**:
 
 ---
 
+## ⚙️ AUTOMATIZADO SIN POWERSHELL MANUAL
+
+Puedes ejecutar todo desde VS Code sin escribir comandos:
+
+1. `Tasks: Run Task` → **Backend: Resend API setup wizard** (solo primera configuración)
+1. `Tasks: Run Task` → **Backend: Start HTTPS (real email forced)**
+2. `Tasks: Run Task` → **Backend: Open Swagger**
+3. `Tasks: Run Task` → **Backend: Smoke auth flow**
+
+También puedes usar un clic con:
+
+- `scripts/dev-one-click-real-email.cmd`
+
+Guía completa de automatización:
+
+- `docs/GUIA_AUTOMATIZACION_SMTP_FRONTEND.md`
+
+---
+
 ## 🎯 COMANDO PARA EJECUTAR (ELIGE UNO)
 
 ### **OPCIÓN 1 - Script PowerShell (✅ RECOMENDADO)**
