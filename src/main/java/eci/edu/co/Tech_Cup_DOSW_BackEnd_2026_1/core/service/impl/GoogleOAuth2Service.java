@@ -6,6 +6,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.EmailService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.InstitutionEmailUtils;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
@@ -23,6 +24,7 @@ public class GoogleOAuth2Service {
 
     private final UserRepository userRepository;
     private final UserPersistenceMapper userPersistenceMapper;
+    private final EmailService emailService;
 
     public User validateAndGetGoogleUser(String idToken) {
         try {
@@ -78,6 +80,17 @@ public class GoogleOAuth2Service {
             User savedUser = userPersistenceMapper.toModel(
                     userRepository.save(userPersistenceMapper.toEntity(newUser)));
             log.info("New user created from Google authentication with id: {}", savedUser.getId());
+
+            try {
+                emailService.sendOAuth2WelcomeEmail(
+                        savedUser.getEmail(),
+                        savedUser.getFirstName(),
+                        savedUser.getLastName(),
+                        savedUser.getRole(),
+                        "google");
+            } catch (Exception e) {
+                log.warn("OAuth2 welcome email failed for {}: {}", savedUser.getEmail(), e.getMessage());
+            }
 
             return savedUser;
 

@@ -89,7 +89,14 @@ jobs:
                 MAIL_PORT="${{ secrets.MAIL_PORT }}" \
                 MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
                 MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
-                QA_ALLOWED_ORIGINS="${{ secrets.QA_ALLOWED_ORIGINS }}"
+                QA_ALLOWED_ORIGINS="${{ secrets.QA_ALLOWED_ORIGINS }}" \
+                GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+                GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+                MICROSOFT_CLIENT_ID="${{ secrets.MICROSOFT_CLIENT_ID }}" \
+                MICROSOFT_CLIENT_SECRET="${{ secrets.MICROSOFT_CLIENT_SECRET }}" \
+                OAUTH2_SUCCESS_REDIRECT_URI="${{ secrets.OAUTH2_SUCCESS_REDIRECT_URI }}" \
+                EMAIL_VERIFICATION_URL="${{ secrets.EMAIL_VERIFICATION_URL }}" \
+                EMAIL_RESET_PASSWORD_URL="${{ secrets.EMAIL_RESET_PASSWORD_URL }}"
 
       - name: Deploy container to Azure App Service (QA)
         uses: azure/webapps-deploy@v3
@@ -148,7 +155,14 @@ jobs:
                 MAIL_PORT="${{ secrets.MAIL_PORT }}" \
                 MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
                 MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
-                PROD_ALLOWED_ORIGINS="${{ secrets.PROD_ALLOWED_ORIGINS }}"
+                PROD_ALLOWED_ORIGINS="${{ secrets.PROD_ALLOWED_ORIGINS }}" \
+                GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+                GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+                MICROSOFT_CLIENT_ID="${{ secrets.MICROSOFT_CLIENT_ID }}" \
+                MICROSOFT_CLIENT_SECRET="${{ secrets.MICROSOFT_CLIENT_SECRET }}" \
+                OAUTH2_SUCCESS_REDIRECT_URI="${{ secrets.OAUTH2_SUCCESS_REDIRECT_URI }}" \
+                EMAIL_VERIFICATION_URL="${{ secrets.EMAIL_VERIFICATION_URL }}" \
+                EMAIL_RESET_PASSWORD_URL="${{ secrets.EMAIL_RESET_PASSWORD_URL }}"
 
       - name: Deploy container to Azure App Service (PROD)
         uses: azure/webapps-deploy@v3

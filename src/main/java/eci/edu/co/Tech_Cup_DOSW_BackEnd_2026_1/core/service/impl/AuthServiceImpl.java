@@ -407,7 +407,7 @@ public class AuthServiceImpl implements AuthService {
     private User mapToUser(RegisterRequest request) {
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setActive(true); // TEMPORAL dev-http - volver a false antes de subir a produccion
+        user.setActive(false);
         user.setCreatedAt(LocalDateTime.now());
 
         // Asegurar que userType está correctamente asignado

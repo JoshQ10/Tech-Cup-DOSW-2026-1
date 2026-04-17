@@ -119,6 +119,179 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    @SuppressWarnings("null")
+    @Override
+    public void sendOAuth2WelcomeEmail(String email, String firstName, String lastName, Role role, String provider) {
+        try {
+            log.info("Sending OAuth2 welcome email to: {} (provider: {}, role: {})", email, provider, role);
+
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+
+            helper.setFrom(emailFrom);
+            helper.setTo(email);
+
+            String providerLabel = "microsoft".equalsIgnoreCase(provider) ? "Microsoft" : "Google";
+            String roleLabel = role == Role.CAPTAIN ? "Capitán" : "Jugador";
+            helper.setSubject("¡Bienvenido " + roleLabel + "! Tu cuenta Tech Cup está lista - " + providerLabel);
+
+            String htmlContent = buildOAuth2WelcomeEmailContent(firstName, lastName, role, providerLabel, email);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(mimeMessage);
+            log.info("OAuth2 welcome email sent successfully to: {}", email);
+
+        } catch (MessagingException e) {
+            log.error("Error sending OAuth2 welcome email to {}: {}", email, e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error sending OAuth2 welcome email to {}: {}", email, e.getMessage(), e);
+        }
+    }
+
+    private String buildOAuth2WelcomeEmailContent(String firstName, String lastName, Role role, String provider,
+            String email) {
+        boolean isCaptain = role == Role.CAPTAIN;
+
+        String headerGradient = isCaptain
+                ? "linear-gradient(135deg, #b45309 0%%, #f59e0b 100%%)"
+                : "linear-gradient(135deg, #667eea 0%%, #764ba2 100%%)";
+        String accentColor = isCaptain ? "#b45309" : "#667eea";
+        String roleLabel = isCaptain ? "Capitán" : "Jugador";
+        String roleEmoji = isCaptain ? "🏆" : "⚽";
+        String providerEmoji = "Microsoft".equals(provider) ? "🪟" : "🔵";
+
+        String roleMessage = isCaptain
+                ? "Eres el capitán de tu equipo. Desde tu cuenta puedes crear tu equipo, invitar jugadores y gestionar cada detalle para llevar a tu grupo a la victoria."
+                : "Tu cuenta como jugador está lista. Explora los torneos, únete a un equipo y demuestra tu talento en la cancha.";
+
+        return String.format(
+                """
+                        <!DOCTYPE html>
+                        <html lang="es">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <style>
+                                body {
+                                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                    line-height: 1.6;
+                                    color: #333;
+                                    background-color: #f5f5f5;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                .container {
+                                    max-width: 600px;
+                                    margin: 20px auto;
+                                    background-color: #ffffff;
+                                    border-radius: 8px;
+                                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                                    overflow: hidden;
+                                }
+                                .header {
+                                    background: %s;
+                                    color: white;
+                                    padding: 30px;
+                                    text-align: center;
+                                }
+                                .header h1 { margin: 0 0 6px 0; font-size: 24px; }
+                                .provider-badge {
+                                    display: inline-block;
+                                    background: rgba(255,255,255,0.25);
+                                    padding: 4px 14px;
+                                    border-radius: 20px;
+                                    font-size: 13px;
+                                    margin-top: 6px;
+                                }
+                                .content { padding: 30px; }
+                                .role-tag {
+                                    display: inline-block;
+                                    background: %s;
+                                    color: white;
+                                    padding: 4px 16px;
+                                    border-radius: 20px;
+                                    font-size: 13px;
+                                    font-weight: bold;
+                                    margin-bottom: 16px;
+                                }
+                                .message {
+                                    background-color: #f9f9f9;
+                                    border-left: 4px solid %s;
+                                    padding: 15px;
+                                    border-radius: 4px;
+                                    margin: 20px 0;
+                                }
+                                .notice {
+                                    background-color: #ecfdf5;
+                                    border-left: 4px solid #10b981;
+                                    padding: 14px;
+                                    border-radius: 4px;
+                                    margin: 18px 0;
+                                    font-size: 14px;
+                                }
+                                .user-info {
+                                    background-color: #e8f4f8;
+                                    padding: 15px;
+                                    border-radius: 4px;
+                                    margin: 15px 0;
+                                }
+                                .user-info p { margin: 5px 0; }
+                                .footer {
+                                    background-color: #f5f5f5;
+                                    padding: 20px;
+                                    text-align: center;
+                                    font-size: 12px;
+                                    color: #666;
+                                    border-top: 1px solid #ddd;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div class="header">
+                                    <h1>%s Tech Cup DOSW 2026</h1>
+                                    <p style="margin: 4px 0;">¡Cuenta creada exitosamente!</p>
+                                    <div class="provider-badge">%s Conectado con %s</div>
+                                </div>
+                                <div class="content">
+                                    <span class="role-tag">%s %s</span>
+                                    <p><strong>Hola %s %s,</strong></p>
+                                    <div class="notice">
+                                        ✅ Tu correo fue verificado automáticamente por <strong>%s</strong>. Tu cuenta ya está activa.
+                                    </div>
+                                    <div class="message">
+                                        %s
+                                    </div>
+                                    <div class="user-info">
+                                        <p><strong>Rol:</strong> %s</p>
+                                        <p><strong>Correo:</strong> %s</p>
+                                        <p><strong>Acceso vía:</strong> %s</p>
+                                    </div>
+                                    <p style="color: #666; font-size: 14px;">¡Ya puedes iniciar sesión! Usa el botón de <strong>%s</strong> en la pantalla de ingreso.</p>
+                                </div>
+                                <div class="footer">
+                                    <p style="margin: 0;">
+                                        © 2026 Tech Cup DOSW - Escuela Colombiana de Ingeniería Julio Garavito<br>
+                                        Este es un correo automático, por favor no respondas.
+                                    </p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                        """,
+                headerGradient,
+                accentColor,
+                accentColor,
+                roleEmoji,
+                providerEmoji, provider,
+                roleEmoji, roleLabel,
+                firstName, lastName,
+                provider,
+                roleMessage,
+                roleLabel, email, provider,
+                provider);
+    }
+
     private String buildVerificationEmailContent(String firstName, String lastName, String token, UserType userType,
             Role role, String email) {
         String verificationLink = String.format("%s?token=%s", verificationUrl, token);

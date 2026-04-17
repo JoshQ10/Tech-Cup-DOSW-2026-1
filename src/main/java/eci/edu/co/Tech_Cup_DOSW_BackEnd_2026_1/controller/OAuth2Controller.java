@@ -32,6 +32,17 @@ public class OAuth2Controller {
         return ResponseEntity.ok(Map.of("authorizationUrl", authorizationUrl));
     }
 
+    @GetMapping("/microsoft")
+    @Operation(summary = "Start authentication with Microsoft", description = "Returns the URL to start OAuth2 flow with Microsoft")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authorization URL generated")
+    })
+    public ResponseEntity<Map<String, String>> microsoftAuthorizationUrl() {
+        String authorizationUrl = "/oauth2/authorization/microsoft";
+        log.info("OAuth2 Microsoft authorization URL requested");
+        return ResponseEntity.ok(Map.of("authorizationUrl", authorizationUrl));
+    }
+
     @GetMapping("/success")
     @Operation(summary = "OAuth2 successful callback", description = "Receives tokens issued by the API after OAuth2 login")
     @ApiResponses(value = {

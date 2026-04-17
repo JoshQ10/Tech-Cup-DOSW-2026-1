@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.EmailService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.InstitutionEmailUtils;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
@@ -26,14 +27,23 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final UserRepository userRepository;
     private final UserPersistenceMapper userPersistenceMapper;
+    private final EmailService emailService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oauth2User = delegate.loadUser(userRequest);
 
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+
         String email = oauth2User.getAttribute("email");
+        if (email == null || email.isBlank()) {
+            // Microsoft puede retornar el email en preferred_username
+            email = oauth2User.getAttribute("preferred_username");
+        }
         String name = oauth2User.getAttribute("name");
+        String givenName = oauth2User.getAttribute("given_name");
+        String familyName = oauth2User.getAttribute("family_name");
 
         if (email == null || email.isBlank()) {
             log.error("OAuth2 provider did not return email attribute");
@@ -41,21 +51,43 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                     new OAuth2Error("invalid_user_info", "OAuth2 provider did not return email", null));
         }
 
-        User user = userRepository.findByEmail(email)
+        final String finalEmail = email;
+        final String finalRegistrationId = registrationId;
+        final String finalName = name;
+        final String finalGivenName = givenName;
+        final String finalFamilyName = familyName;
+
+        boolean isNewUser = userRepository.findByEmail(finalEmail).isEmpty();
+
+        User user = userRepository.findByEmail(finalEmail)
                 .map(userPersistenceMapper::toModel)
-                .orElseGet(() -> createOauthUser(email, name));
+                .orElseGet(() -> createOauthUser(finalEmail, finalName, finalGivenName, finalFamilyName, finalRegistrationId));
+
+        if (isNewUser) {
+            try {
+                emailService.sendOAuth2WelcomeEmail(
+                        user.getEmail(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getRole(),
+                        finalRegistrationId);
+            } catch (Exception e) {
+                log.warn("OAuth2 welcome email failed for {}: {}", user.getEmail(), e.getMessage());
+            }
+        }
 
         ensureDefaults(user);
-        log.debug("OAuth2 user processed successfully for email: {}", email);
+        log.debug("OAuth2 user processed successfully for email: {}", finalEmail);
 
         return oauth2User;
     }
 
-    private User createOauthUser(String email, String name) {
-        // Separar nombre y apellido si es posible
-        String firstName = name != null ? name : "User";
-        String lastName = "";
-        if (name != null && name.contains(" ")) {
+    private User createOauthUser(String email, String name, String givenName, String familyName,
+            String registrationId) {
+        String firstName = givenName != null && !givenName.isBlank() ? givenName
+                : (name != null ? name : "User");
+        String lastName = familyName != null && !familyName.isBlank() ? familyName : "";
+        if ((familyName == null || familyName.isBlank()) && name != null && name.contains(" ")) {
             String[] parts = name.split(" ", 2);
             firstName = parts[0];
             lastName = parts[1];
@@ -67,9 +99,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         User newUser = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .username(email.split("@")[0])
+                .username(email.split("@")[0] + "-" + UUID.randomUUID().toString().substring(0, 8))
                 .email(email)
-                .password("oauth2-" + UUID.randomUUID())
+                .password("oauth2-" + registrationId + "-" + UUID.randomUUID())
                 .role(Role.PLAYER)
                 .userType(userType)
                 .active(true)
