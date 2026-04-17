@@ -381,7 +381,6 @@ class TournamentServiceImplTest {
     @DisplayName("getTournamentBracket debe retornar bracket del torneo")
     void getTournamentBracketSuccess() {
         when(tournamentRepository.existsById(1L)).thenReturn(true);
-        when(tournamentRepository.findById(1L)).thenReturn(Optional.of(entity));
         when(eliminationBracketRepository.findByTournamentIdOrderByRoundAscMatchPositionAsc(1L))
                 .thenReturn(Collections.emptyList());
 

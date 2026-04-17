@@ -325,6 +325,12 @@ public class AuthServiceImpl implements AuthService {
                     return new ResourceNotFoundException("User not found");
                 });
 
+        // Revocar el refresh token usado para que no pueda reutilizarse
+        revokedRefreshTokenRepository.save(RevokedRefreshTokenEntity.builder()
+                .token(refreshToken)
+                .revokedAt(LocalDateTime.now())
+                .build());
+
         String newAccessToken = jwtService.generateAccessToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user);
 

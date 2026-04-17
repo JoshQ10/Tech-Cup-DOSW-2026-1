@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging.ServiceLoggingAspect;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging.RequestTracingFilter;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging.ControllerLoggingAspect;
@@ -210,6 +211,9 @@ class CoreLoggingTest {
     @Mock
     private ProceedingJoinPoint mockJoinPoint;
 
+    @Mock
+    private Signature mockSignature;
+
     @Test
     @DisplayName("ServiceLoggingAspect should instantiate")
     void testServiceLoggingAspectInstantiation() {
@@ -221,7 +225,8 @@ class CoreLoggingTest {
     @DisplayName("ServiceLoggingAspect logServiceCalls method execution")
     void testServiceLoggingAspectLogServiceCalls() throws Throwable {
         ServiceLoggingAspect aspect = new ServiceLoggingAspect();
-        when(mockJoinPoint.getSignature().toShortString()).thenReturn("testMethod()");
+        when(mockJoinPoint.getSignature()).thenReturn(mockSignature);
+        when(mockSignature.toShortString()).thenReturn("testMethod()");
         when(mockJoinPoint.proceed()).thenReturn("test-result");
 
         Object result = aspect.logServiceCalls(mockJoinPoint);
@@ -242,7 +247,8 @@ class CoreLoggingTest {
     @DisplayName("ControllerLoggingAspect logControllerCalls method execution")
     void testControllerLoggingAspectLogControllerCalls() throws Throwable {
         ControllerLoggingAspect aspect = new ControllerLoggingAspect();
-        when(mockJoinPoint.getSignature().toShortString()).thenReturn("getPlayer()");
+        when(mockJoinPoint.getSignature()).thenReturn(mockSignature);
+        when(mockSignature.toShortString()).thenReturn("getPlayer()");
         when(mockJoinPoint.getArgs()).thenReturn(new Object[]{"arg1", "arg2"});
         when(mockJoinPoint.proceed()).thenReturn("controller-result");
 
@@ -264,7 +270,8 @@ class CoreLoggingTest {
     @DisplayName("RepositoryLoggingAspect logRepositoryCalls method execution")
     void testRepositoryLoggingAspectLogRepositoryCalls() throws Throwable {
         RepositoryLoggingAspect aspect = new RepositoryLoggingAspect();
-        when(mockJoinPoint.getSignature().toShortString()).thenReturn("findByEmail()");
+        when(mockJoinPoint.getSignature()).thenReturn(mockSignature);
+        when(mockSignature.toShortString()).thenReturn("findByEmail()");
         when(mockJoinPoint.proceed()).thenReturn("repository-result");
 
         Object result = aspect.logRepositoryCalls(mockJoinPoint);

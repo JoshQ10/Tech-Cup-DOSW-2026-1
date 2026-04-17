@@ -27,8 +27,6 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordRe
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.VerificationTokenRepository;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.PasswordResetTokenEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -92,12 +90,6 @@ class AuthServiceImplTest {
 
         @Mock
         private UserPersistenceMapper userPersistenceMapper;
-
-        @Mock
-        private RevokedRefreshTokenRepository revokedRefreshTokenRepository;
-
-        @Mock
-        private PasswordResetTokenRepository passwordResetTokenRepository;
 
         @InjectMocks
         private AuthServiceImpl authService;
@@ -514,6 +506,7 @@ class AuthServiceImplTest {
 
             assertNotNull(response);
             assertEquals("Test", response.getFirstName());
+        }
 
         @Test
         @DisplayName("Should send verification email with correct params after registration")

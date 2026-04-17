@@ -1,9 +1,8 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Properties;
 
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -102,7 +102,7 @@ class EmailServiceImplTest {
     void testSendVerificationEmailWithMessagingException() throws Exception {
         MimeMessage mimeMessage = new MimeMessage(Session.getDefaultInstance(new Properties()));
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-        doThrow(new jakarta.mail.MessagingException("SMTP connection failed"))
+        doThrow(new MailSendException("SMTP connection failed"))
                 .when(mailSender).send(any(MimeMessage.class));
 
         emailService.sendVerificationEmail(TEST_EMAIL, TEST_FIRST_NAME, TEST_LAST_NAME, TEST_TOKEN,
@@ -124,49 +124,12 @@ class EmailServiceImplTest {
     void testSendPasswordResetEmailWithMessagingException() throws Exception {
         MimeMessage mimeMessage = new MimeMessage(Session.getDefaultInstance(new Properties()));
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
-        doThrow(new jakarta.mail.MessagingException("Failed to send email"))
+        doThrow(new MailSendException("Failed to send email"))
                 .when(mailSender).send(any(MimeMessage.class));
 
         emailService.sendPasswordResetEmail(TEST_EMAIL, TEST_FIRST_NAME, TEST_LAST_NAME, TEST_TOKEN);
 
         verify(mailSender).send(any(MimeMessage.class));
-    }
-}
-package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
-
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
-import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.EmailServiceImpl;
-import jakarta.mail.Session;
-import jakarta.mail.internet.MimeMessage;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
-@DisplayName("EmailServiceImpl - Correos de activación de cuenta")
-class EmailServiceImplTest {
-
-    @Mock
-    private JavaMailSender mailSender;
-
-    @InjectMocks
-    private EmailServiceImpl emailService;
-
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(emailService, "emailFrom", "noreply@techcup.edu.co");
-        ReflectionTestUtils.setField(emailService, "verificationUrl", "http://localhost:3000/verify-email");
-        ReflectionTestUtils.setField(emailService, "resetPasswordUrl", "http://localhost:3000/reset-password");
     }
 
     @Test

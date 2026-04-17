@@ -9,6 +9,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenc
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -28,6 +29,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final UserRepository userRepository;
     private final UserPersistenceMapper userPersistenceMapper;
     private final EmailService emailService;
+
+    @Value("${app.oauth2.default-role:PLAYER}")
+    private String oauth2DefaultRole;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -96,13 +100,23 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // Determinar tipo de usuario según dominio
         UserType userType = InstitutionEmailUtils.isEscuelaingEmail(email) ? UserType.INTERNAL : UserType.EXTERNAL;
 
+        Role assignedRole;
+        try {
+            String roleValue = (oauth2DefaultRole != null && !oauth2DefaultRole.isBlank())
+                    ? oauth2DefaultRole : "PLAYER";
+            assignedRole = Role.valueOf(roleValue.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid app.oauth2.default-role='{}', falling back to PLAYER", oauth2DefaultRole);
+            assignedRole = Role.PLAYER;
+        }
+
         User newUser = User.builder()
                 .firstName(firstName)
                 .lastName(lastName)
                 .username(email.split("@")[0] + "-" + UUID.randomUUID().toString().substring(0, 8))
                 .email(email)
                 .password("oauth2-" + registrationId + "-" + UUID.randomUUID())
-                .role(Role.PLAYER)
+                .role(assignedRole)
                 .userType(userType)
                 .active(true)
                 .createdAt(LocalDateTime.now())

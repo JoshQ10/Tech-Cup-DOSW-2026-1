@@ -60,11 +60,15 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String accessToken = jwtService.generateAccessToken(user, oauth2AccessTokenTtlMs);
         String refreshToken = jwtService.generateRefreshToken(user, oauth2RefreshTokenTtlMs);
 
+        // Tokens se pasan en el fragment (#) de la URL para que el navegador no los
+        // envie al servidor ni los almacene en logs o cabeceras Referer
+        String fragment = "accessToken=" + accessToken
+                + "&refreshToken=" + refreshToken
+                + "&tokenType=Bearer";
+
         @SuppressWarnings("null")
         String redirectUrl = UriComponentsBuilder.fromUriString(successRedirectUri)
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
-                .queryParam("tokenType", "Bearer")
+                .fragment(fragment)
                 .build(true)
                 .toUriString();
 
