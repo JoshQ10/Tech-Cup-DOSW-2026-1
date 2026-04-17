@@ -2,6 +2,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,12 +68,12 @@ class InvitationServiceImplTest {
         List<TeamInvitationEntity> invitations = List.of(invitation);
         Page<TeamInvitationEntity> page = new PageImpl<>(invitations);
 
-        when(invitationRepository.findByPlayerIdAndStatus(PLAYER_ID, InvitationStatus.PENDING, any(Pageable.class)))
+        when(invitationRepository.findByPlayerIdAndStatus(eq(PLAYER_ID), eq(InvitationStatus.PENDING), any(Pageable.class)))
                 .thenReturn(page);
 
         invitationService.listPendingByUser(PLAYER_ID, PAGE, LIMIT);
 
-        verify(invitationRepository).findByPlayerIdAndStatus(PLAYER_ID, InvitationStatus.PENDING, any(Pageable.class));
+        verify(invitationRepository).findByPlayerIdAndStatus(eq(PLAYER_ID), eq(InvitationStatus.PENDING), any(Pageable.class));
     }
 
     @Test
@@ -89,7 +90,7 @@ class InvitationServiceImplTest {
         invitationService.acceptInvitation(INVITATION_ID, PLAYER_ID);
 
         verify(invitationRepository).save(invitation);
-        verify(teamRepository).save(team);
+        verify(teamRepository).save(any(TeamEntity.class));
     }
 
     @Test

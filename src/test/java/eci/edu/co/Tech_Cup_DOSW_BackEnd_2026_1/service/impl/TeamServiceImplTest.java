@@ -231,7 +231,6 @@ class TeamServiceImplTest {
     @DisplayName("Should update team successfully")
     void shouldUpdateTeamSuccessfully() {
         when(teamRepository.findById(1L)).thenReturn(Optional.of(teamEntity));
-        when(teamPersistenceMapper.toModel(teamEntity)).thenReturn(teamModel);
         when(teamPersistenceMapper.toEntity(any(Team.class))).thenReturn(teamEntity);
         when(teamRepository.save(any(TeamEntity.class))).thenReturn(teamEntity);
         when(teamPersistenceMapper.toModel(any(TeamEntity.class))).thenReturn(teamModel);

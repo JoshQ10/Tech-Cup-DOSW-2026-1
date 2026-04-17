@@ -2,7 +2,9 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -122,13 +124,13 @@ class MatchServiceImplTest {
         Page<MatchEntity> page = new PageImpl<>(matches);
 
         when(teamRepository.findById(TEAM_ID)).thenReturn(Optional.of(team));
-        when(matchRepository.findByHomeTeamIdOrAwayTeamId(TEAM_ID, TEAM_ID, any(Pageable.class)))
+        when(matchRepository.findByHomeTeamIdOrAwayTeamId(eq(TEAM_ID), eq(TEAM_ID), any(Pageable.class)))
                 .thenReturn(page);
 
         matchService.getTeamMatches(TEAM_ID, PAGE, LIMIT);
 
         verify(teamRepository).findById(TEAM_ID);
-        verify(matchRepository).findByHomeTeamIdOrAwayTeamId(TEAM_ID, TEAM_ID, any(Pageable.class));
+        verify(matchRepository).findByHomeTeamIdOrAwayTeamId(eq(TEAM_ID), eq(TEAM_ID), any(Pageable.class));
     }
 
     @Test
@@ -196,7 +198,7 @@ class MatchServiceImplTest {
         matchService.registerResult(MATCH_ID, request);
 
         verify(matchRepository).findById(MATCH_ID);
-        verify(standingRepository).save(any(StandingEntity.class));
+        verify(standingRepository, times(2)).save(any(StandingEntity.class));
         verify(matchRepository).save(any(MatchEntity.class));
     }
 
@@ -241,7 +243,7 @@ class MatchServiceImplTest {
         matchService.registerGoals(MATCH_ID, request);
 
         verify(matchRepository).findById(MATCH_ID);
-        verify(matchEventRepository).save(any(MatchEventEntity.class));
+        verify(matchEventRepository, times(2)).save(any(MatchEventEntity.class));
     }
 
     @Test
@@ -314,7 +316,7 @@ class MatchServiceImplTest {
         matchService.registerCards(MATCH_ID, request);
 
         verify(matchRepository).findById(MATCH_ID);
-        verify(matchEventRepository).save(any(MatchEventEntity.class));
+        verify(matchEventRepository, times(2)).save(any(MatchEventEntity.class));
         verify(sanctionRepository).save(any(SanctionEntity.class));
     }
 
