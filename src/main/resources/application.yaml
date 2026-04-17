@@ -10,20 +10,7 @@ spring:
             client-secret: ${GOOGLE_CLIENT_SECRET:google-client-secret}
             scope: openid,profile,email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-          microsoft:
-            client-id: ${MICROSOFT_CLIENT_ID:microsoft-client-id}
-            client-secret: ${MICROSOFT_CLIENT_SECRET:microsoft-client-secret}
-            scope: openid,profile,email,User.Read
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            authorization-grant-type: authorization_code
-            client-name: Microsoft
-        provider:
-          microsoft:
-            authorization-uri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
-            token-uri: https://login.microsoftonline.com/common/oauth2/v2.0/token
-            jwk-set-uri: https://login.microsoftonline.com/common/discovery/v2.0/keys
-            user-info-uri: https://graph.microsoft.com/oidc/userinfo
-            user-name-attribute: sub
+
 
 app:
   oauth2:
