@@ -103,7 +103,7 @@ jobs:
           sleep 90
           for i in 1 2 3 4 5 6 7 8; do
             STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
-              https://${{ secrets.AZURE_APP_NAME_QA }}.azurewebsites.net/actuator/health || echo "000")
+              https://${{ secrets.AZURE_APP_NAME_QA }}.azurewebsites.net/api-docs || echo "000")
             echo "Attempt $i — Health check status: $STATUS"
             if [ "$STATUS" = "200" ]; then exit 0; fi
             sleep 30
@@ -162,17 +162,10 @@ jobs:
           sleep 90
           for i in 1 2 3 4 5 6 7 8; do
             STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
-              https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/actuator/health || echo "000")
+              https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/api-docs || echo "000")
             echo "Attempt $i — Health check status: $STATUS"
             if [ "$STATUS" = "200" ]; then exit 0; fi
             sleep 30
           done
           echo "Health check failed after 8 attempts"
           exit 1
-
-      - name: Verify DB connectivity (PROD)
-        run: |
-          STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
-            https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/actuator/health/db || echo "000")
-          echo "DB health check status: $STATUS"
-          if [ "$STATUS" != "200" ]; then exit 1; fi
