@@ -13,7 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,6 +44,7 @@ class JwtAuthEntryPointTest {
 
     @Test
     void testCommenceMethodExecution() throws Exception {
+        when(mockResponse.getOutputStream()).thenReturn(mockOutputStream);
         jwtAuthEntryPoint.commence(mockRequest, mockResponse, mockAuthException);
 
         assertThat(jwtAuthEntryPoint).isNotNull();
