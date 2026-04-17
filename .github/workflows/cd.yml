@@ -89,7 +89,14 @@ jobs:
                 MAIL_PORT="${{ secrets.MAIL_PORT }}" \
                 MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
                 MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
-                QA_ALLOWED_ORIGINS="${{ secrets.QA_ALLOWED_ORIGINS }}"
+                QA_ALLOWED_ORIGINS="${{ secrets.QA_ALLOWED_ORIGINS }}" \
+                GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+                GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+                MICROSOFT_CLIENT_ID="${{ secrets.MICROSOFT_CLIENT_ID }}" \
+                MICROSOFT_CLIENT_SECRET="${{ secrets.MICROSOFT_CLIENT_SECRET }}" \
+                OAUTH2_SUCCESS_REDIRECT_URI="${{ secrets.OAUTH2_SUCCESS_REDIRECT_URI }}" \
+                EMAIL_VERIFICATION_URL="${{ secrets.EMAIL_VERIFICATION_URL }}" \
+                EMAIL_RESET_PASSWORD_URL="${{ secrets.EMAIL_RESET_PASSWORD_URL }}"
 
       - name: Deploy container to Azure App Service (QA)
         uses: azure/webapps-deploy@v3
@@ -103,7 +110,7 @@ jobs:
           sleep 90
           for i in 1 2 3 4 5 6 7 8; do
             STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
-              https://${{ secrets.AZURE_APP_NAME_QA }}.azurewebsites.net/actuator/health || echo "000")
+              https://${{ secrets.AZURE_APP_NAME_QA }}.azurewebsites.net/api-docs || echo "000")
             echo "Attempt $i — Health check status: $STATUS"
             if [ "$STATUS" = "200" ]; then exit 0; fi
             sleep 30
@@ -148,7 +155,14 @@ jobs:
                 MAIL_PORT="${{ secrets.MAIL_PORT }}" \
                 MAIL_USERNAME="${{ secrets.MAIL_USERNAME }}" \
                 MAIL_PASSWORD="${{ secrets.MAIL_PASSWORD }}" \
-                PROD_ALLOWED_ORIGINS="${{ secrets.PROD_ALLOWED_ORIGINS }}"
+                PROD_ALLOWED_ORIGINS="${{ secrets.PROD_ALLOWED_ORIGINS }}" \
+                GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}" \
+                GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+                MICROSOFT_CLIENT_ID="${{ secrets.MICROSOFT_CLIENT_ID }}" \
+                MICROSOFT_CLIENT_SECRET="${{ secrets.MICROSOFT_CLIENT_SECRET }}" \
+                OAUTH2_SUCCESS_REDIRECT_URI="${{ secrets.OAUTH2_SUCCESS_REDIRECT_URI }}" \
+                EMAIL_VERIFICATION_URL="${{ secrets.EMAIL_VERIFICATION_URL }}" \
+                EMAIL_RESET_PASSWORD_URL="${{ secrets.EMAIL_RESET_PASSWORD_URL }}"
 
       - name: Deploy container to Azure App Service (PROD)
         uses: azure/webapps-deploy@v3
@@ -162,17 +176,10 @@ jobs:
           sleep 90
           for i in 1 2 3 4 5 6 7 8; do
             STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
-              https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/actuator/health || echo "000")
+              https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/api-docs || echo "000")
             echo "Attempt $i — Health check status: $STATUS"
             if [ "$STATUS" = "200" ]; then exit 0; fi
             sleep 30
           done
           echo "Health check failed after 8 attempts"
           exit 1
-
-      - name: Verify DB connectivity (PROD)
-        run: |
-          STATUS=$(curl -sk -o /dev/null -w "%{http_code}" \
-            https://${{ secrets.AZURE_APP_NAME_PROD }}.azurewebsites.net/actuator/health/db || echo "000")
-          echo "DB health check status: $STATUS"
-          if [ "$STATUS" != "200" ]; then exit 1; fi

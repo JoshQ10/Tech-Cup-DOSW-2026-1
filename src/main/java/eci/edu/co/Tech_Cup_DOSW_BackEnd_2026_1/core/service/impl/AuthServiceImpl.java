@@ -8,16 +8,19 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.UserMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.BusinessRuleException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ValidationException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.PasswordResetToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.AppConstants;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.LoginRequestValidator;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestValidator;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.AllowedIdentificationEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.VerificationTokenEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.RevokedRefreshTokenEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.AllowedIdentificationRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
@@ -31,7 +34,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.EnumSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -40,7 +45,10 @@ import java.util.UUID;
 @SuppressWarnings("null")
 public class AuthServiceImpl implements AuthService {
 
+    private static final Set<Role> PRIVILEGED_ROLES = EnumSet.of(Role.ADMINISTRATOR, Role.REFEREE, Role.ORGANIZER);
+
     private final UserRepository userRepository;
+    private final AllowedIdentificationRepository allowedIdentificationRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final RevokedRefreshTokenRepository revokedRefreshTokenRepository;
@@ -76,6 +84,22 @@ public class AuthServiceImpl implements AuthService {
         }
         log.debug("Email validation passed for: {}", request.getEmail());
 
+        // Verificar cédula en lista blanca para roles privilegiados
+        AllowedIdentificationEntity allowedEntry = null;
+        if (PRIVILEGED_ROLES.contains(request.getRole())) {
+            String identification = request.getIdentification().trim();
+            allowedEntry = allowedIdentificationRepository
+                    .findByIdentificationAndAllowedRoleAndUsedFalse(identification, request.getRole())
+                    .orElseThrow(() -> {
+                        log.warn("Registration blocked: identification {} not authorized for role {}",
+                                identification, request.getRole());
+                        return new ValidationException("Cédula no autorizada",
+                                java.util.Map.of("identification",
+                                        "La cédula no está registrada para el rol " + request.getRole().name()
+                                        + " o ya fue utilizada"));
+                    });
+        }
+
         User user = mapToUser(request);
         log.debug("User entity created - id: {}, role: {}", user.getId(), user.getRole());
 
@@ -83,6 +107,13 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userPersistenceMapper.toModel(savedEntity);
         log.info("User registered successfully with id: {}", savedUser.getId());
         log.debug("User persisted to database with created timestamp: {}", savedUser.getCreatedAt());
+
+        // Marcar cédula como utilizada (solo para roles privilegiados)
+        if (allowedEntry != null) {
+            allowedEntry.setUsed(true);
+            allowedIdentificationRepository.save(allowedEntry);
+            log.debug("Allowed identification marked as used for user: {}", savedUser.getId());
+        }
 
         // Generar token de verificación
         String verificationToken = UUID.randomUUID().toString();
@@ -407,12 +438,19 @@ public class AuthServiceImpl implements AuthService {
     private User mapToUser(RegisterRequest request) {
         User user = userMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setActive(true); // TEMPORAL dev-http - volver a false antes de subir a produccion
+        user.setActive(false);
         user.setCreatedAt(LocalDateTime.now());
 
         // Asegurar que userType está correctamente asignado
         if (request.getUserType() != null) {
             user.setUserType(request.getUserType());
+        }
+
+        // Establecer identificación solo para roles privilegiados; limpiarla para el resto
+        if (PRIVILEGED_ROLES.contains(request.getRole()) && request.getIdentification() != null) {
+            user.setIdentification(request.getIdentification().trim());
+        } else {
+            user.setIdentification(null);
         }
 
         return user;

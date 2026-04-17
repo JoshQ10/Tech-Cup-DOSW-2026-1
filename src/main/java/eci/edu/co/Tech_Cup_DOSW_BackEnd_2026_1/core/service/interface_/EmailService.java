@@ -49,4 +49,16 @@ public interface EmailService {
      * @param token     Token de recuperacion
      */
     void sendPasswordResetEmail(String email, String firstName, String lastName, String token);
+
+    /**
+     * Envía email de bienvenida para usuarios registrados vía OAuth2 (Google/Microsoft).
+     * La cuenta ya está activa porque el email fue verificado por el proveedor.
+     *
+     * @param email     Email del usuario
+     * @param firstName Nombre del usuario
+     * @param lastName  Apellido del usuario
+     * @param role      Rol del usuario (PLAYER, CAPTAIN, etc.)
+     * @param provider  Proveedor OAuth2 ("google" o "microsoft")
+     */
+    void sendOAuth2WelcomeEmail(String email, String firstName, String lastName, Role role, String provider);
 }

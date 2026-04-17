@@ -3,6 +3,7 @@ package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.oauth2;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Role;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.UserType;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.EmailService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
@@ -35,6 +36,9 @@ class CustomOAuth2UserServiceUnitTest {
     @Mock
     private UserPersistenceMapper userPersistenceMapper;
 
+    @Mock
+    private EmailService emailService;
+
     @InjectMocks
     private CustomOAuth2UserService customOAuth2UserService;
 
@@ -49,7 +53,7 @@ class CustomOAuth2UserServiceUnitTest {
     @DisplayName("CustomOAuth2UserService should have userRepository and mapper")
     void testUserRepositoryAndMapperInjection() {
         // Arrange & Act
-        CustomOAuth2UserService service = new CustomOAuth2UserService(userRepository, userPersistenceMapper);
+        CustomOAuth2UserService service = new CustomOAuth2UserService(userRepository, userPersistenceMapper, emailService);
 
         // Assert
         assertNotNull(service);

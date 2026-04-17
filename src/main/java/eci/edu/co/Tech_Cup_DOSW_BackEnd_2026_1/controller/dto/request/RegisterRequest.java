@@ -44,5 +44,8 @@ public class RegisterRequest {
 
     @Schema(description = "Rol asignado al usuario en el sistema", example = "PLAYER", requiredMode = Schema.RequiredMode.REQUIRED)
     private Role role;
+
+    @Schema(description = "Cédula de identidad (obligatoria para roles ADMINISTRATOR, REFEREE, ORGANIZER)", example = "1234567890")
+    private String identification;
 }
 

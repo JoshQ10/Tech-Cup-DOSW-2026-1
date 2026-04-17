@@ -22,6 +22,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.RegisterRequestVal
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.VerificationTokenEntity;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.AllowedIdentificationRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.VerificationTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
@@ -40,8 +43,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +58,16 @@ class AuthServiceImplTest {
         private UserRepository userRepository;
 
         @Mock
+        private AllowedIdentificationRepository allowedIdentificationRepository;
+
+        @Mock
         private VerificationTokenRepository verificationTokenRepository;
+
+        @Mock
+        private PasswordResetTokenRepository passwordResetTokenRepository;
+
+        @Mock
+        private RevokedRefreshTokenRepository revokedRefreshTokenRepository;
 
         @Mock
         private JwtService jwtService;
@@ -500,5 +514,109 @@ class AuthServiceImplTest {
 
             assertNotNull(response);
             assertEquals("Test", response.getFirstName());
+
+        @Test
+        @DisplayName("Should send verification email with correct params after registration")
+        void testRegisterSendsVerificationEmailWithCorrectParams() {
+                String institutionalEmail = "123.456-7@escuelaing.edu.co";
+
+                doNothing().when(registerRequestValidator).validate(any(RegisterRequest.class));
+                when(userRepository.findByEmail(institutionalEmail)).thenReturn(Optional.empty());
+                when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.empty());
+                when(userMapper.toEntity(any(RegisterRequest.class))).thenAnswer(inv -> {
+                        RegisterRequest r = inv.getArgument(0);
+                        return User.builder()
+                                        .firstName(r.getFirstName())
+                                        .lastName(r.getLastName())
+                                        .username(r.getUsername())
+                                        .email(r.getEmail())
+                                        .password("")
+                                        .role(r.getRole())
+                                        .userType(r.getUserType())
+                                        .build();
+                });
+                when(passwordEncoder.encode(anyString())).thenReturn("encoded-password");
+                when(userPersistenceMapper.toEntity(any(User.class))).thenReturn(UserEntity.builder().build());
+                when(userRepository.save(any(UserEntity.class))).thenReturn(testUserEntity);
+                when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(
+                                User.builder()
+                                                .id(1L)
+                                                .firstName("Test")
+                                                .lastName("User")
+                                                .username("testuser")
+                                                .email(institutionalEmail)
+                                                .password("encoded-password")
+                                                .role(Role.PLAYER)
+                                                .userType(UserType.INTERNAL)
+                                                .active(false)
+                                                .createdAt(LocalDateTime.now())
+                                                .build());
+                when(userPersistenceMapper.toEntity(any(VerificationToken.class)))
+                                .thenReturn(VerificationTokenEntity.builder().build());
+                when(verificationTokenRepository.save(any(VerificationTokenEntity.class)))
+                                .thenAnswer(inv -> inv.getArgument(0));
+                when(userMapper.toResponse(any(User.class))).thenReturn(UserResponse.builder()
+                                .id(1L).firstName("Test").lastName("User").username("testuser")
+                                .email(institutionalEmail).role(Role.PLAYER).active(false).build());
+
+                authService.register(registerRequest);
+
+                verify(emailService, times(1)).sendVerificationEmail(
+                                eq(institutionalEmail),
+                                eq("Test"),
+                                eq("User"),
+                                anyString(),
+                                eq(UserType.INTERNAL),
+                                eq(Role.PLAYER));
+        }
+
+        @Test
+        @DisplayName("Registration succeeds even if email sending fails")
+        void testRegisterSucceedsWhenEmailFails() {
+                String institutionalEmail = "123.456-7@escuelaing.edu.co";
+
+                doNothing().when(registerRequestValidator).validate(any(RegisterRequest.class));
+                when(userRepository.findByEmail(institutionalEmail)).thenReturn(Optional.empty());
+                when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.empty());
+                when(userMapper.toEntity(any(RegisterRequest.class))).thenAnswer(inv -> {
+                        RegisterRequest r = inv.getArgument(0);
+                        return User.builder()
+                                        .firstName(r.getFirstName())
+                                        .lastName(r.getLastName())
+                                        .username(r.getUsername())
+                                        .email(r.getEmail())
+                                        .password("")
+                                        .role(r.getRole())
+                                        .userType(r.getUserType())
+                                        .build();
+                });
+                when(passwordEncoder.encode(anyString())).thenReturn("encoded-password");
+                when(userPersistenceMapper.toEntity(any(User.class))).thenReturn(UserEntity.builder().build());
+                when(userRepository.save(any(UserEntity.class))).thenReturn(testUserEntity);
+                when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(
+                                User.builder()
+                                                .id(1L)
+                                                .firstName("Test")
+                                                .lastName("User")
+                                                .username("testuser")
+                                                .email(institutionalEmail)
+                                                .password("encoded-password")
+                                                .role(Role.PLAYER)
+                                                .userType(UserType.INTERNAL)
+                                                .active(false)
+                                                .createdAt(LocalDateTime.now())
+                                                .build());
+                when(userPersistenceMapper.toEntity(any(VerificationToken.class)))
+                                .thenReturn(VerificationTokenEntity.builder().build());
+                when(verificationTokenRepository.save(any(VerificationTokenEntity.class)))
+                                .thenAnswer(inv -> inv.getArgument(0));
+                when(userMapper.toResponse(any(User.class))).thenReturn(UserResponse.builder()
+                                .id(1L).firstName("Test").lastName("User").username("testuser")
+                                .email(institutionalEmail).role(Role.PLAYER).active(false).build());
+                doThrow(new RuntimeException("SMTP not available"))
+                                .when(emailService).sendVerificationEmail(anyString(), anyString(), anyString(),
+                                                anyString(), any(UserType.class), any(Role.class));
+
+                assertDoesNotThrow(() -> authService.register(registerRequest));
         }
 }

@@ -39,6 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,6 +74,7 @@ public class UserManagementController {
     private static final Pattern IDENTIFICATION_NUMERIC_PATTERN = Pattern.compile("^\\d+$");
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
     private final SportProfileRepository sportProfileRepository;
     private final MatchEventRepository matchEventRepository;
     private final LineupPlayerRepository lineupPlayerRepository;
@@ -235,7 +237,7 @@ public class UserManagementController {
                 .lastName(request.lastName())
                 .username(request.username())
                 .email(request.email())
-                .password(request.password() == null || request.password().isBlank() ? "changeme" : request.password())
+                .password(passwordEncoder.encode(request.password() == null || request.password().isBlank() ? "changeme" : request.password()))
                 .role(targetRole)
                 .userType(request.userType() == null ? UserType.EXTERNAL : request.userType())
                 .program(request.program())
@@ -278,7 +280,7 @@ public class UserManagementController {
         if (request.email() != null)
             user.setEmail(request.email());
         if (request.password() != null && !request.password().isBlank())
-            user.setPassword(request.password());
+            user.setPassword(passwordEncoder.encode(request.password()));
         if (request.role() != null)
             user.setRole(request.role());
         if (request.userType() != null)
