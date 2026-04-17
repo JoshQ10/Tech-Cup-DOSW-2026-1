@@ -14,6 +14,7 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.VerificationToken;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security.JwtService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.AuthServiceImpl;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.AuthService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.GoogleOAuth2Service;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.interface_.EmailService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.validator.LoginRequestValidator;
@@ -26,6 +27,9 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordRe
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.VerificationTokenRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.PasswordResetTokenRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.RevokedRefreshTokenRepository;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.PasswordResetTokenEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,6 +92,12 @@ class AuthServiceImplTest {
 
         @Mock
         private UserPersistenceMapper userPersistenceMapper;
+
+        @Mock
+        private RevokedRefreshTokenRepository revokedRefreshTokenRepository;
+
+        @Mock
+        private PasswordResetTokenRepository passwordResetTokenRepository;
 
         @InjectMocks
         private AuthServiceImpl authService;
@@ -323,6 +333,187 @@ class AuthServiceImplTest {
                 assertThrows(BusinessRuleException.class, () -> authService.login(loginRequest));
                 verify(userRepository, times(1)).findByEmail(loginRequest.getEmail());
         }
+        @Test
+        void testRefreshTokenSuccess() {
+            when(jwtService.isTokenValid(anyString())).thenReturn(true);
+            when(jwtService.isRefreshToken(anyString())).thenReturn(true);
+            when(revokedRefreshTokenRepository.existsByToken(anyString())).thenReturn(false);
+            when(jwtService.extractEmail(anyString())).thenReturn(testUser.getEmail());
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUserEntity));
+            when(userPersistenceMapper.toModel(any(UserEntity.class))).thenReturn(testUser);
+            when(jwtService.generateAccessToken(any(User.class))).thenReturn("new-access");
+            when(jwtService.generateRefreshToken(any(User.class))).thenReturn("new-refresh");
+            when(userMapper.toResponse(any(User.class))).thenReturn(UserResponse.builder().build());
+
+            LoginResponse response = authService.refreshToken("token");
+
+            assertNotNull(response);
+            assertEquals("new-access", response.getAccessToken());
+        }
+
+        @Test
+        void testRefreshTokenInvalid() {
+            when(jwtService.isTokenValid(anyString())).thenReturn(false);
+
+            assertThrows(BusinessRuleException.class,
+                    () -> authService.refreshToken("bad-token"));
+        }
+
+
+        @Test
+        void testLogoutSuccess() {
+            when(jwtService.isTokenValid(anyString())).thenReturn(true);
+            when(jwtService.isRefreshToken(anyString())).thenReturn(true);
+            when(revokedRefreshTokenRepository.existsByToken(anyString())).thenReturn(false);
+
+            String result = authService.logout("token");
+
+            assertNotNull(result);
+        }
+
+
+        @Test
+        void testForgotPasswordUserNotFound() {
+            when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+
+            String response = authService.forgotPassword("x@x.com");
+
+            assertNotNull(response);
+        }
+
+        @Test
+        void testResetPasswordSuccess() {
+            PasswordResetTokenEntity entity = PasswordResetTokenEntity.builder()
+                    .token("t")
+                    .userId(1L)
+                    .used(false)
+                    .expiresAt(LocalDateTime.now().plusMinutes(10))
+                    .build();
+
+            when(passwordResetTokenRepository.findByToken(anyString()))
+                    .thenReturn(Optional.of(entity));
+
+            when(userPersistenceMapper.toModel(any(PasswordResetTokenEntity.class)))
+                    .thenAnswer(inv -> {
+                        PasswordResetTokenEntity e = inv.getArgument(0);
+                        return eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.PasswordResetToken.builder()
+                                .token(e.getToken())
+                                .userId(e.getUserId())
+                                .used(e.isUsed())
+                                .expiresAt(e.getExpiresAt())
+                                .build();
+                    });
+
+            when(userRepository.findById(1L))
+                    .thenReturn(Optional.of(testUserEntity));
+
+            when(userPersistenceMapper.toModel(any(UserEntity.class)))
+                    .thenReturn(testUser);
+
+            when(passwordEncoder.encode(anyString()))
+                    .thenReturn("encoded");
+
+            String result = authService.resetPassword("t", "12345678", "12345678");
+
+            assertNotNull(result);
+        }
+
+        @Test
+        @DisplayName("AuthService interface can be implemented by AuthServiceImpl")
+        void testAuthServiceInterfaceImplementation() {
+            AuthService service = authService;
+
+            assertNotNull(service);
+            assertTrue(service instanceof AuthServiceImpl);
+        }
+
+        @Test
+        @DisplayName("AuthService interface method execution through interface reference")
+        void testAuthServiceInterfaceMethodExecution() {
+            UserResponse expectedResponse = UserResponse.builder()
+                    .id(1L)
+                    .firstName("External")
+                    .lastName("Player")
+                    .username("extplayer")
+                    .email("player@gmail.com")
+                    .role(Role.PLAYER)
+                    .active(true)
+                    .build();
+
+            when(userRepository.findByEmail("player@gmail.com")).thenReturn(Optional.of(testUserEntity));
+            when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(testUser);
+            when(passwordEncoder.matches("password123", testUser.getPassword())).thenReturn(true);
+            when(jwtService.generateAccessToken(testUser)).thenReturn("access-token");
+            when(jwtService.generateRefreshToken(testUser)).thenReturn("refresh-token");
+            when(userMapper.toResponse(any(User.class))).thenReturn(expectedResponse);
+
+            AuthService interfaceRef = authService;
+            LoginRequest request = LoginRequest.builder()
+                    .email("player@gmail.com")
+                    .password("password123")
+                    .build();
+
+            LoginResponse response = interfaceRef.login(request);
+
+            assertNotNull(response);
+            assertEquals("access-token", response.getAccessToken());
+        }
+
+        @Test
+        @DisplayName("AuthService interface register method execution through interface reference")
+        void testAuthServiceInterfaceRegisterMethodExecution() {
+            UserResponse expectedResponse = UserResponse.builder()
+                    .id(1L)
+                    .firstName("Test")
+                    .lastName("User")
+                    .username("testuser")
+                    .email("test@example.com")
+                    .role(Role.PLAYER)
+                    .active(false)
+                    .build();
+
+            doNothing().when(registerRequestValidator).validate(any(RegisterRequest.class));
+            when(userRepository.findByEmail(registerRequest.getEmail())).thenReturn(Optional.empty());
+            when(userRepository.findByUsername(registerRequest.getUsername())).thenReturn(Optional.empty());
+            when(userMapper.toEntity(any(RegisterRequest.class))).thenAnswer(inv -> {
+                RegisterRequest r = inv.getArgument(0);
+                return User.builder()
+                        .firstName(r.getFirstName())
+                        .lastName(r.getLastName())
+                        .username(r.getUsername())
+                        .email(r.getEmail())
+                        .password("")
+                        .role(r.getRole())
+                        .userType(r.getUserType())
+                        .build();
+            });
+            when(passwordEncoder.encode(anyString())).thenReturn("encoded-password");
+            when(userPersistenceMapper.toEntity(any(User.class))).thenReturn(UserEntity.builder().build());
+            when(userRepository.save(any(UserEntity.class))).thenReturn(testUserEntity);
+            when(userPersistenceMapper.toModel(testUserEntity)).thenReturn(
+                    User.builder()
+                            .id(1L)
+                            .firstName("Test")
+                            .lastName("User")
+                            .username("testuser")
+                            .email("test@example.com")
+                            .password("encoded-password")
+                            .role(Role.PLAYER)
+                            .active(false)
+                            .createdAt(LocalDateTime.now())
+                            .build());
+            when(userPersistenceMapper.toEntity(any(VerificationToken.class)))
+                    .thenReturn(VerificationTokenEntity.builder().build());
+            when(verificationTokenRepository.save(any(VerificationTokenEntity.class)))
+                    .thenAnswer(inv -> inv.getArgument(0));
+            when(userMapper.toResponse(any(User.class))).thenReturn(expectedResponse);
+
+            AuthService interfaceRef = authService;
+
+            UserResponse response = interfaceRef.register(registerRequest);
+
+            assertNotNull(response);
+            assertEquals("Test", response.getFirstName());
 
         @Test
         @DisplayName("Should send verification email with correct params after registration")

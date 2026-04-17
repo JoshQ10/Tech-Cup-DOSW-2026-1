@@ -1,14 +1,18 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.service.impl;
 
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.AvailabilityRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.PhotoUploadRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.ProfileRequest;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.request.SportsProfileUpdateRequest;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.PlayerSearchResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.dto.response.ProfileResponse;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.controller.mapper.SportProfileMapper;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.DominantFoot;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.enums.Position;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.exception.ResourceNotFoundException;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.SportProfile;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.model.user.User;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.FileStorageService;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.service.impl.PlayerServiceImpl;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.util.PhotoValidationUtil;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.SportProfileEntity;
@@ -16,6 +20,17 @@ import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.entity.user.UserEntit
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.mapper.UserPersistenceMapper;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.SportProfileRepository;
 import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.persistence.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.multipart.MultipartFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,6 +67,9 @@ class PlayerServiceImplTest {
 
     @Mock
     private UserPersistenceMapper userPersistenceMapper;
+
+    @Mock
+    private FileStorageService fileStorageService;
 
     @InjectMocks
     private PlayerServiceImpl playerService;
@@ -350,4 +368,180 @@ class PlayerServiceImplTest {
         assertFalse(result.isLastPage());
         assertTrue(result.isHasNextPage());
     }
+
+    @Test
+    @DisplayName("Should upload photo successfully")
+    void testUploadPhotoSuccess() {
+        PhotoUploadRequest photoRequest = PhotoUploadRequest.builder()
+                .photoUrl("data:image/jpeg;base64,/9j/4AAQSkZJRgABA...")
+                .build();
+
+        ProfileResponse expectedResponse = ProfileResponse.builder()
+                .id(1L).userId(1L).position(Position.FORWARD).available(true).build();
+
+        stubProfileFindAndMap();
+        doNothing().when(photoValidationUtil).validateBase64Photo(anyString());
+        stubProfilePersist();
+        stubUserLookup();
+        when(sportProfileMapper.toResponse(any(SportProfile.class))).thenReturn(expectedResponse);
+
+        ProfileResponse response = playerService.uploadPhoto(1L, photoRequest);
+
+        assertNotNull(response);
+        assertEquals(1L, response.getId());
+        verify(photoValidationUtil).validateBase64Photo(photoRequest.getPhotoUrl());
+        verify(sportProfileRepository).save(any(SportProfileEntity.class));
+    }
+
+    @Test
+    @DisplayName("Should fail when uploading photo for non-existent profile")
+    void testUploadPhotoNotFound() {
+        PhotoUploadRequest photoRequest = PhotoUploadRequest.builder()
+                .photoUrl("data:image/jpeg;base64,/9j/4AAQSkZJRgABA...")
+                .build();
+
+        doNothing().when(photoValidationUtil).validateBase64Photo(anyString());
+        when(sportProfileRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> playerService.uploadPhoto(1L, photoRequest));
+        verify(sportProfileRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should fail when uploading invalid base64 photo")
+    void testUploadPhotoInvalidBase64() {
+        PhotoUploadRequest photoRequest = PhotoUploadRequest.builder()
+                .photoUrl("invalid-base64")
+                .build();
+
+        doThrow(new IllegalArgumentException("Invalid base64 photo")).when(photoValidationUtil)
+                .validateBase64Photo("invalid-base64");
+
+        assertThrows(IllegalArgumentException.class, () -> playerService.uploadPhoto(1L, photoRequest));
+        verify(sportProfileRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Should upsert sports profile by user id successfully - create new")
+    void testUpsertSportsProfileByUserIdCreateSuccess() {
+        SportsProfileUpdateRequest updateRequest = SportsProfileUpdateRequest.builder()
+                .primaryPosition(Position.FORWARD)
+                .secondaryPosition(Position.MIDFIELDER)
+                .jerseyNumber(10)
+                .dominantFoot(DominantFoot.RIGHT)
+                .available(true)
+                .build();
+
+        SportProfile newProfile = SportProfile.builder()
+                .userId(1L)
+                .position(Position.FORWARD)
+                .secondaryPosition(Position.MIDFIELDER)
+                .jerseyNumber(10)
+                .dominantFoot(DominantFoot.RIGHT)
+                .available(true)
+                .build();
+
+        ProfileResponse expectedResponse = ProfileResponse.builder()
+                .id(1L).userId(1L).position(Position.FORWARD).available(true).build();
+
+        stubUserLookup();
+        when(sportProfileRepository.findByUserId(1L)).thenReturn(Optional.empty());
+        when(userPersistenceMapper.toEntity(any(SportProfile.class))).thenReturn(testProfileEntity);
+        when(sportProfileRepository.save(any(SportProfileEntity.class))).thenReturn(testProfileEntity);
+        when(userPersistenceMapper.toModel(testProfileEntity)).thenReturn(newProfile);
+        when(sportProfileMapper.toResponse(any(SportProfile.class))).thenReturn(expectedResponse);
+
+        ProfileResponse response = playerService.upsertSportsProfileByUserId(1L, updateRequest);
+
+        assertNotNull(response);
+        assertEquals(1L, response.getId());
+        verify(sportProfileRepository).save(any(SportProfileEntity.class));
+    }
+
+    @Test
+    @DisplayName("Should upsert sports profile by user id successfully - update existing")
+    void testUpsertSportsProfileByUserIdUpdateSuccess() {
+        SportsProfileUpdateRequest updateRequest = SportsProfileUpdateRequest.builder()
+                .primaryPosition(Position.DEFENDER)
+                .secondaryPosition(null)
+                .jerseyNumber(4)
+                .dominantFoot(DominantFoot.LEFT)
+                .available(false)
+                .build();
+
+        SportProfile existingProfile = SportProfile.builder()
+                .id(1L).userId(1L).position(Position.DEFENDER).jerseyNumber(4).available(false).build();
+
+        ProfileResponse expectedResponse = ProfileResponse.builder()
+                .id(1L).userId(1L).position(Position.DEFENDER).available(false).build();
+
+        stubUserLookup();
+        when(sportProfileRepository.findByUserId(1L)).thenReturn(Optional.of(testProfileEntity));
+        when(userPersistenceMapper.toModel(testProfileEntity)).thenReturn(existingProfile);
+        when(userPersistenceMapper.toEntity(any(SportProfile.class))).thenReturn(testProfileEntity);
+        when(sportProfileRepository.save(any(SportProfileEntity.class))).thenReturn(testProfileEntity);
+        when(sportProfileMapper.toResponse(any(SportProfile.class))).thenReturn(expectedResponse);
+
+        ProfileResponse response = playerService.upsertSportsProfileByUserId(1L, updateRequest);
+
+        assertNotNull(response);
+        assertEquals(1L, response.getId());
+        verify(sportProfileRepository).save(any(SportProfileEntity.class));
+    }
+
+    @Test
+    @DisplayName("Should fail upsert when user not found")
+    void testUpsertSportsProfileByUserIdUserNotFound() {
+        SportsProfileUpdateRequest updateRequest = SportsProfileUpdateRequest.builder()
+                .primaryPosition(Position.FORWARD)
+                .jerseyNumber(10)
+                .available(true)
+                .build();
+
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> playerService.upsertSportsProfileByUserId(99L, updateRequest));
+    }
+
+    @Test
+    @DisplayName("Should upload full photo by user id successfully")
+    void testUploadFullPhotoByUserIdSuccess() {
+        MultipartFile mockFile = mock(MultipartFile.class);
+        String photoUrl = "https://storage.example.com/photo.jpg";
+
+        SportProfile profileWithPhoto = SportProfile.builder()
+                .id(1L).userId(1L).fullPhotoUrl(photoUrl).build();
+
+        ProfileResponse expectedResponse = ProfileResponse.builder()
+                .id(1L).userId(1L).fullPhotoUrl(photoUrl).build();
+
+        stubUserLookup();
+        when(sportProfileRepository.findByUserId(1L)).thenReturn(Optional.empty());
+        when(userPersistenceMapper.toEntity(any(SportProfile.class))).thenReturn(testProfileEntity);
+        when(fileStorageService.storeFullPhoto(mockFile, 1L)).thenReturn(photoUrl);
+        when(sportProfileRepository.save(any(SportProfileEntity.class))).thenReturn(testProfileEntity);
+        when(userPersistenceMapper.toModel(testProfileEntity)).thenReturn(profileWithPhoto);
+        when(sportProfileMapper.toResponse(any(SportProfile.class))).thenReturn(expectedResponse);
+
+        ProfileResponse response = playerService.uploadFullPhotoByUserId(1L, mockFile);
+
+        assertNotNull(response);
+        assertEquals(1L, response.getId());
+        verify(fileStorageService).storeFullPhoto(mockFile, 1L);
+        verify(sportProfileRepository).save(any(SportProfileEntity.class));
+    }
+
+    @Test
+    @DisplayName("Should fail uploading full photo when user not found")
+    void testUploadFullPhotoByUserIdUserNotFound() {
+        MultipartFile mockFile = mock(MultipartFile.class);
+
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> playerService.uploadFullPhotoByUserId(99L, mockFile));
+        verify(fileStorageService, never()).storeFullPhoto(any(), any());
+    }
+
 }

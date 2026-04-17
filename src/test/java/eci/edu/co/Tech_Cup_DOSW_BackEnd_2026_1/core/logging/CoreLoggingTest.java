@@ -10,6 +10,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.aspectj.lang.ProceedingJoinPoint;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging.ServiceLoggingAspect;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging.RequestTracingFilter;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging.ControllerLoggingAspect;
+import eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.logging.RepositoryLoggingAspect;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -201,4 +206,73 @@ class CoreLoggingTest {
             assertTrue(contentType.length() > 0);
         }
     }
+
+    @Mock
+    private ProceedingJoinPoint mockJoinPoint;
+
+    @Test
+    @DisplayName("ServiceLoggingAspect should instantiate")
+    void testServiceLoggingAspectInstantiation() {
+        ServiceLoggingAspect aspect = new ServiceLoggingAspect();
+        assertNotNull(aspect);
+    }
+
+    @Test
+    @DisplayName("ServiceLoggingAspect logServiceCalls method execution")
+    void testServiceLoggingAspectLogServiceCalls() throws Throwable {
+        ServiceLoggingAspect aspect = new ServiceLoggingAspect();
+        when(mockJoinPoint.getSignature().toShortString()).thenReturn("testMethod()");
+        when(mockJoinPoint.proceed()).thenReturn("test-result");
+
+        Object result = aspect.logServiceCalls(mockJoinPoint);
+
+        assertNotNull(result);
+        assertEquals("test-result", result);
+        verify(mockJoinPoint, times(1)).proceed();
+    }
+
+    @Test
+    @DisplayName("ControllerLoggingAspect should instantiate")
+    void testControllerLoggingAspectInstantiation() {
+        ControllerLoggingAspect aspect = new ControllerLoggingAspect();
+        assertNotNull(aspect);
+    }
+
+    @Test
+    @DisplayName("ControllerLoggingAspect logControllerCalls method execution")
+    void testControllerLoggingAspectLogControllerCalls() throws Throwable {
+        ControllerLoggingAspect aspect = new ControllerLoggingAspect();
+        when(mockJoinPoint.getSignature().toShortString()).thenReturn("getPlayer()");
+        when(mockJoinPoint.getArgs()).thenReturn(new Object[]{"arg1", "arg2"});
+        when(mockJoinPoint.proceed()).thenReturn("controller-result");
+
+        Object result = aspect.logControllerCalls(mockJoinPoint);
+
+        assertNotNull(result);
+        assertEquals("controller-result", result);
+        verify(mockJoinPoint, times(1)).proceed();
+    }
+
+    @Test
+    @DisplayName("RepositoryLoggingAspect should instantiate")
+    void testRepositoryLoggingAspectInstantiation() {
+        RepositoryLoggingAspect aspect = new RepositoryLoggingAspect();
+        assertNotNull(aspect);
+    }
+
+    @Test
+    @DisplayName("RepositoryLoggingAspect logRepositoryCalls method execution")
+    void testRepositoryLoggingAspectLogRepositoryCalls() throws Throwable {
+        RepositoryLoggingAspect aspect = new RepositoryLoggingAspect();
+        when(mockJoinPoint.getSignature().toShortString()).thenReturn("findByEmail()");
+        when(mockJoinPoint.proceed()).thenReturn("repository-result");
+
+        Object result = aspect.logRepositoryCalls(mockJoinPoint);
+
+        assertNotNull(result);
+        assertEquals("repository-result", result);
+        verify(mockJoinPoint, times(1)).proceed();
+    }
+
+    
 }
