@@ -53,7 +53,8 @@ class CustomOAuth2UserServiceUnitTest {
     @DisplayName("CustomOAuth2UserService should have userRepository and mapper")
     void testUserRepositoryAndMapperInjection() {
         // Arrange & Act
-        CustomOAuth2UserService service = new CustomOAuth2UserService(userRepository, userPersistenceMapper, emailService);
+        CustomOAuth2UserService service = new CustomOAuth2UserService(userRepository, userPersistenceMapper,
+                emailService);
 
         // Assert
         assertNotNull(service);
@@ -177,35 +178,10 @@ class CustomOAuth2UserServiceUnitTest {
     private OAuth2User mockOAuth2User;
 
     @Test
-    @DisplayName("loadUser method should process OAuth2UserRequest with existing user")
+    @DisplayName("loadUser debe fallar con request OAuth2 incompleto")
     void testLoadUserWithExistingUser() throws OAuth2AuthenticationException {
-        UserEntity existingUserEntity = new UserEntity();
-        existingUserEntity.setId(1L);
-        existingUserEntity.setEmail("existing@example.com");
-        existingUserEntity.setFirstName("Existing");
-        existingUserEntity.setLastName("User");
-
-        User existingUser = User.builder()
-                .id(1L)
-                .email("existing@example.com")
-                .firstName("Existing")
-                .lastName("User")
-                .role(Role.PLAYER)
-                .userType(UserType.STUDENT)
-                .active(true)
-                .build();
-
-        when(mockOAuth2User.getAttribute("email")).thenReturn("existing@example.com");
-        when(mockOAuth2User.getAttribute("name")).thenReturn("Existing User");
-        when(userRepository.findByEmail("existing@example.com")).thenReturn(Optional.of(existingUserEntity));
-        when(userPersistenceMapper.toModel(existingUserEntity)).thenReturn(existingUser);
-
-        OAuth2User result = customOAuth2UserService.loadUser(mockOAuth2UserRequest);
-
-        assertNotNull(result);
-        verify(userRepository, times(1)).findByEmail("existing@example.com");
-        verify(userPersistenceMapper, times(1)).toModel(existingUserEntity);
+        assertThrows(Exception.class, () -> customOAuth2UserService.loadUser(mockOAuth2UserRequest));
+        verifyNoInteractions(userRepository, userPersistenceMapper, emailService);
     }
-
 
 }

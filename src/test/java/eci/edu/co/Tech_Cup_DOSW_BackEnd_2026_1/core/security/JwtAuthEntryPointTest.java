@@ -1,6 +1,7 @@
 package eci.edu.co.Tech_Cup_DOSW_BackEnd_2026_1.core.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,12 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.AuthenticationException;
 
-import java.io.OutputStream;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JwtAuthEntryPointTest {
@@ -32,6 +32,9 @@ class JwtAuthEntryPointTest {
     @Mock
     private AuthenticationException mockAuthException;
 
+    @Mock
+    private ServletOutputStream mockOutputStream;
+
     private JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @BeforeEach
@@ -41,11 +44,13 @@ class JwtAuthEntryPointTest {
 
     @Test
     void testCommenceMethodExecution() throws Exception {
+        when(mockResponse.getOutputStream()).thenReturn(mockOutputStream);
+
         jwtAuthEntryPoint.commence(mockRequest, mockResponse, mockAuthException);
 
         assertThat(jwtAuthEntryPoint).isNotNull();
         verify(mockResponse).setStatus(401);
         verify(mockResponse).setContentType("application/json");
-        verify(mockObjectMapper).writeValue(isA(OutputStream.class), any());
+        verify(mockObjectMapper).writeValue(eq(mockOutputStream), any());
     }
 }
