@@ -11,12 +11,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.access.AccessDeniedException;
 
-import java.io.OutputStream;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +32,9 @@ class JwtAccessDeniedHandlerTest {
     @Mock
     private AccessDeniedException mockAccessDeniedException;
 
+    @Mock
+    private ServletOutputStream mockOutputStream;
+
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @BeforeEach
@@ -44,12 +44,11 @@ class JwtAccessDeniedHandlerTest {
 
     @Test
     void testHandleMethodExecution() throws Exception {
-        when(mockResponse.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
         jwtAccessDeniedHandler.handle(mockRequest, mockResponse, mockAccessDeniedException);
 
         assertThat(jwtAccessDeniedHandler).isNotNull();
         verify(mockResponse).setStatus(403);
         verify(mockResponse).setContentType("application/json");
-        verify(mockObjectMapper).writeValue(isA(OutputStream.class), any());
+        verify(mockObjectMapper).writeValue(eq(mockOutputStream), any());
     }
 }

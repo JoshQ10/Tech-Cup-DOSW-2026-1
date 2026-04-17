@@ -11,12 +11,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.AuthenticationException;
 
-import java.io.OutputStream;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +32,9 @@ class JwtAuthEntryPointTest {
     @Mock
     private AuthenticationException mockAuthException;
 
+    @Mock
+    private ServletOutputStream mockOutputStream;
+
     private JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @BeforeEach
@@ -44,12 +44,11 @@ class JwtAuthEntryPointTest {
 
     @Test
     void testCommenceMethodExecution() throws Exception {
-        when(mockResponse.getOutputStream()).thenReturn(mock(ServletOutputStream.class));
         jwtAuthEntryPoint.commence(mockRequest, mockResponse, mockAuthException);
 
         assertThat(jwtAuthEntryPoint).isNotNull();
         verify(mockResponse).setStatus(401);
         verify(mockResponse).setContentType("application/json");
-        verify(mockObjectMapper).writeValue(isA(OutputStream.class), any());
+        verify(mockObjectMapper).writeValue(eq(mockOutputStream), any());
     }
 }
